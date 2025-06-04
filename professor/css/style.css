@@ -1,0 +1,309 @@
+/* Estilos para as avaliações */
+.section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    color: #3F51B5;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.section-title i {
+    margin-right: 10px;
+    background: #F5F7FF;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #3F51B5;
+}
+
+/* Estilos para as avaliações de habilidades */
+.skill-ratings {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.skill-item {
+    display: flex;
+    align-items: center;
+    background: #F5F7FF;
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+.skill-label {
+    flex: 0 0 120px;
+    font-weight: 500;
+}
+
+.rating-group {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    max-width: 300px;
+}
+
+.rating-group input[type="radio"] {
+    display: none;
+}
+
+.rating-group label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #E0E0E0;
+    color: #9E9E9E;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.rating-group input[type="radio"]:checked + label {
+    background: #3F51B5;
+    border-color: #3F51B5;
+    color: white;
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.4);
+}
+
+.rating-group label:hover {
+    border-color: #3F51B5;
+    transform: scale(1.05);
+}
+
+.slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.slider-label {
+    font-weight: 500;
+}
+
+.range-slider {
+    width: 100%;
+    height: 8px;
+    border-radius: 4px;
+    background: #E0E0E0;
+    outline: none;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #3F51B5;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.4);
+    transition: all 0.3s ease;
+}
+
+.range-slider::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #3F51B5;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(63, 81, 181, 0.4);
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.slider-value {
+    text-align: right;
+    font-weight: 600;
+    color: #3F51B5;
+}
+
+/* Estilos para o cartão de IMC */
+.imc-card {
+    background: #F5F7FF;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.imc-result {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.imc-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #3F51B5;
+}
+
+.imc-status {
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: white;
+    min-width: 120px;
+    text-align: center;
+}
+
+.imc-legend {
+    margin-top: 15px;
+}
+
+.imc-legend-title {
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 14px;
+}
+
+.imc-bar {
+    display: flex;
+    height: 30px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.imc-bar div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.imc-bar div.active {
+    flex: 1.5;
+    font-size: 13px;
+}
+
+.baixo { background: #3498db; }
+.normal { background: #2ecc71; }
+.sobrepeso { background: #f1c40f; }
+.obesidade { background: #e67e22; }
+.obesidade-grave { background: #e74c3c; }
+
+.hidden {
+    display: none;
+}
+
+.form-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .skill-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .skill-label {
+        margin-bottom: 10px;
+    }
+    
+    .rating-group {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+.aluno-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: var(--border-radius);
+    margin-bottom: 8px;
+    transition: var(--transition);
+    background-color: var(--light);
+    border: 1px solid var(--gray-light);
+}
+
+.aluno-item:hover {
+    background-color: var(--light-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+.aluno-foto {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    overflow: hidden;
+    background-color: var(--gray-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.aluno-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.aluno-foto i {
+    color: var(--gray);
+    font-size: 20px;
+}
+
+.aluno-info {
+    flex: 1;
+}
+
+.aluno-nome {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 2px;
+}
+
+.aluno-dados {
+    font-size: 0.85rem;
+    color: var(--gray-dark);
+}
+
+.aluno-acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}

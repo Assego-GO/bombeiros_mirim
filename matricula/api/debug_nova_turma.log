@@ -1,0 +1,700 @@
+2025-04-02 17:34:01 - Dados recebidos: {"nome_turma":"testando turma","unidade":"1","professor_responsavel":"1","data_inicio":"2025-04-02","status":1}
+2025-04-02 17:34:01 - Dados processados: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 1
+    [professor_responsavel] => 1
+    [data_inicio] => 2025-04-02
+    [status] => 1
+)
+
+2025-04-02 17:34:01 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-02 17:34:01 - Parâmetros: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 1
+    [professor_responsavel] => 1
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-02 17:34:01 - Execução: Sucesso
+2025-04-03 01:28:21 - Dados recebidos: {"nome_turma":"Sub 20","unidade":"5","professor_responsavel":"4","data_inicio":"2025-01-22","status":1}
+2025-04-03 01:28:21 - Dados processados: Array
+(
+    [nome_turma] => Sub 20
+    [unidade] => 5
+    [professor_responsavel] => 4
+    [data_inicio] => 2025-01-22
+    [status] => 1
+)
+
+2025-04-03 01:28:21 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-03 01:28:21 - Parâmetros: Array
+(
+    [nome_turma] => Sub 20
+    [unidade] => 5
+    [professor_responsavel] => 4
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-03 01:28:21 - Execução: Sucesso
+2025-04-16 12:48:21 - Dados recebidos: {"nome_turma":"testando turma","unidade":"7","professor_responsavel":"1","data_inicio":"2025-04-16","status":1}
+2025-04-16 12:48:21 - Dados processados: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [data_inicio] => 2025-04-16
+    [status] => 1
+)
+
+2025-04-16 12:48:21 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 12:48:21 - Parâmetros: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 12:48:21 - Execução: Sucesso
+2025-04-16 14:31:31 - Dados recebidos: {"nome_turma":"Sub 11","unidade":"7","professor_responsavel":"3","data_inicio":"2025-04-16","status":1}
+2025-04-16 14:31:31 - Dados processados: Array
+(
+    [nome_turma] => Sub 11
+    [unidade] => 7
+    [professor_responsavel] => 3
+    [data_inicio] => 2025-04-16
+    [status] => 1
+)
+
+2025-04-16 14:31:31 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 14:31:31 - Parâmetros: Array
+(
+    [nome_turma] => Sub 11
+    [unidade] => 7
+    [professor_responsavel] => 3
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 14:31:31 - Execução: Sucesso
+2025-04-16 16:39:29 - Dados recebidos: {"nome_turma":"teste excluir ","unidade":"7","professor_responsavel":"2","data_inicio":"2025-02-15","status":0}
+2025-04-16 16:39:29 - Dados processados: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 2
+    [data_inicio] => 2025-02-15
+    [status] => 0
+)
+
+2025-04-16 16:39:29 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 16:39:29 - Parâmetros: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 2
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 16:39:29 - Execução: Sucesso
+2025-04-16 17:03:11 - Dados recebidos: {"nome_turma":"teste deletar","unidade":"8","professor_responsavel":"2","data_inicio":"2015-05-13","status":0}
+2025-04-16 17:03:11 - Dados processados: Array
+(
+    [nome_turma] => teste deletar
+    [unidade] => 8
+    [professor_responsavel] => 2
+    [data_inicio] => 2015-05-13
+    [status] => 0
+)
+
+2025-04-16 17:03:11 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 17:03:11 - Parâmetros: Array
+(
+    [nome_turma] => teste deletar
+    [unidade] => 8
+    [professor_responsavel] => 2
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 17:03:11 - Execução: Sucesso
+2025-04-16 17:32:32 - Dados recebidos: {"nome_turma":"Sub 111","unidade":"7","professor_responsavel":"1","data_inicio":"32323-02-23","status":0}
+2025-04-16 17:32:32 - Dados processados: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [data_inicio] => 32323-02-23
+    [status] => 0
+)
+
+2025-04-16 17:32:32 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 17:32:32 - Parâmetros: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 17:32:32 - Execução: Sucesso
+2025-04-16 17:34:22 - Dados recebidos: {"nome_turma":"teste excluir ","unidade":"8","professor_responsavel":"2","data_inicio":"1212-12-12","status":0}
+2025-04-16 17:34:22 - Dados processados: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 8
+    [professor_responsavel] => 2
+    [data_inicio] => 1212-12-12
+    [status] => 0
+)
+
+2025-04-16 17:34:22 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 17:34:22 - Parâmetros: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 8
+    [professor_responsavel] => 2
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 17:34:22 - Execução: Sucesso
+2025-04-16 17:36:01 - Dados recebidos: {"nome_turma":"Sub 111","unidade":"7","professor_responsavel":"1","data_inicio":"1212-12-12","status":0}
+2025-04-16 17:36:01 - Dados processados: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [data_inicio] => 1212-12-12
+    [status] => 0
+)
+
+2025-04-16 17:36:01 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 17:36:01 - Parâmetros: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 1
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 17:36:01 - Execução: Sucesso
+2025-04-16 19:24:49 - Dados recebidos: {"nome_turma":"teste excluir ","unidade":"7","professor_responsavel":"2","data_inicio":"2025-04-30","status":1}
+2025-04-16 19:24:49 - Dados processados: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 2
+    [data_inicio] => 2025-04-30
+    [status] => 1
+)
+
+2025-04-16 19:24:49 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-16 19:24:49 - Parâmetros: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 2
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-16 19:24:49 - Execução: Sucesso
+2025-04-17 13:31:03 - Dados recebidos: {"nome_turma":"teste excluir ","unidade":"7","professor_responsavel":"3","data_inicio":"20025-12-12","status":0}
+2025-04-17 13:31:03 - Dados processados: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 3
+    [data_inicio] => 20025-12-12
+    [status] => 0
+)
+
+2025-04-17 13:31:03 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-17 13:31:03 - Parâmetros: Array
+(
+    [nome_turma] => teste excluir 
+    [unidade] => 7
+    [professor_responsavel] => 3
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-17 13:31:03 - Execução: Sucesso
+2025-04-17 14:50:08 - Dados recebidos: {"nome_turma":"Sub 1","unidade":"7","professor_responsavel":"7","data_inicio":"2005-05-31","status":0}
+2025-04-17 14:50:08 - Dados processados: Array
+(
+    [nome_turma] => Sub 1
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [data_inicio] => 2005-05-31
+    [status] => 0
+)
+
+2025-04-17 14:50:08 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-17 14:50:08 - Parâmetros: Array
+(
+    [nome_turma] => Sub 1
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-17 14:50:08 - Execução: Sucesso
+2025-04-22 19:43:13 - Dados recebidos: {"nome_turma":"Sub 111","unidade":"7","professor_responsavel":"7","data_inicio":"2001-12-12","status":0}
+2025-04-22 19:43:13 - Dados processados: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [data_inicio] => 2001-12-12
+    [status] => 0
+)
+
+2025-04-22 19:43:13 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-22 19:43:13 - Parâmetros: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-22 19:43:13 - Execução: Sucesso
+2025-04-23 12:15:03 - Dados recebidos: {"nome_turma":"teste novo","unidade":"7","professor_responsavel":"7","data_inicio":"2025-04-24","status":1}
+2025-04-23 12:15:03 - Dados processados: Array
+(
+    [nome_turma] => teste novo
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [data_inicio] => 2025-04-24
+    [status] => 1
+)
+
+2025-04-23 12:15:03 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-23 12:15:03 - Parâmetros: Array
+(
+    [nome_turma] => teste novo
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-23 12:15:03 - Execução: Sucesso
+2025-04-23 14:07:26 - Dados recebidos: {"nome_turma":"Sub 111","unidade":"7","professor_responsavel":"7","data_inicio":"2025-04-16","status":0}
+2025-04-23 14:07:26 - Dados processados: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [data_inicio] => 2025-04-16
+    [status] => 0
+)
+
+2025-04-23 14:07:26 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-23 14:07:26 - Parâmetros: Array
+(
+    [nome_turma] => Sub 111
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-23 14:07:26 - Execução: Sucesso
+2025-04-25 18:10:02 - Dados recebidos: {"nome_turma":"sub luis","unidade":"21","professor_responsavel":"11","data_inicio":"2025-04-26","status":0}
+2025-04-25 18:10:02 - Dados processados: Array
+(
+    [nome_turma] => sub luis
+    [unidade] => 21
+    [professor_responsavel] => 11
+    [data_inicio] => 2025-04-26
+    [status] => 0
+)
+
+2025-04-25 18:10:02 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-25 18:10:02 - Parâmetros: Array
+(
+    [nome_turma] => sub luis
+    [unidade] => 21
+    [professor_responsavel] => 11
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Planejada
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-25 18:10:02 - Execução: Sucesso
+2025-04-25 18:48:22 - Dados recebidos: {"nome_turma":"Turma Gabriel ","unidade":"21","professor_responsavel":"11","data_inicio":"2025-04-26","status":1}
+2025-04-25 18:48:22 - Dados processados: Array
+(
+    [nome_turma] => Turma Gabriel 
+    [unidade] => 21
+    [professor_responsavel] => 11
+    [data_inicio] => 2025-04-26
+    [status] => 1
+)
+
+2025-04-25 18:48:22 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-25 18:48:22 - Parâmetros: Array
+(
+    [nome_turma] => Turma Gabriel 
+    [unidade] => 21
+    [professor_responsavel] => 11
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-25 18:48:22 - Execução: Sucesso
+2025-04-29 16:16:35 - Dados recebidos: {"nome_turma":"TESTANDO TURMA","unidade":"7","professor_responsavel":"11","data_inicio":"2025-04-29","status":1}
+2025-04-29 16:16:35 - Dados processados: Array
+(
+    [nome_turma] => TESTANDO TURMA
+    [unidade] => 7
+    [professor_responsavel] => 11
+    [data_inicio] => 2025-04-29
+    [status] => 1
+)
+
+2025-04-29 16:16:35 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-04-29 16:16:35 - Parâmetros: Array
+(
+    [nome_turma] => TESTANDO TURMA
+    [unidade] => 7
+    [professor_responsavel] => 11
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-04-29 16:16:35 - Execução: Sucesso
+2025-05-06 00:58:25 - Dados recebidos: {"nome_turma":"testando turma","unidade":"7","professor_responsavel":"7","data_inicio":"2025-05-05","status":1}
+2025-05-06 00:58:25 - Dados processados: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [data_inicio] => 2025-05-05
+    [status] => 1
+)
+
+2025-05-06 00:58:25 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-05-06 00:58:25 - Parâmetros: Array
+(
+    [nome_turma] => testando turma
+    [unidade] => 7
+    [professor_responsavel] => 7
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-05-06 00:58:25 - Execução: Sucesso
+2025-06-04 14:26:18 - Dados recebidos: {"nome_turma":"turma teste","unidade":"9","professor_responsavel":"13","data_inicio":"2025-06-05","status":1}
+2025-06-04 14:26:18 - Dados processados: Array
+(
+    [nome_turma] => turma teste
+    [unidade] => 9
+    [professor_responsavel] => 13
+    [data_inicio] => 2025-06-05
+    [status] => 1
+)
+
+2025-06-04 14:26:18 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-06-04 14:26:18 - Parâmetros: Array
+(
+    [nome_turma] => turma teste
+    [unidade] => 9
+    [professor_responsavel] => 13
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-06-04 14:26:18 - Execução: Sucesso

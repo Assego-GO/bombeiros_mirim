@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAção - Matrícula Online</title>
+    <style id="theme">
+        :root {
+            --primary: #1a5276;
+            --secondary: #f39c12;
+            --accent: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+    </style>
+    <link rel="stylesheet" href="./css/teste.css">
+    <style>
+        /* CSS para o carrossel */
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background-color: var(--primary);
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+            z-index: 1;
+        }
+
+        .carousel-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .carousel-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .carousel-content p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 3;
+            background-color: rgba(0,0,0,0.3);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .carousel-button.prev {
+            left: 20px;
+        }
+
+        .carousel-button.next {
+            right: 20px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .indicator.active {
+            background-color: var(--secondary);
+        }
+
+        .ftlink{
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .hero-carousel {
+                height: 350px;
+            }
+            
+            .carousel-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .carousel-content p {
+                font-size: 1rem;
+            }
+            
+            .carousel-button {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="logoSuper.png" alt="Logo SuperAção">
+            <div>
+                <h1>Superação</h1>
+                <p>Escolinha de Futebol</p>
+            </div>
+        </div>
+        <nav>
+            <!-- <button id="login-btn">Área do Aluno</button> -->
+        </nav>
+    </header>
+    
+    <main>
+        <!-- Seção hero substituída pelo carrossel -->
+        <section class="hero-carousel">
+            <div class="carousel-container">
+                <div class="carousel-slide active">
+                    <div class="carousel-content">
+                        <h1>Transformando vidas através do esporte</h1>
+                        <p>Um projeto das Polícias Militares e Corpo de Bombeiros de Goiás para formação cidadã e desenvolvimento esportivo.</p>
+                    </div>
+                    <img src="img/imgat.jpeg" alt="Crianças jogando futebol">
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-content">
+                        <h1>Aprendizado e disciplina</h1>
+                        <p>Desenvolvendo habilidades que vão além do campo de jogo.</p>
+                    </div>
+                    <img src="img/01.png" alt="Treino de futebol">
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-content">
+                        <h1>Cidadania e inclusão</h1>
+                        <p>Formando cidadãos conscientes através da prática esportiva.</p>
+                    </div>
+                    <img src="img/03.png" alt="Crianças comemorando">
+                </div>
+                <div class="carousel-slide">
+                    <div class="carousel-content">
+                        <h1>Segurança e comunidade</h1>
+                        <p>Fortalecendo os laços entre as forças de segurança e a sociedade.</p>
+                    </div>
+                    <img src="img/04.png" alt="Policiais e crianças">
+                </div>
+                
+                <!-- Botões de navegação -->
+                <button class="carousel-button prev">&#10094;</button>
+                <button class="carousel-button next">&#10095;</button>
+                
+                <!-- Indicadores -->
+                <div class="carousel-indicators">
+                    <span class="indicator active" data-slide="0"></span>
+                    <span class="indicator" data-slide="1"></span>
+                    <span class="indicator" data-slide="2"></span>
+                    <span class="indicator" data-slide="3"></span>
+                </div>
+            </div>
+        </section>
+        
+        <div class="container">
+            <nav class="tabs">
+                <div class="tab active" data-tab="matricula">Matrícula Online</div>
+                <div class="tab" data-tab="unidades">Nossas Unidades</div>
+                <div class="tab" data-tab="sobre">Sobre o Projeto</div>
+            </nav>
+            
+            <section class="tab-content active" id="matricula">
+                
+                <h2>Formulário de Matrícula</h2>
+                <p>Preencha o formulário abaixo para matricular seu filho(a) na escolinha SuperAção.</p>
+                
+                <form id="matricula-form" enctype="multipart/form-data">
+                    <div class="form-group full">
+                        <h3>Dados da Unidade</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="unidade">Unidade SuperAção:</label>
+                        <select id="unidade" required>
+                            <option value="">Selecione uma unidade</option>
+                            
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="turma">Turma:</label>
+                        <select id="turma" required>
+                            <option value="">Selecione uma turma</option>
+                            
+                        </select>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <h3>Dados do Aluno</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nome-aluno">Nome Completo:</label>
+                        <input type="text" id="nome-aluno" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="data-nascimento">Data de Nascimento:</label>
+                        <input type="date" id="data-nascimento" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rg-aluno">RG (se possuir):</label>
+                        <input type="text" id="rg-aluno">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cpf-aluno">CPF (se possuir):</label>
+                        <input type="text" id="cpf-aluno">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="escola">Escola onde estuda:</label>
+                        <input type="text" id="escola" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serie">Série/Ano:</label>
+                        <input type="text" id="serie" required>
+                    </div>
+
+
+                    <div class="form-group full">
+                        <label for="foto-aluno">Foto do Aluno:</label>
+                        <div class="foto-upload-container">
+                            <input type="file" id="foto-aluno" name="foto-aluno" accept="image/*"   >
+                            
+                                
+                            
+                        </div>
+                    </div>
+
+
+
+
+                    
+                    <div class="form-group full">
+                        <label for="info-saude">Informações de saúde relevantes:</label>
+                        <textarea id="info-saude" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group"> 
+                        
+                        <label for="reside">Mora com:</label>
+                        <select id="reside" required>
+                            <option value="">Selecione</option>
+                            <option value="mae-pai">Mãe e Pai</option>
+                            <option value="mae">Mãe</option>
+                            <option value="pai">Pai</option>
+                            <option value="avó">Avó</option>
+                            <option value="avô">Avô</option>
+                            <option value="tio">Tio</option>
+                            <option value="tia">Tia</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                        
+                    </div>
+                    
+                    <div class="form-group full">
+                        <h3>Dados do Responsável</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nome-responsavel">Nome Completo:</label>
+                        <input type="text" id="nome-responsavel" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="parentesco">Parentesco:</label>
+                        <select id="parentesco" required>
+                            <option value="">Selecione</option>
+                            <option value="pai">Pai</option>
+                            <option value="mae">Mãe</option>
+                            <option value="avó">Avó</option>
+                            <option value="avô">Avô</option>
+                            <option value="tio">Tio</option>
+                            <option value="tia">Tia</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rg-responsavel">RG:</label>
+                        <input type="text" id="rg-responsavel" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cpf-responsavel">CPF:</label>
+                        <input type="text" id="cpf-responsavel" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="telefone">Telefone:</label>
+                        <input type="tel" id="telefone" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="whatsapp">WhatsApp:</label>
+                        <input type="tel" id="whatsapp">
+                    </div>
+                    
+                    <div class="form-group full">
+                        <label for="email">E-mail:</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <h3>Endereço</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cep">CEP:</label>
+                        <input type="text" id="cep" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endereco">Endereço:</label>
+                        <input type="text" id="endereco" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="numero">Número:</label>
+                        <input type="text" id="numero" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="complemento">Complemento:</label>
+                        <input type="text" id="complemento">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bairro">Bairro:</label>
+                        <input type="text" id="bairro" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cidade">Cidade:</label>
+                        <input type="text" id="cidade" value="Goiânia" required>
+                    </div>
+                    
+                    <div class="form-group full">
+                        <div class="consent-box">
+                            <h3>Termos de Consentimento</h3>
+                            <p>Ao enviar este formulário, você concorda com:</p>
+                            <ul>
+                                <li>A participação do menor nas atividades esportivas da escolinha SuperAção;</li>
+                                <li>O uso da imagem do aluno para divulgação das atividades do projeto;</li>
+                                <li>O recebimento de comunicações sobre o projeto SuperAção e iniciativas relacionadas.</li>
+                            </ul>
+                            <label>
+                                <input type="checkbox" id="consent" required>
+                                Li e concordo com os termos acima
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full">
+                    
+                        <button type="submit">Finalizar Matrícula</button>
+                    </div>
+                </form>
+                
+                <div class="card-preview" id="card-preview" style="display: none;">
+                
+                </div>
+            </section>
+
+
+        <div class="tab-content" id="unidades">
+            <h2>Nossas Unidades</h2>
+            <p>Conheça as unidades Superação distribuídas pelo estado de Goiás:</p>
+            
+            <div class="units-grid">
+                <div class="unit-card">
+                    <div class="unit-card-header">
+                        <h3>7º Batalhão - Setor Oeste</h3>
+                    </div>
+                    <div class="unit-card-body">
+                        <p><strong>Endereço:</strong> Av. Contorno, Setor Oeste, Goiânia - GO</p>
+                        <p><strong>Telefone:</strong> (62) 3333-4444</p>
+                        <p><strong>Coordenador:</strong> Ten. Silva</p>
+                        <p><strong>Turmas:</strong> Sub-10 e Sub-14</p>
+                    </div>
+                    <div class="unit-card-footer">
+                        <button>Matricular nesta unidade</button>
+                    </div>
+                </div>
+                
+                <div class="unit-card">
+                    <div class="unit-card-header">
+                        <h3>13º Batalhão - Goiânia</h3>
+                    </div>
+                    <div class="unit-card-body">
+                        <p><strong>Endereço:</strong> Rua Principal, Setor Central, Goiânia - GO</p>
+                        <p><strong>Telefone:</strong> (62) 3333-5555</p>
+                        <p><strong>Coordenador:</strong> Cap. Oliveira</p>
+                        <p><strong>Turmas:</strong> Sub-10 e Sub-14</p>
+                    </div>
+                    <div class="unit-card-footer">
+                        <button>Matricular nesta unidade</button>
+                    </div>
+                </div>
+                
+                <div class="unit-card">
+                    <div class="unit-card-header">
+                        <h3>Corpo de Bombeiros - Centro</h3>
+                    </div>
+                    <div class="unit-card-body">
+                        <p><strong>Endereço:</strong> Av. Central, Centro, Goiânia - GO</p>
+                        <p><strong>Telefone:</strong> (62) 3333-6666</p>
+                        <p><strong>Coordenador:</strong> Sgt. Pereira</p>
+                        <p><strong>Turmas:</strong> Sub-10 e Sub-14</p>
+                    </div>
+                    <div class="unit-card-footer">
+                        <button>Matricular nesta unidade</button>
+                    </div>
+                </div>
+                
+                <div class="unit-card">
+                    <div class="unit-card-header">
+                        <h3>Corpo de Bombeiros - Região Norte</h3>
+                    </div>
+                    <div class="unit-card-body">
+                        <p><strong>Endereço:</strong> Rua Norte, Setor Norte, Goiânia - GO</p>
+                        <p><strong>Telefone:</strong> (62) 3333-7777</p>
+                        <p><strong>Coordenador:</strong> Ten. Costa</p>
+                        <p><strong>Turmas:</strong> Sub-10 e Sub-14</p>
+                    </div>
+                    <div class="unit-card-footer">
+                        <button>Matricular nesta unidade</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="tab-content" id="sobre">
+            <h2>Sobre o Projeto Superação</h2>
+            
+            <div style="display: flex; gap: 2rem; margin: 2rem 0; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>Nossa Missão</h3>
+                    <p>O Projeto Superação é uma iniciativa das Polícias Militares e Corpo de Bombeiros de Goiás que visa promover a inclusão social, cidadania e desenvolvimento esportivo para crianças e adolescentes.</p>
+                    <p>Através do esporte, buscamos fortalecer valores como disciplina, trabalho em equipe, respeito e superação, aproximando as forças de segurança da comunidade.</p>
+                    
+                    <h3>Objetivos</h3>
+                    <li>Promover a inclusão social através do esporte</li>
+                    <li>Desenvolver habilidades esportivas e valores éticos</li>
+                    <li>Fortalecer o vínculo entre comunidade e forças de segurança</li>
+                    <li>Oferecer atividades saudáveis no contraturno escolar</li>
+                    <li>Identificar e desenvolver talentos esportivos</li>
+                    
+                </div>
+                
+                <div style="flex: 1; min-width: 300px;">
+                    <h3>Benefícios</h3>
+                    <ul>
+                        <li>Aulas de futebol com metodologia especializada</li>
+                        <li>Acompanhamento por profissionais qualificados</li>
+                        <li>Participação em campeonatos e eventos esportivos</li>
+                        <li>Material esportivo fornecido pelo projeto</li>
+                        <li>Atividades complementares de cidadania</li>
+                        <li>Carteirinha de identificação personalizada</li>
+                    </ul>
+                    
+                    <h3>Como Participar</h3>
+                    <p>Para participar do Projeto Superação, a criança ou adolescente deve:</p>
+                    <ul>
+                        <li>Ter entre 6 e 14 anos</li>
+                        <li>Estar regularmente matriculado em uma escola</li>
+                        <li>Ter autorização dos pais ou responsáveis</li>
+                        <li>Residir próximo a uma das unidades do projeto</li>
+                    </ul>
+                    <p>A matrícula pode ser feita diretamente pelo site ou nas unidades participantes.</p>
+                </div>
+            </div>
+            
+            <section class="tab-content" id="unidades">
+            
+            </section>
+            
+            <section class="tab-content" id="sobre">
+            
+            </section>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>© 2024 Projeto SuperAção - Uma iniciativa das Polícias Militares e Corpo de Bombeiros de Goiás</p>
+            <p>Contato: contato@superacao.org.br | (62) 3333-8888</p>
+            <p>Desenvolvido por <a href="https://www.assego.com.br/" class="ftlink">Assego</a></p>
+        </div>
+    </footer>
+
+    <!-- Script para manipular o upload de arquivo -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Seleciona o input de arquivo e o container
+            const fileInput = document.getElementById('foto-aluno');
+            const uploadContainer = fileInput.parentElement;
+            
+            // Cria o elemento para exibir o nome do arquivo
+            const fileNameDisplay = document.createElement('div');
+            fileNameDisplay.className = 'file-name-display';
+            uploadContainer.appendChild(fileNameDisplay);
+            
+            // Cria o elemento para informações sobre o arquivo
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            fileInfo.textContent = 'Formatos aceitos: JPG, PNG (máx 5MB)';
+            uploadContainer.appendChild(fileInfo);
+            
+            // Adiciona o evento para mostrar o nome do arquivo quando selecionado
+            fileInput.addEventListener('change', function(e) {
+                if (this.files && this.files[0]) {
+                    // Mostra o nome do arquivo
+                    const fileName = this.files[0].name;
+                    fileNameDisplay.textContent = fileName;
+                    fileNameDisplay.classList.add('visible');
+                    
+                    // Adiciona a classe para destacar o container
+                    uploadContainer.classList.add('has-file');
+                    
+                    // Opcional: Mostra uma prévia da imagem
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Criar preview se quiser mostrar a imagem
+                        // Isso é opcional e pode ser removido se não quiser mostrar a prévia
+                        if (document.querySelector('.foto-preview-container')) {
+                            document.querySelector('.foto-preview-container').remove();
+                        }
+                        
+                        const previewContainer = document.createElement('div');
+                        previewContainer.className = 'foto-preview-container';
+                        
+                        const preview = document.createElement('img');
+                        preview.src = e.target.result;
+                        preview.className = 'foto-preview';
+                        
+                        const removeBtn = document.createElement('div');
+                        removeBtn.className = 'remove-btn';
+                        removeBtn.innerHTML = '×';
+                        removeBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            fileInput.value = '';
+                            previewContainer.remove();
+                            fileNameDisplay.classList.remove('visible');
+                            uploadContainer.classList.remove('has-file');
+                        });
+                        
+                        previewContainer.appendChild(preview);
+                        previewContainer.appendChild(removeBtn);
+                        uploadContainer.appendChild(previewContainer);
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    // Remove o nome do arquivo se nenhum arquivo estiver selecionado
+                    fileNameDisplay.classList.remove('visible');
+                    uploadContainer.classList.remove('has-file');
+                }
+            });
+        });
+    </script>
+
+    <!-- Script do carrossel -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elementos do carrossel
+            const slides = document.querySelectorAll('.carousel-slide');
+            const prevButton = document.querySelector('.carousel-button.prev');
+            const nextButton = document.querySelector('.carousel-button.next');
+            const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+            
+            let currentSlide = 0;
+            let interval;
+            const intervalTime = 5000; // Tempo entre slides (5 segundos)
+            
+            // Função para mostrar um slide específico
+            function showSlide(index) {
+                // Remover classe active de todos os slides
+                slides.forEach(slide => slide.classList.remove('active'));
+                indicators.forEach(indicator => indicator.classList.remove('active'));
+                
+                // Garantir que o índice esteja dentro dos limites
+                if (index < 0) {
+                    currentSlide = slides.length - 1;
+                } else if (index >= slides.length) {
+                    currentSlide = 0;
+                } else {
+                    currentSlide = index;
+                }
+                
+                // Adicionar classe active ao slide atual
+                slides[currentSlide].classList.add('active');
+                indicators[currentSlide].classList.add('active');
+            }
+            
+            // Evento para o botão anterior
+            prevButton.addEventListener('click', () => {
+                clearInterval(interval);
+                showSlide(currentSlide - 1);
+                startInterval();
+            });
+            
+            // Evento para o botão próximo
+            nextButton.addEventListener('click', () => {
+                clearInterval(interval);
+                showSlide(currentSlide + 1);
+                startInterval();
+            });
+            
+            // Eventos para os indicadores
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', () => {
+                    clearInterval(interval);
+                    showSlide(index);
+                    startInterval();
+                });
+            });
+            
+            // Iniciar o intervalo automático
+            function startInterval() {
+                interval = setInterval(() => {
+                    showSlide(currentSlide + 1);
+                }, intervalTime);
+            }
+            
+            // Pausar o carrossel quando o mouse estiver sobre ele
+            const carousel = document.querySelector('.hero-carousel');
+            carousel.addEventListener('mouseenter', () => {
+                clearInterval(interval);
+            });
+            
+            carousel.addEventListener('mouseleave', () => {
+                startInterval();
+            });
+            
+            // Iniciar o carrossel
+            startInterval();
+        });
+    </script>
+    
+    <!-- Scripts originais -->
+    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

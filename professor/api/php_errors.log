@@ -1,0 +1,42 @@
+[29-Apr-2025 16:02:09 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:09 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:09 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:09 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:12 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:12 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:12 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:12 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:13 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:13 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:13 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:13 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:14 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:14 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:14 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:15 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:15 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:15 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:15 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:16 UTC] PHP Warning:  require(../env_config.php): Failed to open stream: No such file or directory in /var/www/html/luis/superacao/professor/api/config.php on line 11
+[29-Apr-2025 16:02:16 UTC] PHP Stack trace:
+[29-Apr-2025 16:02:16 UTC] PHP   1. {main}() /var/www/html/luis/superacao/professor/api/config.php:0
+[29-Apr-2025 16:02:16 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '../env_config.php' (include_path='.:/usr/share/php') in /var/www/html/luis/superacao/professor/api/config.php:11
+Stack trace:
+#0 {main}
+  thrown in /var/www/html/luis/superacao/professor/api/config.php on line 11

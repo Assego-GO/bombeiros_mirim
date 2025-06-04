@@ -1,0 +1,7 @@
+2025-04-16 17:30:52 - Iniciando edição
+2025-04-16 17:30:52 - JSON recebido: {"id":"10","nome_turma":"Sub 111","id_unidade":"7","id_professor":"3","capacidade":"25","status":"Em Andamento","dias_aula":"Não definido","horario_inicio":"08:00:00","horario_fim":"10:00:00"}
+2025-04-16 17:31:08 - Iniciando edição
+2025-04-16 17:31:08 - JSON recebido: {"id":"10","nome_turma":"Sub 111","id_unidade":"7","id_professor":"3","capacidade":"25","status":"Em Andamento","dias_aula":"Não definido","horario_inicio":"08:00:00","horario_fim":"10:00:00"}
+2025-04-16 17:31:23 - Iniciando edição
+2025-04-16 17:31:23 - JSON recebido: 
+2025-04-16 17:31:23 - ERRO: JSON inválido: Syntax error

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperAção - Confirmação de Matrícula</title>
+    <style>
+        :root {
+            --primary: #1a5276;
+            --secondary: #f39c12;
+            --accent: #2ecc71;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: url('https://www.escolinhafutebol.com.br/assets/bg-email.jpg') no-repeat top center/cover;
+            background-color: #ffffff;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+        
+        .header img {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .header p {
+            margin: 5px 0 0;
+            font-size: 16px;
+        }
+        
+        .content {
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 5px;
+            margin: 20px;
+        }
+        
+        .welcome {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .welcome h2 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+        
+        .info-box {
+            background-color: var(--light);
+            border-left: 4px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+        }
+        
+        .info-item {
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .info-value {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .instructions {
+            margin-bottom: 25px;
+        }
+        
+        .instructions h3 {
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .logo-container img {
+            height: 80px;
+            margin: 0 10px;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary);
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #777;
+            background-color: #f9f9f9;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+        
+        .footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100%;
+                border-radius: 0;
+            }
+            
+            .content {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .header img {
+                max-width: 100px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .welcome h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="logoSuper.png" alt="Logo SuperAção">
+            <h1>SuperAção</h1>
+            <p>Escolinha de Futebol</p>
+        </div>
+        
+        <div class="content">
+            <div class="welcome">
+                <h2>Matrícula Confirmada!</h2>
+                <p>Olá <strong>{NOME_DO_ALUNO}</strong>, bem-vindo(a) à família SuperAção!</p>
+            </div>
+            
+            <p>É com grande satisfação que confirmamos sua matrícula em nossa escolinha de futebol. Estamos muito felizes em tê-lo(a) conosco e ansiosos para desenvolver seu potencial esportivo e cidadão!</p>
+            
+            <div class="info-box">
+                <div class="info-item">
+                    <span class="info-label">Nome do Aluno:</span>
+                    <span class="info-value">{NOME_DO_ALUNO}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Número de Matrícula:</span>
+                    <span class="info-value">{NUMERO_MATRICULA}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Unidade:</span>
+                    <span class="info-value">{UNIDADE}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Turma:</span>
+                    <span class="info-value">{TURMA}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Data de Início:</span>
+                    <span class="info-value">{DATA_INICIO}</span>
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3>O que levar para o primeiro dia:</h3>
+                <ul>
+                    <li>Roupas leves e confortáveis para a prática esportiva</li>
+                    <li>Tênis ou chuteira adequada para grama ou quadra (conforme a unidade)</li>
+                    <li>Garrafa de água</li>
+                    <li>Protetor solar</li>
+                </ul>
+                
+                <h3>Contatos importantes:</h3>
+                <ul>
+                    <li>Coordenador da unidade: {NOME_COORDENADOR}</li>
+                    <li>Telefone da unidade: {TELEFONE_UNIDADE}</li>
+                    <li>Email: contato@superacao.org.br</li>
+                </ul>
+            </div>
+            
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo ASSEGO">
+            </div>
+            
+            <div class="btn-container">
+                <a href="http://172.16.253.44/luis/superacao/aluno/index.php" class="btn">Acessar Portal do Aluno</a>
+            </div>
+            
+            <p>Agradecemos pela confiança e pela oportunidade de participar do desenvolvimento do seu filho(a). Juntos, vamos superar limites!</p>
+            
+            <p>Atenciosamente,<br>
+            <strong>Equipe SuperAção</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Projeto SuperAção - Uma iniciativa das Polícias Militares e Corpo de Bombeiros de Goiás</p>
+            <p>Desenvolvido por <a href="https://www.assego.com.br/">ASSEGO</a></p>
+            <p>Este é um email automático, por favor não responda.</p>
+        </div>
+    </div>
+</body>
+</html>

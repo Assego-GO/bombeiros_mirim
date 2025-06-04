@@ -1,0 +1,9 @@
+[22-Apr-2025 18:31:11 UTC] PHP Fatal error:  Cannot redeclare limparDados() (previously declared in /var/www/html/luis/superacao/formulario/processar_matricula.php:9) in /var/www/html/luis/superacao/formulario/conexao.php on line 23
+[22-Apr-2025 18:31:11 UTC] PHP Stack trace:
+[22-Apr-2025 18:31:11 UTC] PHP   1. {main}() /var/www/html/luis/superacao/formulario/processar_matricula.php:0
+[22-Apr-2025 18:31:14 UTC] PHP Fatal error:  Cannot redeclare limparDados() (previously declared in /var/www/html/luis/superacao/formulario/processar_matricula.php:9) in /var/www/html/luis/superacao/formulario/conexao.php on line 23
+[22-Apr-2025 18:31:14 UTC] PHP Stack trace:
+[22-Apr-2025 18:31:14 UTC] PHP   1. {main}() /var/www/html/luis/superacao/formulario/processar_matricula.php:0
+[22-Apr-2025 18:34:13 UTC] PHP Fatal error:  Cannot redeclare limparDados() (previously declared in /var/www/html/luis/superacao/formulario/processar_matricula.php:9) in /var/www/html/luis/superacao/formulario/conexao.php on line 23
+[22-Apr-2025 18:34:13 UTC] PHP Stack trace:
+[22-Apr-2025 18:34:13 UTC] PHP   1. {main}() /var/www/html/luis/superacao/formulario/processar_matricula.php:0
