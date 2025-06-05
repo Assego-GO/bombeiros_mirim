@@ -75,7 +75,7 @@ document.head.insertAdjacentHTML('beforeend', `
         
         // Função para carregar unidades do banco de dados
         function carregarUnidades() {
-            fetch('/formulario/get_unidades.php')
+            fetch('get_unidades.php')
                 .then(response => {
                     if (!response.ok) throw new Error('Erro na resposta da rede');
                     return response.json();
@@ -112,7 +112,7 @@ document.head.insertAdjacentHTML('beforeend', `
                 return;
             }
             
-            fetch(`/formulario/get_turmas.php?unidade_id=${unidadeId}`)
+            fetch(`get_turmas.php?unidade_id=${unidadeId}`)
                 .then(response => {
                     if (!response.ok) throw new Error('Erro na resposta da rede');
                     return response.json();

@@ -458,7 +458,7 @@ function carregarDadosDinamicos() {
         if (containerUnidades) {
             containerUnidades.innerHTML = '';
 
-            fetch('/formulario/listar_unidades.php')
+            fetch('listar_unidades.php')
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Erro na resposta do servidor');
@@ -494,7 +494,7 @@ function carregarDadosDinamicos() {
         }
     };
 
-    fetch('/formulario/listar_turmas.php')
+    fetch('listar_turmas.php')
     .then(response => response.json())
     .then(turmas => {
         todasTurmas = turmas;
@@ -506,7 +506,7 @@ function carregarDadosDinamicos() {
         mensagemErro('Não foi possível carregar as turmas');
     });
 
-    fetch('/formulario/listar_unidades.php')
+    fetch('listar_unidades.php')
     .then(response => response.json())
     .then(unidades => {
         const selectUnidade = document.getElementById('unidade');
@@ -615,7 +615,7 @@ function configurarEnvioFormulario() {
             // Mostrar mensagem de carregamento
             const mensagemCarregando = mensagemInfo('Processando matrícula, aguarde...', 0);
             
-            fetch('/formulario/processar_matricula.php', {
+            fetch('processar_matricula.php', {
                 method: 'POST',
                 body: formData
             })
