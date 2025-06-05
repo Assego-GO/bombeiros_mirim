@@ -54,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $nomeAluno = limparDados($_POST['nome-aluno'] ?? '');
         $dataNascimento = limparDados($_POST['data-nascimento'] ?? '');
+        $genero = limparDados($_POST['genero'] ?? '');
+        $cadastro_unico = limparDados($_POST['cadastro_unico'] ?? '');
         $rgAluno = limparDados($_POST['rg-aluno'] ?? '');
         $cpfAluno = limparDados($_POST['cpf-aluno'] ?? '');
         $escola = limparDados($_POST['escola'] ?? '');
@@ -61,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $infoSaude = limparDados($_POST['info-saude'] ?? '');
         $telefoneEscola = limparDados($_POST['telefone-escola'] ?? '');
         $diretorEscola = limparDados($_POST['nome-diretor'] ?? '');
+
         
         $nomeResponsavel = limparDados($_POST['nome-responsavel'] ?? '');
         $parentesco = limparDados($_POST['parentesco'] ?? '');
@@ -84,6 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'turma' => $turma,
             'nomeAluno' => $nomeAluno,
             'dataNascimento' => $dataNascimento,
+            'genero' => $genero,
+            'cadastro_unico' => $cadastro_unico,
             'nomeResponsavel' => $nomeResponsavel,
             'email' => $email,
             'consentimento' => $consentimento
@@ -97,13 +102,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($turma)) $camposVazios[] = 'turma';
         if (empty($nomeAluno)) $camposVazios[] = 'nome-aluno';
         if (empty($dataNascimento)) $camposVazios[] = 'data-nascimento';
+        if (empty($genero)) $camposVazios[] = 'genero';
+        if (empty($cadastro_unico)) $camposVazios[] = 'cadastro_unico';
+        if (empty($escola)) $camposVazios[] = 'escola';
+        if (empty($serie)) $camposVazios[] = 'serie';
+        if (empty($telefoneEscola)) $camposVazios[] = 'telefone-escola';
+        if (empty($diretorEscola)) $camposVazios[] = 'nome-diretor';
         if (empty($nomeResponsavel)) $camposVazios[] = 'nome-responsavel';
+        if (empty($parentesco)) $camposVazios[] = 'parentesco';
         if (empty($rgResponsavel)) $camposVazios[] = 'rg-responsavel';
         if (empty($cpfResponsavel)) $camposVazios[] = 'cpf-responsavel';
         if (empty($telefone)) $camposVazios[] = 'telefone';
         if (empty($email)) $camposVazios[] = 'email';
         if (empty($cep)) $camposVazios[] = 'cep';
         if (empty($endereco)) $camposVazios[] = 'endereco';
+        if (empty($numero)) $camposVazios[] = 'numero';
         if (empty($bairro)) $camposVazios[] = 'bairro';
         if (empty($cidade)) $camposVazios[] = 'cidade';
         if ($consentimento !== 1) $camposVazios[] = 'consent';
@@ -111,6 +124,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($camposVazios)) {
             $resposta['debug']['empty_fields'] = $camposVazios;
             throw new Exception('Preencha todos os campos obrigatórios: ' . implode(', ', $camposVazios));
+        }
+        
+        // Validações específicas para os novos campos
+        if (!in_array($genero, ['feminino', 'masculino'])) {
+            throw new Exception('Gênero deve ser "feminino" ou "masculino"');
+        }
+
+        if (!in_array($cadastro_unico, ['sim', 'nao'])) {
+            throw new Exception('Campo "Cadastro Único" deve ser "sim" ou "nao"');
+        }
+
+        if (!in_array($parentesco, ['pai', 'mae', 'avó', 'avô', 'tio', 'tia', 'outro'])) {
+            throw new Exception('Campo "Parentesco" deve ter um valor válido');
         }
         
         // Processa o upload da foto
@@ -132,12 +158,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $tamanho_arquivo = $_FILES['foto-aluno']['size'];
             $tipo_arquivo = $_FILES['foto-aluno']['type'];
             
+            // Verifica o tamanho do arquivo (5MB = 5 * 1024 * 1024 bytes)
+            if ($tamanho_arquivo > 5 * 1024 * 1024) {
+                throw new Exception("O arquivo é muito grande. Tamanho máximo permitido: 5MB");
+            }
+            
             // Gera um nome único para o arquivo 
-            $nome_unico = uniqid() . '_' . $nome_arquivo;
+            $extensao = pathinfo($nome_arquivo, PATHINFO_EXTENSION);
+            $nome_unico = uniqid() . '_' . date('YmdHis') . '.' . $extensao;
             $caminho_completo = $diretorio_destino . $nome_unico;
             
             // Verifica o tipo de arquivo
-            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif'];
+            $tipos_permitidos = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
             if (in_array($tipo_arquivo, $tipos_permitidos)) {
                 // Move o arquivo do diretório temporário para o destino final
                 if (move_uploaded_file($arquivo_temporario, $caminho_completo)) {
@@ -164,18 +196,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $conexao->beginTransaction();
         
-        // Modifique a consulta SQL para incluir o caminho da foto:
-            $sqlAluno = "INSERT INTO alunos (
-                nome, data_nascimento, rg, cpf, escola, serie, info_saude, 
-                numero_matricula, data_matricula, foto, telefone_escola, diretor_escola
-            ) VALUES (
-                :nome, :data_nascimento, :rg, :cpf, :escola, :serie, :info_saude, 
-                :numero_matricula, :data_matricula, :foto, :telefone_escola, :diretor_escola
-            )";
+        // Consulta SQL corrigida para incluir todos os campos
+        $sqlAluno = "INSERT INTO alunos (
+            nome, data_nascimento, genero, cadastro_unico, rg, cpf, escola, serie, info_saude, 
+            numero_matricula, data_matricula, foto, telefone_escola, diretor_escola
+        ) VALUES (
+            :nome, :data_nascimento, :genero, :cadastro_unico, :rg, :cpf, :escola, :serie, :info_saude, 
+            :numero_matricula, :data_matricula, :foto, :telefone_escola, :diretor_escola
+        )";
         
         $stmtAluno = $conexao->prepare($sqlAluno);
         $stmtAluno->bindParam(':nome', $nomeAluno);
         $stmtAluno->bindParam(':data_nascimento', $dataNascimento);
+        $stmtAluno->bindParam(':genero', $genero);
+        $stmtAluno->bindParam(':cadastro_unico', $cadastro_unico);
         $stmtAluno->bindParam(':rg', $rgAluno);
         $stmtAluno->bindParam(':cpf', $cpfAluno);
         $stmtAluno->bindParam(':escola', $escola);

@@ -563,14 +563,16 @@ function configurarEnvioFormulario() {
             
             formData.append('nome-aluno', document.getElementById('nome-aluno').value);
             formData.append('data-nascimento', document.getElementById('data-nascimento').value);
+            formData.append('genero', document.getElementById('genero').value);
+            formData.append('cadastro_unico', document.getElementById('cadastro_unico').value);
             formData.append('rg-aluno', document.getElementById('rg-aluno').value);
             formData.append('cpf-aluno', document.getElementById('cpf-aluno').value);
             formData.append('escola', document.getElementById('escola').value);
             formData.append('serie', document.getElementById('serie').value);
             formData.append('info-saude', document.getElementById('info-saude').value);
-            formData.append('reside', document.getElementById('reside').value);
             formData.append('telefone-escola', document.getElementById('telefone-escola').value);
             formData.append('nome-diretor', document.getElementById('nome-diretor').value);
+            
             const inputFoto = document.getElementById('foto-aluno');
             if (inputFoto && inputFoto.files.length > 0) {
                 formData.append('foto-aluno', inputFoto.files[0]);
@@ -642,7 +644,7 @@ function configurarEnvioFormulario() {
                     }
                 } else {
                     
-                    mensagemErro('Erro ao processar matrícula: ', data);
+                    mensagemErro('Erro ao processar matrícula: ' + data.message);
                 }
             })
             .catch(error => {
