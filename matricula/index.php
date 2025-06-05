@@ -37,13 +37,13 @@ if (isset($_SESSION['usuario_id'])) {
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
         :root {
-            --primary: #e74c3c;
+            --primary:rgb(183, 38, 22);
             --secondary: #f39c12;
             --accent: #e8d424;
-            --tertiary: #c0392b;
+            --tertiary:rgb(170, 43, 28);
             --dark: #2c3e50;
             --blue-accent: #1a5276;
-            --gradient-bg: linear-gradient(135deg, #e74c3c 0%, #c0392b 30%, #f39c12 70%, #e8d424 100%);
+            --gradient-bg: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             --card-bg: rgba(255, 255, 255, 0.95);
             --input-bg: rgba(255, 255, 255, 0.9);
             --shadow-color: rgba(231, 76, 60, 0.3);
@@ -92,7 +92,7 @@ if (isset($_SESSION['usuario_id'])) {
             height: 350px;
             top: -150px;
             right: -100px;
-            background: linear-gradient(45deg, var(--primary), var(--tertiary));
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
             animation-delay: 0s;
         }
         
@@ -110,7 +110,7 @@ if (isset($_SESSION['usuario_id'])) {
             height: 150px;
             bottom: 30%;
             right: 10%;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
             animation-delay: 6s;
         }
         
@@ -119,7 +119,7 @@ if (isset($_SESSION['usuario_id'])) {
             height: 100px;
             top: 20%;
             left: 10%;
-            background: linear-gradient(45deg, var(--blue-accent), var(--dark));
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
             animation-delay: 9s;
         }
         
@@ -128,7 +128,7 @@ if (isset($_SESSION['usuario_id'])) {
             height: 80px;
             top: 60%;
             left: 80%;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
+            background: linear-gradient(45deg, var(--accent), var(--secondary));
             animation-delay: 12s;
         }
         
@@ -174,7 +174,7 @@ if (isset($_SESSION['usuario_id'])) {
             bottom: 0;
             border-radius: 25px;
             padding: 2px;
-            background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+            background: linear-gradient(45deg, var(--secondary), var(--accent), var(--secondary));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: exclude;
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -209,20 +209,20 @@ if (isset($_SESSION['usuario_id'])) {
             height: auto;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 8px 20px rgba(231, 76, 60, 0.4));
+            filter: drop-shadow(0 8px 20px rgba(243, 156, 18, 0.4));
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .logo-img:hover {
             transform: scale(1.1) rotate(5deg);
-            filter: drop-shadow(0 12px 30px rgba(231, 76, 60, 0.6));
+            filter: drop-shadow(0 12px 30px rgba(243, 156, 18, 0.6));
         }
         
         .logo-glow {
             position: absolute;
             width: 140px;
             height: 140px;
-            background: radial-gradient(circle, var(--red-glow) 0%, transparent 70%);
+            background: radial-gradient(circle, var(--yellow-glow) 0%, transparent 70%);
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -236,7 +236,7 @@ if (isset($_SESSION['usuario_id'])) {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle, var(--yellow-glow) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(232, 212, 36, 0.3) 0%, transparent 70%);
             border-radius: 50%;
             animation: logoGlow 3s infinite reverse;
         }
@@ -255,7 +255,7 @@ if (isset($_SESSION['usuario_id'])) {
         .app-title {
             font-size: 3rem;
             font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--tertiary), var(--secondary));
+            background: linear-gradient(45deg, var(--secondary), var(--accent), var(--secondary));
             background-size: 200% 200%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -295,7 +295,7 @@ if (isset($_SESSION['usuario_id'])) {
         .form-control {
             width: 100%;
             background: var(--input-bg);
-            border: 2px solid rgba(231, 76, 60, 0.2);
+            border: 2px solid rgba(243, 156, 18, 0.3);
             border-radius: 15px;
             padding: 18px 20px 18px 60px;
             font-size: 15px;
@@ -303,7 +303,7 @@ if (isset($_SESSION['usuario_id'])) {
             color: var(--text-primary);
             backdrop-filter: blur(10px);
             box-shadow: 
-                0 5px 15px rgba(231, 76, 60, 0.1),
+                0 5px 15px rgba(243, 156, 18, 0.1),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
             font-weight: 500;
         }
@@ -318,7 +318,7 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .form-control::placeholder {
-            color: rgba(231, 76, 60, 0.5);
+            color: rgba(243, 156, 18, 0.6);
             font-weight: 400;
         }
         
@@ -336,19 +336,19 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .form-group i {
-            color: var(--primary);
+            color: var(--secondary);
             font-size: 18px;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
         .form-control:focus + .icon-wrapper i {
-            color: var(--secondary);
+            color: var(--accent);
             transform: scale(1.2) rotate(10deg);
         }
         
         .btn-login {
             width: 100%;
-            background: linear-gradient(45deg, var(--primary), var(--tertiary));
+            background: linear-gradient(45deg, var(--secondary), var(--accent));
             color: white;
             border: none;
             border-radius: 15px;
@@ -361,11 +361,12 @@ if (isset($_SESSION['usuario_id'])) {
             position: relative;
             overflow: hidden;
             box-shadow: 
-                0 10px 30px rgba(231, 76, 60, 0.3),
-                0 5px 15px rgba(192, 57, 43, 0.2);
+                0 10px 30px rgba(243, 156, 18, 0.3),
+                0 5px 15px rgba(232, 212, 36, 0.2);
             letter-spacing: 0.5px;
             text-transform: uppercase;
             font-size: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .btn-login::before {
@@ -375,7 +376,7 @@ if (isset($_SESSION['usuario_id'])) {
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, var(--secondary), var(--accent));
+            background: linear-gradient(45deg, #f1c40f, var(--accent));
             opacity: 0;
             transition: opacity 0.4s;
             z-index: 1;
@@ -403,8 +404,8 @@ if (isset($_SESSION['usuario_id'])) {
         .btn-login:hover {
             transform: translateY(-4px);
             box-shadow: 
-                0 15px 40px rgba(231, 76, 60, 0.4),
-                0 8px 25px rgba(243, 156, 18, 0.3);
+                0 15px 40px rgba(243, 156, 18, 0.4),
+                0 8px 25px rgba(232, 212, 36, 0.3);
         }
         
         .btn-login:hover::before {
@@ -421,8 +422,8 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .error-message {
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(211, 84, 0, 0.05));
-            color: var(--secondary);
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.05));
+            color: var(--primary);
             padding: 18px 20px;
             border-radius: 12px;
             margin-bottom: 25px;
@@ -474,7 +475,7 @@ if (isset($_SESSION['usuario_id'])) {
             transform: translateX(-50%);
             width: 80px;
             height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary), var(--secondary), transparent);
+            background: linear-gradient(90deg, transparent, var(--secondary), var(--accent), transparent);
             border-radius: 2px;
         }
         
@@ -536,7 +537,7 @@ if (isset($_SESSION['usuario_id'])) {
                 <div class="logo-glow"></div>
                 <img src="./img/logo.png" alt="Logo SuperAção" class="logo-img">
             </div>
-            <h1 class="app-title">Bombeiros Mirim</h1>
+            <h1 class="app-title">Bombeiro Mirim</h1>
             <p class="app-subtitle">Entre para acessar sua conta</p>
         </div>
         
@@ -568,7 +569,7 @@ if (isset($_SESSION['usuario_id'])) {
         </form>
         
         <div class="login-footer">
-            &copy; <?= date('Y') ?> Bombeiros Mirim - Todos os direitos reservados
+            &copy; <?= date('Y') ?> Bombeiro Mirim - Todos os direitos reservados
         </div>
     </div>
 </body>
