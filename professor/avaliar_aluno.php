@@ -19,7 +19,7 @@ $aluno_id = $_GET['aluno_id'];
 $turma_id = $_GET['turma_id'];
 $professor_id = $_SESSION['usuario_id'];
 
-// Conexão direta com o banco
+// Conexão com o db
 require "../env_config.php";
 
 $db_host =  $_ENV['DB_HOST'];
