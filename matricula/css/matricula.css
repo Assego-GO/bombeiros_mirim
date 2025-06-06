@@ -55,7 +55,7 @@ body {
 }
 
 header {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background: #E30613;
     color: var(--white);
     padding: 1rem;
     box-shadow: 0 4px 20px rgba(7, 28, 53, 0.15);
@@ -746,7 +746,7 @@ input[type="checkbox"] {
 
 /* Footer moderno */
 .main-footer {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background:#E30613;
     color: var(--white);
     padding: 25px 0;
     margin-top: 60px;
