@@ -509,7 +509,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
       </div>
     </div>
   </footer>
-  
+    
   <!-- Loading overlay -->
   <div id="loading-overlay" class="loading-overlay" style="display: none;">
     <div class="spinner-container">

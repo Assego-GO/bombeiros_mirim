@@ -14,7 +14,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SuperAção - Módulo de Matrículas</title>
+  <title>Bombeiro Mirim - Módulo de Matrículas</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/matricula.css"/>
   <style>
@@ -60,9 +60,9 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <header>
     <div class="header-content">
       <div class="logo">
-      <img src="./img/logo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
+      <img src="./img/bombeirogo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
         <div>
-          <h1>SuperAção</h1>
+          <h1>Bombeiro Mirim</h1>
           <small>Painel Administrativo</small>
         </div>
       </div>
@@ -420,10 +420,10 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <i class="fas fa-graduation-cap"></i> SuperAção
+          <i class="fas fa-graduation-cap"></i> Bombeiro Mirim
         </div>
         <div class="footer-info">
-          <p>&copy; 2025 SuperAção - Todos os direitos reservados</p>
+          <p>&copy; 2025 Bombeiro Mirim - Todos os direitos reservados</p>
           <p>Painel de Gerenciamento de Matrículas</p>
         </div>
       </div>

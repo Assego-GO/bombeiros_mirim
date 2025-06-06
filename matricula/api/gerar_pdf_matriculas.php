@@ -257,7 +257,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatório de Matrículas - SuperAção</title>
+    <title>Relatório de Matrículas - Bombeiro Mirim</title>
     <style>
         body {
             font-family: Arial, Helvetica, sans-serif;
@@ -278,7 +278,7 @@ try {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #0078d7;
+            border-bottom: 2px solid #E30613;
             padding-bottom: 20px;
         }
         .logo {
@@ -290,7 +290,7 @@ try {
         }
         .header-text h1 {
             margin: 0;
-            color: #0078d7;
+            color: #E30613;
             font-size: 24px;
         }
         .header-text h2 {
@@ -310,7 +310,7 @@ try {
         .report-title {
             font-size: 22px;
             margin: 20px 0;
-            color: #0078d7;
+            color: #E30613;
             text-align: center;
         }
         .summary {
@@ -318,10 +318,11 @@ try {
             padding: 15px;
             margin-bottom: 20px;
             border-radius: 5px;
+            border-left: 4px solid #E30613;
         }
         .summary h3 {
             margin-top: 0;
-            color: #0078d7;
+            color: #E30613;
         }
         .filters-list {
             margin-bottom: 10px;
@@ -331,7 +332,7 @@ try {
         }
         .filter-label {
             font-weight: bold;
-            color: #555;
+            color: #E30613;
         }
         .table-container {
             margin: 20px 0;
@@ -343,7 +344,7 @@ try {
             margin-bottom: 20px;
         }
         th {
-            background-color: #0078d7;
+            background-color: #E30613;
             color: white;
             padding: 10px;
             text-align: left;
@@ -378,10 +379,11 @@ try {
             padding: 15px;
             background-color: #f9f9f9;
             border-radius: 5px;
+            border-left: 4px solid #E30613;
         }
         .legend h3 {
             margin-top: 0;
-            color: #0078d7;
+            color: #E30613;
         }
         .legend-item {
             display: flex;
@@ -421,16 +423,33 @@ try {
             margin: 20px 0;
         }
         .print-button button {
-            background-color: #0078d7;
+            background: linear-gradient(135deg, #E30613, #FF2D3A);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 16px;
             cursor: pointer;
-            border-radius: 4px;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.2);
+            transition: all 0.3s ease;
         }
         .print-button button:hover {
-            background-color: #005a9e;
+            background: linear-gradient(135deg, #B8050F, #E30613);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(227, 6, 19, 0.3);
+        }
+        .bombeiro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #E30613, #FF2D3A);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 10px;
         }
         @media print {
             body {
@@ -464,7 +483,7 @@ try {
     <div class="container">
         <div class="header">
             <div class="header-text">
-                <h1>SuperAção</h1>
+                <h1>Bombeiro Mirim <span class="bombeiro-badge">🚒 Oficial</span></h1>
                 <h2>Relatório de Matrículas</h2>
             </div>
             <div class="meta-info">
@@ -560,12 +579,12 @@ try {
         </div>
 
         <div class="print-button">
-            <button onclick="window.print()">Imprimir Relatório</button>
+            <button onclick="window.print()">🖨️ Imprimir Relatório</button>
         </div>
 
         <div class="footer">
-            <p>SuperAção - Todos os direitos reservados © <?php echo date('Y'); ?></p>
-            <p>Este relatório contém informações confidenciais para uso interno da instituição SuperAção. Não compartilhe sem autorização.</p>
+            <p>Bombeiro Mirim - Todos os direitos reservados © <?php echo date('Y'); ?></p>
+            <p>Este relatório contém informações confidenciais para uso interno da instituição. Não compartilhe sem autorização.</p>
         </div>
     </div>
 
@@ -594,15 +613,16 @@ try {
         <style>
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; color: #333; }
             .error-container { max-width: 800px; margin: 40px auto; padding: 20px; border: 1px solid #e3e3e3; border-radius: 5px; background-color: #f9f9f9; }
-            h1 { color: #d9534f; }
-            .back-btn { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #337ab7; color: white; text-decoration: none; border-radius: 4px; }
+            h1 { color: #E30613; }
+            .back-btn { display: inline-block; margin-top: 20px; padding: 10px 15px; background: linear-gradient(135deg, #E30613, #FF2D3A); color: white; text-decoration: none; border-radius: 4px; font-weight: 600; }
+            .back-btn:hover { background: linear-gradient(135deg, #B8050F, #E30613); }
             .error-details { margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px; }
             .error-message { background-color: #f2dede; border: 1px solid #ebccd1; color: #a94442; padding: 15px; border-radius: 4px; }
         </style>
     </head>
     <body>
         <div class="error-container">
-            <h1>Erro na Geração do Relatório</h1>
+            <h1>🚒 Erro na Geração do Relatório</h1>
             <p>Ocorreu um erro ao tentar gerar o relatório de matrículas. Por favor, tente novamente ou entre em contato com o suporte.</p>
             
             <a href="../matricula.php" class="back-btn">Voltar para a página de matrículas</a>

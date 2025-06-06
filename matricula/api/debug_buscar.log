@@ -4533,3 +4533,17 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
+2025-06-06 12:53:02 - Buscando aluno ID: 138
+2025-06-06 12:53:02 - Dados encontrados: Array
+(
+    [aluno_id] => 138
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 110
+    [data_matricula] => 2025-06-05 17:28:32
+    [status] => pendente
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
