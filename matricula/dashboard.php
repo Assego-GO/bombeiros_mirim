@@ -217,7 +217,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dashboard Administrativo - Sistema Superação</title>
+    <title>Dashboard Administrativo - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -227,9 +227,10 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
         :root {
-          --primary: #0a2647;
-          --primary-light: #144272;
-          --primary-dark: #071c35;
+          /* Cores dos Bombeiros */
+          --primary: #E30613;
+          --primary-light: #FF2D3A;
+          --primary-dark: #B8050F;
           --secondary: #ffc233;
           --secondary-light: #ffd566;
           --secondary-dark: #e9b424;
@@ -245,22 +246,23 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           --gray-light: #d6dff0;
           --gray-dark: #4b5e88;
           --white: #ffffff;
-          --box-shadow: 0 5px 15px rgba(10, 38, 71, 0.07);
-          --box-shadow-hover: 0 8px 25px rgba(10, 38, 71, 0.12);
-          --box-shadow-card: 0 10px 30px rgba(10, 38, 71, 0.05);
+          --box-shadow: 0 5px 15px rgba(227, 6, 19, 0.07);
+          --box-shadow-hover: 0 8px 25px rgba(227, 6, 19, 0.12);
+          --box-shadow-card: 0 10px 30px rgba(227, 6, 19, 0.05);
           --border-radius: 10px;
           --border-radius-lg: 12px;
           --border-radius-xl: 16px;
           --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           
-          --section-navy: #0a2647;
-          --section-navy-dark: #071c35;
-          --section-blue: #144272;
-          --section-blue-dark: #0a2647;
+          /* Seções com cores dos bombeiros */
+          --section-red: #E30613;
+          --section-red-dark: #B8050F;
+          --section-fire: #FF2D3A;
+          --section-fire-dark: #E30613;
           --section-amber: #ffc233;
           --section-amber-dark: #e9b424;
-          --section-slate: #4b5e88;
-          --section-slate-dark: #1a2b4b;
+          --section-orange: #FF7A00;
+          --section-orange-dark: #CC6200;
         }
 
         * {
@@ -275,8 +277,8 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           color: var(--dark);
           line-height: 1.6;
           letter-spacing: 0.01em;
-          background-image: radial-gradient(circle at 10% 20%, rgba(20, 66, 114, 0.4) 0%, rgba(20, 66, 114, 0.4) 50.3%, transparent 50.3%, transparent 100%),
-            radial-gradient(circle at 85% 85%, rgba(20, 66, 114, 0.4) 0%, rgba(20, 66, 114, 0.4) 50.9%, transparent 50.9%, transparent 100%);
+          background-image: radial-gradient(circle at 10% 20%, rgba(227, 6, 19, 0.4) 0%, rgba(227, 6, 19, 0.4) 50.3%, transparent 50.3%, transparent 100%),
+            radial-gradient(circle at 85% 85%, rgba(255, 45, 58, 0.4) 0%, rgba(255, 45, 58, 0.4) 50.9%, transparent 50.9%, transparent 100%);
           background-attachment: fixed;
           font-size: 16px;
           min-height: 100vh;
@@ -290,6 +292,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           position: sticky;
           top: 0;
           z-index: 1000;
+          border-bottom: 3px solid var(--secondary);
         }
 
         .header-container {
@@ -305,6 +308,26 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           font-size: 1.5rem;
           font-weight: 700;
           letter-spacing: 0.015em;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .app-title i {
+          color: var(--secondary);
+          text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .bombeiro-badge {
+          background: linear-gradient(45deg, var(--secondary), var(--secondary-light));
+          color: var(--primary-dark);
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-size: 0.7rem;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          margin-left: 8px;
         }
 
         .user-info {
@@ -329,7 +352,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           align-items: center;
           margin-bottom: 1.5rem;
           padding-bottom: 1rem;
-          border-bottom: 1px solid var(--gray-light);
+          border-bottom: 2px solid var(--secondary);
           flex-wrap: wrap;
           gap: 1rem;
         }
@@ -339,6 +362,13 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           font-weight: 700;
           font-size: 1.8rem;
           letter-spacing: -0.01em;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .page-title i {
+          color: var(--secondary);
         }
 
         .btn {
@@ -358,25 +388,27 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .btn-primary {
-          background-color: var(--primary);
+          background: linear-gradient(135deg, var(--primary), var(--primary-light));
           color: var(--white);
+          box-shadow: 0 4px 15px rgba(227, 6, 19, 0.2);
         }
 
         .btn-primary:hover {
-          background-color: var(--primary-light);
+          background: linear-gradient(135deg, var(--primary-light), var(--primary));
           transform: translateY(-2px);
-          box-shadow: var(--box-shadow-hover);
+          box-shadow: 0 6px 20px rgba(227, 6, 19, 0.3);
         }
 
         .btn-light {
-          background-color: var(--secondary);
+          background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
           color: var(--primary-dark);
+          box-shadow: 0 4px 15px rgba(255, 194, 51, 0.2);
         }
 
         .btn-light:hover {
-          background-color: var(--secondary-light);
+          background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
           transform: translateY(-2px);
-          box-shadow: var(--box-shadow-hover);
+          box-shadow: 0 6px 20px rgba(255, 194, 51, 0.3);
         }
 
         .card {
@@ -420,24 +452,24 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           letter-spacing: 0.02em;
         }
 
-        .section-navy {
-          background-color: var(--section-navy);
+        .section-red {
+          background: linear-gradient(135deg, var(--section-red), var(--section-red-dark));
         }
 
-        .section-navy .section-icon {
-          background-color: var(--section-navy-dark);
+        .section-red .section-icon {
+          background-color: var(--section-red-dark);
         }
 
-        .section-blue {
-          background-color: var(--section-blue);
+        .section-fire {
+          background: linear-gradient(135deg, var(--section-fire), var(--section-fire-dark));
         }
 
-        .section-blue .section-icon {
-          background-color: var(--section-blue-dark);
+        .section-fire .section-icon {
+          background-color: var(--section-fire-dark);
         }
 
         .section-amber {
-          background-color: var(--section-amber);
+          background: linear-gradient(135deg, var(--section-amber), var(--section-amber-dark));
         }
 
         .section-amber .section-icon {
@@ -448,12 +480,12 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           color: var(--primary-dark);
         }
 
-        .section-slate {
-          background-color: var(--section-slate);
+        .section-orange {
+          background: linear-gradient(135deg, var(--section-orange), var(--section-orange-dark));
         }
 
-        .section-slate .section-icon {
-          background-color: var(--section-slate-dark);
+        .section-orange .section-icon {
+          background-color: var(--section-orange-dark);
         }
 
         .card-body {
@@ -575,7 +607,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .text-info {
-          color: #36b9cc !important;
+          color: var(--section-orange) !important;
         }
 
         .text-uppercase {
@@ -620,7 +652,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .bg-primary-light {
-          background-color: rgba(10, 38, 71, 0.1) !important;
+          background: linear-gradient(135deg, rgba(227, 6, 19, 0.1), rgba(255, 45, 58, 0.1)) !important;
         }
 
         .bg-success-light {
@@ -628,11 +660,11 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .bg-info-light {
-          background-color: rgba(54, 185, 204, 0.1) !important;
+          background: linear-gradient(135deg, rgba(255, 122, 0, 0.1), rgba(204, 98, 0, 0.1)) !important;
         }
 
         .bg-warning-light {
-          background-color: rgba(255, 194, 51, 0.1) !important;
+          background: linear-gradient(135deg, rgba(255, 194, 51, 0.1), rgba(233, 180, 36, 0.1)) !important;
         }
 
         .col-auto {
@@ -684,12 +716,12 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
           color: #fff;
           text-align: center;
           white-space: nowrap;
-          background-color: var(--primary);
+          background: linear-gradient(90deg, var(--primary), var(--primary-light));
           transition: width 0.6s ease;
         }
 
         .progress-bar.bg-success {
-          background-color: var(--accent) !important;
+          background: linear-gradient(90deg, var(--accent), var(--accent-light)) !important;
         }
 
         .mt-3 {
@@ -711,12 +743,12 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .table th {
-          background-color: #edf2f7;
-          color: var(--primary-dark);
+          background: linear-gradient(135deg, var(--primary), var(--primary-light));
+          color: var(--white);
           font-weight: 600;
           padding: 0.85rem 1rem;
           text-align: left;
-          border-bottom: 2px solid #cbd5e0;
+          border-bottom: 2px solid var(--primary-dark);
           text-transform: uppercase;
           letter-spacing: 0.03em;
           font-size: 0.8rem;
@@ -729,7 +761,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .table tbody tr:hover {
-          background-color: #f8f9fa;
+          background: linear-gradient(90deg, rgba(227, 6, 19, 0.05), rgba(255, 45, 58, 0.05));
         }
         
         .badge {
@@ -874,7 +906,9 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <header class="main-header">
         <div class="header-container">
             <div class="app-title">
-                <i class="fas fa-graduation-cap me-1"></i> Superação
+                <i class="fas fa-fire-extinguisher"></i> 
+                Bombeiro Mirim
+                <span class="bombeiro-badge">🚒 Sistema</span>
             </div>
             <div class="user-info">
                 <span class="user-name"><?php echo $usuario_nome; ?></span>
@@ -885,7 +919,10 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="container">
         <div class="page-header">
-            <h1 class="page-title">Dados das matriculas</h1>
+            <h1 class="page-title">
+                <i class="fas fa-chart-bar"></i>
+                Dados das Matrículas
+            </h1>
             <div>
                 <a href="painel.php" class="btn btn-light">
                     <i class="fas fa-home"></i>
@@ -1065,7 +1102,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Monthly Enrollments Chart -->
             <div class="col-xl-8 col-lg-7">
                 <div class="card shadow mb-4">
-                    <div class="section-header section-blue">
+                    <div class="section-header section-fire">
                         <div class="section-icon">
                             <i class="fas fa-chart-line"></i>
                         </div>
@@ -1102,7 +1139,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Capacity Utilization -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow mb-4">
-                    <div class="section-header section-navy">
+                    <div class="section-header section-red">
                         <div class="section-icon">
                             <i class="fas fa-percentage"></i>
                         </div>
@@ -1111,7 +1148,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="card-body">
                         <h4 class="small font-weight-bold">Ocupação Geral <span class="float-end"><?= $taxaOcupacao ?>%</span></h4>
                         <div class="progress mb-4">
-                            <div class="progress-bar bg-primary" role="progressbar" style="width: <?= $taxaOcupacao ?>%"
+                            <div class="progress-bar" role="progressbar" style="width: <?= $taxaOcupacao ?>%"
                                 aria-valuenow="<?= $taxaOcupacao ?>" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         
@@ -1136,7 +1173,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Attendance Rate -->
             <div class="col-lg-6 mb-4">
                 <div class="card shadow mb-4">
-                    <div class="section-header section-blue">
+                    <div class="section-header section-fire">
                         <div class="section-icon">
                             <i class="fas fa-calendar-check"></i>
                         </div>
@@ -1172,7 +1209,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="row">
             <div class="col-12">
                 <div class="card shadow mb-4">
-                    <div class="section-header section-slate">
+                    <div class="section-header section-orange">
                         <div class="section-icon">
                             <i class="fas fa-award"></i>
                         </div>
@@ -1230,7 +1267,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <!-- Units with Classes -->
             <div class="col-xl-8 col-lg-7">
                 <div class="card shadow mb-4">
-                    <div class="section-header section-navy">
+                    <div class="section-header section-red">
                         <div class="section-icon">
                             <i class="fas fa-building"></i>
                         </div>
@@ -1279,7 +1316,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
     
     <script>
-        // Monthly Enrollments Chart - Usando dados reais com tratamento adequado
+        // Monthly Enrollments Chart - Cores dos bombeiros
         const matriculasChart = document.getElementById('matriculasChart');
         
         // Obter dados reais
@@ -1304,7 +1341,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             notaInfo.style.borderLeft = '3px solid rgba(255, 194, 51, 1)';
             notaInfo.style.borderRadius = '4px';
             notaInfo.style.fontSize = '13px';
-            notaInfo.style.color = '#071c35';
+            notaInfo.style.color = '#B8050F';
             notaInfo.innerHTML = '<i class="fas fa-info-circle"></i> <strong>Nota:</strong> O gráfico mostra dados apenas do mês atual. A evolução das matrículas será exibida automaticamente conforme novos dados forem registrados nos próximos meses.';
             
             // Inserir nota após a div do gráfico
@@ -1319,9 +1356,9 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     {
                         label: 'Matrículas Mensais',
                         data: dadosReais,
-                        borderColor: "rgba(255, 194, 51, 1)",
+                        borderColor: "#ffc233",
                         backgroundColor: "rgba(255, 194, 51, 0.2)",
-                        pointBackgroundColor: "rgba(255, 194, 51, 1)", 
+                        pointBackgroundColor: "#ffc233", 
                         pointBorderColor: "#fff",
                         pointBorderWidth: 2,
                         pointRadius: 5,
@@ -1334,9 +1371,9 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     {
                         label: 'Total Acumulado',
                         data: dadosCumulativos,
-                        borderColor: "rgba(10, 38, 71, 1)",
-                        backgroundColor: "rgba(10, 38, 71, 0.05)",
-                        pointBackgroundColor: "rgba(10, 38, 71, 1)",
+                        borderColor: "#E30613",
+                        backgroundColor: "rgba(227, 6, 19, 0.05)",
+                        pointBackgroundColor: "#E30613",
                         pointBorderColor: "#fff",
                         pointBorderWidth: 2,
                         pointRadius: 5,
@@ -1404,7 +1441,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(10, 38, 71, 0.85)',
+                        backgroundColor: 'rgba(227, 6, 19, 0.85)',
                         titleFont: {
                             family: 'Poppins',
                             size: 14,
@@ -1433,7 +1470,7 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         });
         
-        // Age Distribution Chart
+        // Age Distribution Chart - Cores dos bombeiros
         const ageChart = document.getElementById('ageChart');
         new Chart(ageChart, {
             type: 'doughnut',
@@ -1442,16 +1479,16 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 datasets: [{
                     data: <?= json_encode($faixasData) ?>,
                     backgroundColor: [
-                        '#0a2647',
-                        '#144272',
+                        '#E30613',
+                        '#FF2D3A', 
                         '#ffc233',
-                        '#34c759'
+                        '#FF7A00'
                     ],
                     hoverBackgroundColor: [
-                        '#071c35',
-                        '#0a2647',
+                        '#B8050F',
+                        '#E30613',
                         '#e9b424',
-                        '#26a344'
+                        '#CC6200'
                     ],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
                 }]
@@ -1461,13 +1498,20 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 cutout: '60%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Poppins',
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
                     }
                 }
             }
         });
         
-        // Class Status Chart
+        // Class Status Chart - Cores dos bombeiros
         const classStatusChart = document.getElementById('classStatusChart');
         new Chart(classStatusChart, {
             type: 'doughnut',
@@ -1482,14 +1526,14 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     ],
                     backgroundColor: [
                         '#34c759',
-                        '#144272',
-                        '#0a2647',
+                        '#FF2D3A',
+                        '#E30613',
                         '#f64e60'
                     ],
                     hoverBackgroundColor: [
                         '#26a344',
-                        '#0a2647',
-                        '#071c35',
+                        '#E30613',
+                        '#B8050F',
                         '#e73c4e'
                     ],
                     hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -1500,7 +1544,14 @@ $topTurmas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 cutout: '60%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                family: 'Poppins',
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
                     }
                 }
             }
