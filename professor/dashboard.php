@@ -1152,7 +1152,7 @@ body {
         <div class="header-content">
             <div class="user-info">
                 <div class="logo">
-                    <img src="img/bombeiros-logo.png" alt="Logo SuperAção">
+                    <img src="img/logobo.png" alt="Logo SuperAção">
                 </div>
                 <div class="user-avatar">
                 <?php if (!empty($usuario_foto)): ?>

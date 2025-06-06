@@ -121,7 +121,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <header>
     <div class="header-content">
       <div class="logo">
-      <img src="./img/bombeirogo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
+      <img src="./img/logobo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
         <div>
           <h1>Bombeiro Mirim</h1>
           <small>Painel Administrativo</small>
