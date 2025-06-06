@@ -27,20 +27,25 @@ if (isset($_SESSION['usuario_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área do Aluno - Projeto Superação</title>
+    <title>Área do Aluno - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
         :root {
+            /* Cores dos Bombeiros */
             --primary: #E30613;
-            --secondary: #ffc52e;
-            --gradient-bg: linear-gradient(135deg, #0f2350 0%, #234a9c 100%);
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --shadow-color: rgba(14, 30, 62, 0.2);
-            --text-primary: #0c1e3e;
-            --text-secondary: #566b8f;
+            --primary-light: #FF2D3A;
+            --primary-dark: #B8050F;
+            --secondary: #ffc233;
+            --secondary-light: #ffd566;
+            --secondary-dark: #e9b424;
+            --gradient-bg: linear-gradient(135deg, #E30613 0%, #FF2D3A 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(227, 6, 19, 0.2);
+            --text-primary: #1a1a1a;
+            --text-secondary: #666;
         }
         
         * {
@@ -52,7 +57,7 @@ if (isset($_SESSION['usuario_id'])) {
         
         body {
             min-height: 100vh;
-            background: #E30613;
+            background: #B8050F;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -73,8 +78,8 @@ if (isset($_SESSION['usuario_id'])) {
         .shape {
             position: absolute;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--secondary), #ffad0a);
-            opacity: 0.2;
+            background: linear-gradient(45deg, var(--secondary), var(--secondary-light));
+            opacity: 0.3;
             animation: float 15s infinite ease-in-out;
         }
         
@@ -110,6 +115,23 @@ if (isset($_SESSION['usuario_id'])) {
             animation-delay: 9s;
         }
         
+        /* Adicionar formas de bombeiro */
+        .fire-shape {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, rgba(255, 194, 51, 0.4), rgba(255, 122, 0, 0.4));
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            top: 15%;
+            right: 20%;
+            animation: sparkle 3s infinite;
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.4; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.8; transform: scale(1.2) rotate(180deg); }
+        }
+        
         @keyframes float {
             0%, 100% {
                 transform: translateY(0) scale(1);
@@ -121,9 +143,9 @@ if (isset($_SESSION['usuario_id'])) {
         
         .container {
             background: var(--card-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border-radius: 20px;
-            box-shadow: 0 20px 40px var(--shadow-color);
+            box-shadow: 0 25px 50px var(--shadow-color);
             padding: 40px;
             width: 100%;
             max-width: 500px;
@@ -131,6 +153,7 @@ if (isset($_SESSION['usuario_id'])) {
             z-index: 10;
             transform: translateY(0);
             animation: cardAppear 0.8s ease-out;
+            border: 2px solid rgba(255, 194, 51, 0.3);
         }
         
         @keyframes cardAppear {
@@ -160,7 +183,7 @@ if (isset($_SESSION['usuario_id'])) {
             position: absolute;
             width: 120px;
             height: 120px;
-            background: radial-gradient(circle, rgba(255, 197, 46, 0.4) 0%, rgba(255, 197, 46, 0) 70%);
+            background: radial-gradient(circle, rgba(255, 194, 51, 0.5) 0%, rgba(255, 194, 51, 0) 70%);
             border-radius: 50%;
             top: 50%;
             left: 50%;
@@ -172,11 +195,11 @@ if (isset($_SESSION['usuario_id'])) {
         @keyframes pulse {
             0%, 100% {
                 transform: translate(-50%, -50%) scale(1);
-                opacity: 0.4;
+                opacity: 0.5;
             }
             50% {
                 transform: translate(-50%, -50%) scale(1.2);
-                opacity: 0.2;
+                opacity: 0.3;
             }
         }
         
@@ -185,7 +208,7 @@ if (isset($_SESSION['usuario_id'])) {
             height: auto;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 5px 15px rgba(30, 58, 138, 0.3));
+            filter: drop-shadow(0 5px 15px rgba(227, 6, 19, 0.4));
             transition: all 0.4s;
         }
         
@@ -196,13 +219,30 @@ if (isset($_SESSION['usuario_id'])) {
         h1 {
             font-size: 2.6rem;
             font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), #3863c5);
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             margin-bottom: 8px;
             text-align: center;
             letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .bombeiro-icon {
+            font-size: 2rem;
+            color: var(--secondary);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
         
         .app-subtitle {
@@ -218,24 +258,34 @@ if (isset($_SESSION['usuario_id'])) {
             margin-bottom: 25px;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(227, 6, 19, 0.15);
         }
         
         .tab {
             flex: 1;
             text-align: center;
             padding: 15px 10px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.8);
             cursor: pointer;
             transition: all 0.3s;
             font-weight: 500;
             color: var(--text-primary);
+            border: 2px solid transparent;
         }
         
         .tab.active {
-            background: linear-gradient(45deg, var(--primary), #3863c5);
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
             color: white;
             font-weight: 600;
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: rgba(255, 194, 51, 0.2);
+            color: var(--primary);
+            transform: translateY(-1px);
         }
         
         .form-group {
@@ -246,24 +296,25 @@ if (isset($_SESSION['usuario_id'])) {
         .form-control {
             width: 100%;
             background: var(--input-bg);
-            border: 2px solid rgba(206, 212, 218, 0.5);
+            border: 2px solid rgba(255, 194, 51, 0.3);
             border-radius: 12px;
             padding: 16px 20px 16px 55px;
             font-size: 15px;
             transition: all 0.3s;
             color: var(--text-primary);
             backdrop-filter: blur(5px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px rgba(227, 6, 19, 0.08);
         }
         
         .form-control:focus {
             border-color: var(--primary);
-            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 5px 15px rgba(227, 6, 19, 0.2);
             outline: none;
+            background: rgba(255, 255, 255, 0.95);
         }
         
         .form-control::placeholder {
-            color: #a0aec0;
+            color: #888;
         }
         
         .icon-wrapper {
@@ -291,7 +342,7 @@ if (isset($_SESSION['usuario_id'])) {
         
         .btn {
             width: 100%;
-            background: linear-gradient(45deg, var(--primary), #3863c5);
+            background: linear-gradient(45deg, var(--primary), var(--primary-light));
             color: white;
             border: none;
             border-radius: 12px;
@@ -303,8 +354,9 @@ if (isset($_SESSION['usuario_id'])) {
             margin-top: 15px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.25);
+            box-shadow: 0 8px 25px rgba(227, 6, 19, 0.3);
             letter-spacing: 0.5px;
+            border: 2px solid transparent;
         }
         
         .btn:before {
@@ -314,14 +366,15 @@ if (isset($_SESSION['usuario_id'])) {
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
             transform: translateX(-100%);
             transition: 0.5s;
         }
         
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.35);
+            box-shadow: 0 12px 30px rgba(227, 6, 19, 0.4);
+            border-color: var(--secondary);
         }
         
         .btn:hover:before {
@@ -329,7 +382,7 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
         
         .message {
@@ -347,13 +400,13 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .error {
-            background-color: rgba(255, 129, 130, 0.2);
+            background-color: rgba(246, 78, 96, 0.2);
             color: #e53e3e;
             border: 1px solid rgba(229, 62, 62, 0.3);
         }
         
         .success {
-            background-color: rgba(72, 187, 120, 0.2);
+            background-color: rgba(52, 199, 89, 0.2);
             color: #38a169;
             border: 1px solid rgba(56, 161, 105, 0.3);
         }
@@ -368,13 +421,13 @@ if (isset($_SESSION['usuario_id'])) {
         }
         
         .prefix {
-            background-color: rgba(226, 232, 240, 0.8);
-            border: 2px solid rgba(206, 212, 218, 0.5);
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            border: 2px solid rgba(255, 194, 51, 0.5);
             border-right: none;
             border-radius: 12px 0 0 12px;
             padding: 16px;
-            color: var(--primary);
-            font-weight: 600;
+            color: var(--primary-dark);
+            font-weight: 700;
         }
         
         .prefix-input input {
@@ -416,6 +469,29 @@ if (isset($_SESSION['usuario_id'])) {
             background: linear-gradient(90deg, transparent, var(--secondary), transparent);
         }
         
+        /* Efeitos especiais para bombeiros */
+        .fire-effect {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 20px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 194, 51, 0.2) 25%, 
+                rgba(227, 6, 19, 0.2) 50%, 
+                rgba(255, 194, 51, 0.2) 75%, 
+                transparent 100%);
+            border-radius: 0 0 20px 20px;
+            animation: flicker 2s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.5; }
+            100% { opacity: 0.8; }
+        }
+        
         @media (max-width: 520px) {
             .container {
                 padding: 30px 20px;
@@ -435,7 +511,7 @@ if (isset($_SESSION['usuario_id'])) {
             }
             
             .shape-1, .shape-2, .shape-3, .shape-4 {
-                opacity: 0.15;
+                opacity: 0.2;
             }
         }
     </style>
@@ -446,21 +522,30 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="shape shape-2"></div>
         <div class="shape shape-3"></div>
         <div class="shape shape-4"></div>
+        <div class="fire-shape"></div>
     </div>
 
     <div class="container">
+        <div class="fire-effect"></div>
         <div class="logo">
             <div class="logo-wrapper">
                 <div class="logo-glow"></div>
-                <img src="./img/logobo.png" alt="Logo SuperAção">
+                <img src="./img/logobo.png" alt="Logo Bombeiro Mirim">
             </div>
-            <h1>Bombeiro Mirim</h1>
-            <p class="app-subtitle">Entre para acessar sua conta</p>
+            <h1>
+                <i class="fas fa-fire-extinguisher bombeiro-icon"></i>
+                Bombeiro Mirim
+            </h1>
+            <p class="app-subtitle">🚒 Entre para acessar sua conta</p>
         </div>
         
         <div class="tabs">
-            <div class="tab active" id="verificar-tab">Verificar Aluno</div>
-            <div class="tab" id="login-tab">Fazer Login</div>
+            <div class="tab active" id="verificar-tab">
+                <i class="fas fa-search"></i> Verificar Aluno
+            </div>
+            <div class="tab" id="login-tab">
+                <i class="fas fa-sign-in-alt"></i> Fazer Login
+            </div>
         </div>
         
         <!-- Formulário de Verificação de CPF do Responsável -->
@@ -472,7 +557,9 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
             </div>
             
-            <button class="btn" id="btn-verificar">Verificar Aluno</button>
+            <button class="btn" id="btn-verificar">
+                <i class="fas fa-search"></i> Verificar Aluno
+            </button>
             
             <div id="verificar-message" class="message hidden"></div>
         </div>
@@ -503,20 +590,22 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
             
             <div class="form-group">
-                <input type="password" id="senha-cadastro" class="form-control" placeholder="Mínimo de 6 caracteres">
+                <input type="password" id="senha-cadastro" class="form-control" placeholder="🔐 Senha - Mínimo de 6 caracteres">
                 <div class="icon-wrapper">
                     <i class="fas fa-lock"></i>
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="password" id="confirmar-senha" class="form-control" placeholder="Digite a senha novamente">
+                <input type="password" id="confirmar-senha" class="form-control" placeholder="🔐 Confirme sua senha">
                 <div class="icon-wrapper">
                     <i class="fas fa-check-circle"></i>
                 </div>
             </div>
             
-            <button class="btn" id="btn-cadastrar">Cadastrar Senha</button>
+            <button class="btn" id="btn-cadastrar">
+                <i class="fas fa-user-plus"></i> Cadastrar Senha
+            </button>
             
             <div id="cadastro-message" class="message hidden"></div>
         </div>
@@ -524,26 +613,28 @@ if (isset($_SESSION['usuario_id'])) {
         <!-- Formulário de Login -->
         <div id="login-form" class="hidden">
             <div class="form-group">
-                    <input type="text" id="matricula-login" class="form-control" placeholder="Digite o número da matrícula" maxlength="8">
+                    <input type="text" id="matricula-login" class="form-control" placeholder="📚 Digite o número da matrícula" maxlength="8">
                 <div class="icon-wrapper">
                     <i class="fas fa-user-graduate"></i>
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="password" id="senha-login" class="form-control" placeholder="Digite sua senha">
+                <input type="password" id="senha-login" class="form-control" placeholder="🔐 Digite sua senha">
                 <div class="icon-wrapper">
                     <i class="fas fa-lock"></i>
                 </div>
             </div>
             
-            <button class="btn" id="btn-login">Entrar</button>
+            <button class="btn" id="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
             
             <div id="login-message" class="message hidden"></div>
         </div>
         
         <div class="login-footer">
-            &copy; <?= date('Y') ?> SuperAção - Todos os direitos reservados
+            🚒 &copy; <?= date('Y') ?> Bombeiro Mirim - Todos os direitos reservados
         </div>
     </div>
     
