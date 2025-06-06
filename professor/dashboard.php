@@ -134,8 +134,8 @@ if (!empty($professor['foto'])) {
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary: #0d2d56;        
-    --primary-light: #071e3a;   
+    --primary: #E30613;        
+    --primary-light: #9c0202;   
     --primary-dark: #071e3a;  
     --secondary: #ffc233;     
     --secondary-light: #ffd566; 
@@ -183,9 +183,9 @@ body {
 }
 
 .header {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background: var(--primary);
     color: var(--white);
-    padding: 1rem;
+    padding: 0.5rem;
     box-shadow: var(--box-shadow);
     position: sticky;
     top: 0;
@@ -196,7 +196,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: 1800px;
     margin: 0 auto;
 }
 
@@ -307,7 +307,7 @@ body {
 }
 
 .welcome-card h1 {
-    color: var(--primary);
+    color: #9c0202;
     margin-bottom: 1rem;
     font-size: 1.8rem;
     font-weight: 700;
@@ -854,9 +854,9 @@ body {
 }
 
 .main-footer {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background: var(--primary);
     color: var(--white);
-    padding: 20px 0;
+    padding: 15px 0;
     margin-top: auto;
     position: relative;
     text-align: center;
@@ -1137,6 +1137,13 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary);
 }
+
+.logo img {
+    height: 100px;
+    width: auto;
+    padding: 3px;
+    transition: transform 0.3s ease;
+}
  
     </style>
 </head>
@@ -1144,6 +1151,9 @@ body {
     <header class="header">
         <div class="header-content">
             <div class="user-info">
+                <div class="logo">
+                    <img src="img/bombeiros-logo.png" alt="Logo SuperAção">
+                </div>
                 <div class="user-avatar">
                 <?php if (!empty($usuario_foto)): ?>
                         <img src="<?php echo htmlspecialchars($usuario_foto); ?>" alt="Foto do usuário">
@@ -1441,10 +1451,10 @@ body {
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <i class="fas fa-futbol"></i> Superação - Ninho de Águias
+          <i class="fas fa-futbol"></i> Bombeiros Mirins
         </div>
         <div class="footer-info">
-          <p>© 2024 Projeto SuperAção - O Projeto Superação é uma iniciativa da ASSEGO – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
+          <p>© 2025 Projeto Bombeiro Mirim Goiás – O Projeto Bombeiro Mirim é uma iniciativa do Corpo de Bombeiros Militar do Estado de Goiás em parceria com instituições locais, voltado à formação cidadã de crianças e adolescentes.</p>
           <p>Área do Professor</p>
           <p>Desenvolvido por <a href="https://www.instagram.com/assego/" class="ftlink">@Assego</a></p>
         </div>
