@@ -499,7 +499,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <i class="fas fa-graduation-cap"></i> Bombeiro Mirim do Estado de Goiás
+          <i class="fas fa-fire-extinguisher"></i> Bombeiro Mirim do Estado de Goiás
         </div>
         <div class="footer-info">
           <p>© 2024 Projeto Bombeiro Mirim – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
