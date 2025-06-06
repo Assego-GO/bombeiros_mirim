@@ -33,7 +33,7 @@ if (isset($_SESSION['usuario_id'])) {
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
         :root {
-            --primary: #1e3a8a;
+            --primary: #E30613;
             --secondary: #ffc52e;
             --gradient-bg: linear-gradient(135deg, #0f2350 0%, #234a9c 100%);
             --card-bg: rgba(255, 255, 255, 0.9);
@@ -52,7 +52,7 @@ if (isset($_SESSION['usuario_id'])) {
         
         body {
             min-height: 100vh;
-            background: var(--gradient-bg);
+            background: #E30613;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -452,9 +452,9 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="logo">
             <div class="logo-wrapper">
                 <div class="logo-glow"></div>
-                <img src="./img/logo.png" alt="Logo SuperAção">
+                <img src="./img/logobo.png" alt="Logo SuperAção">
             </div>
-            <h1>Superação</h1>
+            <h1>Bombeiro Mirim</h1>
             <p class="app-subtitle">Entre para acessar sua conta</p>
         </div>
         
