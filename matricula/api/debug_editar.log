@@ -2075,3 +2075,43 @@
 2025-06-04 14:33:40 - Execute result: true
 2025-06-04 14:33:40 - Affected rows: 1
 2025-06-04 14:33:40 - Error (if any): 
+2025-06-06 14:20:49 - POST Data: {"id":"110","aluno_nome":"LUIS FILIPE E SILVA","unidade":"9","turma":"20","data_matricula":"2025-06-05","status":"ativo"}
+2025-06-06 14:20:49 - Decoded: Array
+(
+    [id] => 110
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [unidade] => 9
+    [turma] => 20
+    [data_matricula] => 2025-06-05
+    [status] => ativo
+)
+
+2025-06-06 14:20:49 - SQL: UPDATE matriculas SET 
+        unidade = ?, 
+        turma = ?, 
+        data_matricula = ?, 
+        status = ? 
+    WHERE id = ?
+2025-06-06 14:20:49 - Execute result: true
+2025-06-06 14:20:49 - Affected rows: 1
+2025-06-06 14:20:49 - Error (if any): 
+2025-06-06 14:25:39 - POST Data: {"id":"111","aluno_nome":"LUIS FILIPE E SILVA","unidade":"9","turma":"20","data_matricula":"2025-06-06","status":"ativo"}
+2025-06-06 14:25:39 - Decoded: Array
+(
+    [id] => 111
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [unidade] => 9
+    [turma] => 20
+    [data_matricula] => 2025-06-06
+    [status] => ativo
+)
+
+2025-06-06 14:25:39 - SQL: UPDATE matriculas SET 
+        unidade = ?, 
+        turma = ?, 
+        data_matricula = ?, 
+        status = ? 
+    WHERE id = ?
+2025-06-06 14:25:39 - Execute result: true
+2025-06-06 14:25:39 - Affected rows: 1
+2025-06-06 14:25:39 - Error (if any): 

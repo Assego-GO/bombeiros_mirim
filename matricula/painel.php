@@ -21,7 +21,6 @@ try {
   $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   
   // Verificar se o usuário é um administrador
-  // Verificar se o usuário é um administrador
 $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND tipo = 'admin'");
 $stmt->execute([$_SESSION['usuario_id']]);
 
@@ -47,7 +46,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Superação - Módulo de Matrículas</title>
+  <title>Bombeiro Mirim - Módulo de Matrículas</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/matricula.css"/>
   <style>
@@ -122,9 +121,9 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <header>
     <div class="header-content">
       <div class="logo">
-      <img src="./img/logo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
+      <img src="./img/bombeirogo.png" alt="Logo SuperAção" style="width: 100px; height: auto;"/>
         <div>
-          <h1>Superação</h1>
+          <h1>Bombeiro Mirim</h1>
           <small>Painel Administrativo</small>
         </div>
       </div>
@@ -500,17 +499,17 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <i class="fas fa-graduation-cap"></i> Superação - Ninho de Águias
+          <i class="fas fa-fire-extinguisher"></i> Bombeiro Mirim do Estado de Goiás
         </div>
         <div class="footer-info">
-          <p>© 2024 Projeto SuperAção - O Projeto Superação é uma iniciativa da ASSEGO – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
+          <p>© 2024 Projeto Bombeiro Mirim – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
           <p>Painel de Gerenciamento de Matrículas</p>
           <p>Desenvolvido por <a href="https://www.instagram.com/assego/" class="ftlink">@Assego</a></p>
         </div>
       </div>
     </div>
   </footer>
-  
+    
   <!-- Loading overlay -->
   <div id="loading-overlay" class="loading-overlay" style="display: none;">
     <div class="spinner-container">
