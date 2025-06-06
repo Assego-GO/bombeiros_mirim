@@ -44,19 +44,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Função para obter o caminho correto da foto do aluno
+    // CORRIGIDO: Função para obter o caminho correto da foto do aluno
     function getStudentPhotoPath(photoFilename) {
-        // Definir a URL base correta
-        const serverUrl = window.location.protocol + '//' + window.location.host;
-        const correctBaseUrl = serverUrl + '';
-
         if (!photoFilename) {
-            return `${correctBaseUrl}/uploads/fotos/default.png`;
+            return `../uploads/fotos/default.png`;
         }
         
         // Se for um caminho completo, extraia apenas o nome do arquivo
         const filename = photoFilename.split('/').pop();
-        return `${correctBaseUrl}/uploads/fotos/${filename}`;
+        return `../uploads/fotos/${filename}`;
     }
 
     function carregarTurmas() {
@@ -81,6 +77,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     container.innerHTML = 'Nenhuma turma encontrada.';
                 }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar turmas:', error);
+                container.innerHTML = 'Erro ao carregar turmas.';
             });
     }
 
@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // CORRIGIDO: Função para carregar alunos
     function carregarAlunos(turmaId) {
         const modalContent = document.querySelector('#avaliacoesModal .modal-content');
         
@@ -110,25 +111,31 @@ document.addEventListener('DOMContentLoaded', function () {
         // Mostrar loading
         alunosSection.innerHTML = '<h3>Alunos da Turma</h3><p>Carregando...</p>';
         
-        // Verificar se temos a API alunos_turma.php ou listar_alunos_turma.php
-        // Definir a URL base correta
-        const serverUrl = window.location.protocol + '//' + window.location.host;
-        const correctBaseUrl = serverUrl + '';
-        
-        // Tentar primeiro com a API professor/api/alunos_turma.php
-        const fetchUrl = `${correctBaseUrl}/professor/api/alunos_turma.php?turma_id=${turmaId}`;
+        // CORREÇÃO: Usar caminhos relativos simples
+        // Tentar primeiro com ./alunos_turma.php
+        const fetchUrl = `./alunos_turma.php?turma_id=${turmaId}`;
+        console.log("Tentando acessar:", fetchUrl);
         
         // Buscar dados
         fetch(fetchUrl)
             .then(res => {
+                console.log("Response status:", res.status);
                 if (!res.ok && res.status === 404) {
                     // Se a primeira API não funcionar, tente a segunda
+                    console.log("Primeira API falhou, tentando alternativa...");
                     return fetch(`api/aluno/listar_alunos_turma.php?turma_id=${turmaId}`);
                 }
                 return res;
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
             .then(data => {
+                console.log("Data received:", data);
+                
                 if (data.success && data.alunos && data.alunos.length > 0) {
                     let html = '<h3>Alunos da Turma</h3>';
                     
@@ -140,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         html += `
                             <div class="aluno-item">
                                 <div class="aluno-foto">
-                                    <img src="${fotoPath}" alt="${aluno.nome}" onerror="this.onerror=null; this.src='${correctBaseUrl}/uploads/fotos/default.png';">
+                                    <img src="${fotoPath}" alt="${aluno.nome}" onerror="this.onerror=null; this.src='../uploads/fotos/default.png';">
                                 </div>
                                 <div class="aluno-info">
                                     <div class="aluno-nome">${aluno.nome}</div>
@@ -165,7 +172,14 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alunosSection.innerHTML = `<h3>Alunos da Turma</h3><p>Erro: ${error.message}</p>`;
+                alunosSection.innerHTML = `
+                    <h3>Alunos da Turma</h3>
+                    <div class="alert alert-danger">
+                        Erro de conexão: ${error.message}<br>
+                        Tentou acessar: ${fetchUrl}<br>
+                        Verifique se o arquivo existe no servidor.
+                    </div>
+                `;
             });
     }
     
@@ -256,6 +270,18 @@ document.addEventListener('DOMContentLoaded', function () {
             margin-right: 5px;
         }
         
+        .alert {
+            padding: 12px 16px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
         @media (max-width: 768px) {
             .aluno-item {
                 flex-direction: column;
@@ -274,4 +300,6 @@ document.addEventListener('DOMContentLoaded', function () {
     `;
     
     document.head.appendChild(style);
+    
+    console.log("Módulo de avaliações inicializado com sucesso!");
 });
