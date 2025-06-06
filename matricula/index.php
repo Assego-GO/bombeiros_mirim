@@ -535,7 +535,7 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="login-header">
             <div class="logo-wrapper">
                 <div class="logo-glow"></div>
-                <img src="./img/bombeirogo.png" alt="Logo SuperAção" class="logo-img">
+                <img src="./img/logobo.png" alt="Logo SuperAção" class="logo-img">
             </div>
             <h1 class="app-title">Bombeiro Mirim</h1>
             <p class="app-subtitle">Entre para acessar sua conta</p>

@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_presenca'])
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Detalhes do Aluno | Sistema Superação</title>
+    <title>Detalhes do Aluno | Bombeiros Mirim</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_presenca'])
     <header class="main-header">
         <div class="header-container">
             <div class="app-title">
-                <i class="fas fa-graduation-cap me-1"></i>Superação
+                <i class="fas fa-graduation-cap me-1"></i>Bombeiros Mirim
             </div>
         </div>
     </header>

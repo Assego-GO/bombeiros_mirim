@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Load turma students function
+    // CORRIGIDO: Load turma students function
     function loadAlunosTurma(turmaId) {
         console.log("Loading students for turma ID:", turmaId);
         
@@ -68,18 +68,22 @@ document.addEventListener('DOMContentLoaded', function() {
             modalTitle.textContent = `Alunos da Turma: ${turmaNome}`;
         }
         
-        // Definir a URL base correta diretamente
-        const serverUrl = window.location.protocol + '//' + window.location.host;
-        const correctBaseUrl = serverUrl;
-        
-        // Use absolute path to avoid potential path resolution issues
-        const fetchUrl = `${correctBaseUrl}/professor/api/alunos_turma.php?turma_id=${turmaId}`;
+        // CORREÇÃO: Usar caminhos relativos simples
+        const fetchUrl = `./alunos_turma.php?turma_id=${turmaId}`;
         console.log("Fetching URL:", fetchUrl);
         
         // Fetch students from this class
         fetch(fetchUrl)
             .then(response => {
                 console.log("Response status:", response.status);
+                if (!response.ok) {
+                    // Se não funcionar, tente com ./api/alunos_turma.php
+                    console.log("Tentando URL alternativa...");
+                    return fetch(`./api/alunos_turma.php?turma_id=${turmaId}`);
+                }
+                return response;
+            })
+            .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -92,23 +96,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.alunos && data.alunos.length > 0) {
                         let html = '';
                         data.alunos.forEach(aluno => {
-                            // Fix the photo path - use only filename and correct base path
+                            // CORREÇÃO: Fix the photo path - usar caminhos relativos
                             let fotoPath = '';
                             
                             if (aluno.foto) {
                                 const filename = aluno.foto.split('/').pop();
-                                fotoPath = `${correctBaseUrl}/uploads/fotos/${filename}`;
+                                fotoPath = `../uploads/fotos/${filename}`;
                                 console.log('Caminho original:', aluno.foto);
                                 console.log('Caminho corrigido:', fotoPath);
                             } else {
-                                fotoPath = `${correctBaseUrl}/uploads/fotos/default.png`;
+                                fotoPath = `../uploads/fotos/default.png`;
                             }                        
                             
                             html += `
                                 <div class="aluno-item">
                                     <div class="aluno-foto">
                                         ${aluno.foto ? 
-                                            `<img src="${fotoPath}" alt="${aluno.nome}" onerror="this.onerror=null; this.src='${correctBaseUrl}/uploads/fotos/default.png';">` : 
+                                            `<img src="${fotoPath}" alt="${aluno.nome}" onerror="this.onerror=null; this.src='../uploads/fotos/default.png';">` : 
                                             `<i class="fas fa-user-graduate"></i>`}
                                     </div>
                                     <div class="aluno-info">
@@ -142,7 +146,13 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .catch(error => {
                 console.error('Error:', error);
-                alunosContainer.innerHTML = `<div class="alert alert-danger">Erro de conexão: ${error.message}. Verifique se o arquivo alunos_turma.php existe em ./superacao/professor/api/.</div>`;
+                alunosContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        Erro de conexão: ${error.message}<br>
+                        Tentou acessar: ${fetchUrl}<br>
+                        Verifique se o arquivo alunos_turma.php existe no servidor.
+                    </div>
+                `;
             });
     }
     
@@ -343,17 +353,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Update header info
                             document.querySelector('.user-details h3').textContent = p.nome;
                             
-                            // Update photo if provided
+                            // CORREÇÃO: Update photo if provided - usar caminhos relativos
                             if (p.foto) {
-                                document.getElementById('p-foto').src = p.foto;
+                                const filename = p.foto.split('/').pop();
+                                const fotoPath = `../uploads/fotos/${filename}`;
+                                
+                                document.getElementById('p-foto').src = fotoPath;
                                 if (document.querySelector('.user-avatar img')) {
-                                    document.querySelector('.user-avatar img').src = p.foto;
+                                    document.querySelector('.user-avatar img').src = fotoPath;
                                 } else {
                                     // If there was no img before, create one and replace the icon
                                     const userAvatar = document.querySelector('.user-avatar');
                                     userAvatar.innerHTML = '';
                                     const img = document.createElement('img');
-                                    img.src = p.foto;
+                                    img.src = fotoPath;
                                     img.alt = 'Foto do usuário';
                                     userAvatar.appendChild(img);
                                 }

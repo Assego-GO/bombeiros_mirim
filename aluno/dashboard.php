@@ -53,18 +53,19 @@ if (!empty($usuario_foto)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Aluno - Projeto Superação</title>
+    <title>Painel do Aluno - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary: #0d2d56;         
-    --primary-light: #1e4d92;  
-    --primary-dark: #071e3a;    
+    /* Cores dos Bombeiros */
+    --primary: #E30613;         
+    --primary-light: #FF2D3A;  
+    --primary-dark: #B8050F;    
     --secondary: #ffc233;        
     --secondary-light: #ffd566; 
-    --secondary-dark: #d9a012; 
+    --secondary-dark: #e9b424; 
     --accent: #34c759;          
     --accent-light: #4cd377;    
     --accent-dark: #26a344;     
@@ -72,14 +73,16 @@ if (!empty($usuario_foto)) {
     --danger-light: #ff6259;    
     --light: #f5f7fa;          
     --light-hover: #e9ecef;     
-    --dark: #1c2b41;            
-    --gray: #8e9aaf;           
+    --dark: #1a1a1a;            
+    --gray: #666;           
     --gray-light: #d1d9e6;       
-    --gray-dark: #64748b;       
+    --gray-dark: #444;       
     --white: #ffffff;
+    --orange: #FF7A00;
+    --orange-light: #FF9A33;
     
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --box-shadow: 0 4px 12px rgba(227, 6, 19, 0.08);
+    --box-shadow-hover: 0 8px 24px rgba(227, 6, 19, 0.15);
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;
@@ -94,7 +97,7 @@ if (!empty($usuario_foto)) {
 }
 
 body {
-    background-color: var(--light);
+    background-color: var(--white);
     color: var(--dark);
     line-height: 1.6;
     font-size: 14px;
@@ -112,6 +115,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1000;
+    border-bottom: 3px solid var(--secondary);
 }
 
 .header-content {
@@ -128,8 +132,8 @@ body {
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background-color: var(--white);
     display: flex;
@@ -137,8 +141,13 @@ body {
     align-items: center;
     margin-right: 1rem;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 3px solid var(--secondary);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.05);
 }
 
 .user-avatar img {
@@ -157,6 +166,20 @@ body {
     margin-bottom: 0.2rem;
     font-weight: 600;
     color: var(--white);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.bombeiro-badge {
+    background: linear-gradient(45deg, var(--secondary), var(--secondary-light));
+    color: var(--primary-dark);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .user-details p {
@@ -166,9 +189,9 @@ body {
 }
 
 .logout-btn {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.2));
     color: var(--white);
-    border: none;
+    border: 2px solid rgba(255, 194, 51, 0.5);
     border-radius: var(--border-radius);
     padding: 0.5rem 1rem;
     cursor: pointer;
@@ -185,9 +208,10 @@ body {
 }
 
 .logout-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+    color: var(--primary-dark);
     transform: translateY(-3px);
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 5px 15px rgba(255, 194, 51, 0.3);
 }
 
 /* Container */
@@ -208,7 +232,7 @@ body {
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 2px solid rgba(255, 194, 51, 0.3);
 }
 
 .welcome-card:hover {
@@ -224,9 +248,19 @@ body {
     width: 300px;
     height: 300px;
     background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
-    opacity: 0.05;
+    opacity: 0.08;
     border-radius: 50%;
     transform: translate(30%, -30%);
+    z-index: 0;
+}
+
+.welcome-card::after {
+    content: '🚒';
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2rem;
+    opacity: 0.1;
     z-index: 0;
 }
 
@@ -237,6 +271,14 @@ body {
     font-weight: 700;
     position: relative;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.welcome-card h1 i {
+    color: var(--secondary);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .welcome-card p {
@@ -262,12 +304,13 @@ body {
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 2px solid transparent;
 }
 
 .dashboard-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--box-shadow-hover);
+    border-color: var(--secondary);
 }
 
 .dashboard-card::before {
@@ -294,28 +337,43 @@ body {
     background: linear-gradient(to right, var(--secondary), var(--secondary-light));
 }
 
+.dashboard-card:nth-child(4)::before {
+    background: linear-gradient(to right, var(--orange), var(--orange-light));
+}
+
 .card-icon {
     background: linear-gradient(135deg, var(--primary), var(--primary-light));
     color: var(--white);
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     border-radius: var(--border-radius);
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 1rem;
     font-size: 1.5rem;
-    box-shadow: var(--box-shadow);
+    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
     position: relative;
     transition: all 0.3s ease;
 }
 
 .dashboard-card:nth-child(2) .card-icon {
     background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    box-shadow: 0 4px 15px rgba(52, 199, 89, 0.3);
 }
 
 .dashboard-card:nth-child(3) .card-icon {
     background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+    box-shadow: 0 4px 15px rgba(255, 194, 51, 0.3);
+}
+
+.dashboard-card:nth-child(4) .card-icon {
+    background: linear-gradient(135deg, var(--orange), var(--orange-light));
+    box-shadow: 0 4px 15px rgba(255, 122, 0, 0.3);
+}
+
+.dashboard-card:hover .card-icon {
+    transform: scale(1.1) rotate(5deg);
 }
 
 .dashboard-card h2 {
@@ -362,9 +420,9 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(227, 6, 19, 0.5);
     overflow-y: auto;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
 }
 
 .modal-content, .perfil-content {
@@ -374,10 +432,11 @@ body {
     width: 80%;
     max-width: 600px;
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow-hover);
+    box-shadow: 0 20px 40px rgba(227, 6, 19, 0.2);
     max-height: 90vh;
     overflow-y: auto;
     animation: modal-fade-in 0.3s ease;
+    border: 2px solid var(--secondary);
 }
 
 @keyframes modal-fade-in {
@@ -395,14 +454,14 @@ body {
 }
 
 .close:hover {
-    color: var(--danger);
+    color: var(--primary);
     transform: rotate(90deg);
 }
 
 #modalTitle, #modalTitlePerfil {
     color: var(--primary);
     margin-bottom: 20px;
-    border-bottom: 2px solid var(--gray-light);
+    border-bottom: 2px solid var(--secondary);
     padding-bottom: 10px;
     font-weight: 600;
 }
@@ -416,13 +475,13 @@ body {
 }
 
 .matricula-group:hover {
-    background-color: var(--light);
+    background: linear-gradient(90deg, rgba(255, 194, 51, 0.05), rgba(227, 6, 19, 0.05));
 }
 
 .matricula-group label {
     font-weight: 600;
     width: 180px;
-    color: var(--gray-dark);
+    color: var(--primary);
 }
 
 .matricula-group p {
@@ -454,8 +513,8 @@ body {
     object-fit: cover;
     margin: 0 auto 20px;
     display: block;
-    border: 3px solid var(--primary);
-    box-shadow: var(--box-shadow);
+    border: 4px solid var(--primary);
+    box-shadow: 0 5px 20px rgba(227, 6, 19, 0.3);
     transition: transform 0.3s ease;
 }
 
@@ -469,7 +528,7 @@ body {
 
 .perfil-section h3 {
     color: var(--primary);
-    border-bottom: 1px solid var(--gray-light);
+    border-bottom: 2px solid var(--secondary);
     padding-bottom: 10px;
     margin-bottom: 15px;
     font-size: 18px;
@@ -488,17 +547,18 @@ body {
 
 .data-item strong {
     font-weight: 600;
-    color: var(--gray-dark);
+    color: var(--primary);
     min-width: 150px;
     display: inline-block;
 }
 
 .responsavel-item {
-    background-color: var(--light);
+    background: linear-gradient(135deg, rgba(255, 194, 51, 0.1), rgba(227, 6, 19, 0.05));
     padding: 15px;
     border-radius: var(--border-radius);
     margin-bottom: 15px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.1);
+    border-left: 4px solid var(--secondary);
 }
 
 .btn {
@@ -518,6 +578,7 @@ body {
     margin-right: 8px;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 15px rgba(227, 6, 19, 0.3);
 }
 
 .btn::before {
@@ -527,7 +588,7 @@ body {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
     transition: 0.5s;
 }
 
@@ -537,7 +598,7 @@ body {
 
 .btn:hover {
     transform: translateY(-3px);
-    box-shadow: var(--box-shadow-hover);
+    box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4);
 }
 
 .btn:active {
@@ -546,6 +607,7 @@ body {
 
 .btn-secondary {
     background: linear-gradient(135deg, var(--gray), var(--gray-dark));
+    box-shadow: 0 4px 15px rgba(102, 102, 102, 0.3);
 }
 
 .text-center {
@@ -560,13 +622,13 @@ body {
     display: block;
     font-weight: 500;
     margin-bottom: 8px;
-    color: var(--gray-dark);
+    color: var(--primary);
 }
 
 .form-control {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--gray-light);
+    border: 2px solid var(--gray-light);
     border-radius: var(--border-radius);
     font-size: 14px;
     transition: all 0.2s ease;
@@ -576,7 +638,7 @@ body {
 .form-control:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(13, 45, 86, 0.1);
+    box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.1);
     background-color: var(--white);
 }
 
@@ -600,16 +662,7 @@ body {
     margin-top: auto;
     position: relative;
     text-align: center;
-}
-
-.main-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--secondary);
+    border-top: 4px solid var(--secondary);
 }
 
 .footer-content {
@@ -630,6 +683,7 @@ body {
 
 .footer-brand i {
     color: var(--secondary);
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .footer-info {
@@ -692,19 +746,19 @@ body {
 }
 
 .responsavel-form-item {
-    background-color: var(--light);
+    background: linear-gradient(135deg, rgba(255, 194, 51, 0.1), rgba(227, 6, 19, 0.05));
     padding: 20px;
     border-radius: var(--border-radius);
     margin-bottom: 20px;
-    border: 1px solid var(--gray-light);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 194, 51, 0.3);
+    box-shadow: 0 3px 10px rgba(227, 6, 19, 0.1);
 }
 
 .responsavel-form-item h4 {
     color: var(--primary);
     margin-bottom: 15px;
     padding-bottom: 8px;
-    border-bottom: 1px solid var(--gray-light);
+    border-bottom: 2px solid var(--secondary);
 }
 
 @media (max-width: 768px) {
@@ -738,6 +792,12 @@ body {
     .dashboard-card {
         min-height: auto;
     }
+    
+    .user-details h3 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+    }
 }
 
 @media (max-width: 576px) {
@@ -751,6 +811,9 @@ body {
     
     .welcome-card h1 {
         font-size: 1.5rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.3rem;
     }
 }
 
@@ -765,12 +828,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
+    background: linear-gradient(var(--primary), var(--primary-light));
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: linear-gradient(var(--primary-light), var(--primary));
 }
    
     </style>
@@ -787,7 +850,10 @@ body {
                     <?php endif; ?>
                 </div>
                 <div class="user-details">
-                    <h3><?php echo htmlspecialchars($usuario_nome); ?></h3>
+                    <h3>
+                        <?php echo htmlspecialchars($usuario_nome); ?>
+                        <span class="bombeiro-badge">🚒 Bombeiro</span>
+                    </h3>
                     <p>Matrícula: <?php echo htmlspecialchars($usuario_matricula); ?></p>
                 </div>
             </div>
@@ -800,44 +866,22 @@ body {
     
     <div class="container">
         <div class="welcome-card">
-            <h1>Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>!</h1>
-            <p>Área do aluno. Aqui você pode acessar suas informações.</p>
+            <h1>
+                <i class="fas fa-fire-extinguisher"></i>
+                Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>!
+            </h1>
+            <p>🚒 Área do Bombeiro Mirim. Aqui você pode acessar suas informações e acompanhar seu desenvolvimento no projeto.</p>
         </div>
         
         <div class="dashboard-grid">
             <div class="dashboard-card" id="card-matricula">
                 <div class="card-icon">
-                    <i class="fas fa-book"></i>
+                    <i class="fas fa-id-badge"></i>
                 </div>
                 <h2>Minha Matrícula</h2>
-                <p>Veja os dados da sua matrícula.</p>
+                <p>Veja os dados da sua matrícula no programa Bombeiro Mirim.</p>
             </div>
 
-            <!--
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h2>Notas e Desempenho</h2>
-                <p>Faça o envio do seu Boletim escolar.</p>
-            </div> -->
-            <!--
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-calendar-alt"></i>
-                </div>
-                <h2>Calendário</h2>
-                <p>Veja o calendário de aulas, eventos e datas importantes.</p>
-            </div>
-            
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-tasks"></i>
-                </div>
-                <h2>Atividades</h2>
-                <p>Acompanhe suas atividades, trabalhos e projetos pendentes.</p>
-            </div> -->
-            
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
                     <i class="fas fa-user-cog"></i>
@@ -851,15 +895,15 @@ body {
                     <i class="fas fa-chart-line"></i>
                 </div>
                 <h2>Avaliações</h2>
-                <p>Veja sua avaliação</p>
+                <p>Veja suas avaliações e progresso no curso.</p>
             </div>
             
             <div class="dashboard-card">
                 <div class="card-icon">
-                    <i class="fas fa-comment-alt"></i>
+                    <i class="fas fa-calendar-alt"></i>
                 </div>
-                <h2>Mensagens</h2>
-                <p>Em desenvolvimento.....</p>
+                <h2>Atividades</h2>
+                <p>Acompanhe as atividades e exercícios práticos de bombeiro.</p>
             </div>
             
         </div>
@@ -868,7 +912,7 @@ body {
         <div id="gerenciaModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
-                <h2 id="modalTitle">Minha matrícula</h2>
+                <h2 id="modalTitle">🚒 Minha Matrícula - Bombeiro Mirim</h2>
                                 
                 <div class="matricula-group">
                     <label>Nome:</label>
@@ -916,7 +960,7 @@ body {
                 
                 <!-- Seção de visualização do perfil -->
                 <div id="visualizar-perfil">
-                    <h2 id="modalTitlePerfil">Meu Perfil</h2>
+                    <h2 id="modalTitlePerfil">🚒 Meu Perfil - Bombeiro Mirim</h2>
                     
                     <div class="text-center">
                         <img src="" id="p-foto" class="perfil-foto" alt="Foto do aluno">
@@ -982,7 +1026,7 @@ body {
                 
                 <!-- Seção de edição do perfil -->
                 <div id="editar-perfil" style="display:none;">
-                    <h2>Editar Perfil</h2>
+                    <h2>🚒 Editar Perfil - Bombeiro Mirim</h2>
                     
                     <div id="mensagem-resultado"></div>
                     
@@ -1138,11 +1182,11 @@ body {
     <div class="container">
       <div class="footer-content">
         <div class="footer-brand">
-          <i class="fas fa-graduation-cap"></i> Superação - Ninho de Águias
+          <i class="fas fa-fire-extinguisher"></i> Bombeiro Mirim - Salvando Vidas
         </div>
         <div class="footer-info">
-          <p>© 2024 Projeto SuperAção - O Projeto Superação é uma iniciativa da ASSEGO – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
-          <p>Painel de Gerenciamento de Matrículas</p>
+          <p>© 2024 Projeto Bombeiro Mirim - O Projeto é uma iniciativa da ASSEGO – Associação dos Subtenentes e Sargentos da PM e BM do Estado de Goiás</p>
+          <p>🚒 Painel do Aluno - Sistema de Gerenciamento</p>
           <p>Desenvolvido por <a href="https://www.instagram.com/assego/" class="ftlink">@Assego</a></p>
         </div>
       </div>
