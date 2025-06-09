@@ -1,83 +1,94 @@
 <?php
-// api/buscar_perfil.php - API para buscar dados do perfil do aluno
-session_start();
-require_once '../conexao.php';
+// Arquivo temporário para testar a estrutura de fotos
+// Salve como: bombeiros_mirim/aluno/teste_fotos.php
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION["logado"]) || $_SESSION["logado"] !== true) {
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => false, 
-        'message' => 'Usuário não autenticado'
-    ]);
-    exit;
+echo "<h1>Teste de Estrutura de Fotos</h1>";
+
+// Verificar estrutura de pastas
+echo "<h2>Verificação de Pastas:</h2>";
+echo "Pasta atual: " . __DIR__ . "<br>";
+echo "Pasta uploads existe: " . (is_dir("../uploads") ? "✅ SIM" : "❌ NÃO") . "<br>";
+echo "Pasta uploads/fotos existe: " . (is_dir("../uploads/fotos") ? "✅ SIM" : "❌ NÃO") . "<br>";
+
+// Listar arquivos na pasta de fotos
+echo "<h2>Arquivos em uploads/fotos/:</h2>";
+if (is_dir("../uploads/fotos")) {
+    $files = scandir("../uploads/fotos");
+    foreach ($files as $file) {
+        if ($file != "." && $file != "..") {
+            $fullPath = "../uploads/fotos/" . $file;
+            echo "📄 " . $file . " (tamanho: " . filesize($fullPath) . " bytes)<br>";
+        }
+    }
+} else {
+    echo "❌ Pasta não encontrada";
 }
 
-// Pegar ID do aluno da sessão
-$id_aluno = $_SESSION["usuario_id"];
+// Verificar se default.png existe
+echo "<h2>Verificação de Arquivos Específicos:</h2>";
+echo "default.png existe: " . (file_exists("../uploads/fotos/default.png") ? "✅ SIM" : "❌ NÃO") . "<br>";
 
-// Resposta padrão
-$response = [
-    'success' => false,
-    'message' => '',
-    'aluno' => null,
-    'endereco' => null,
-    'responsaveis' => []
+// Testar diferentes caminhos de imagem
+echo "<h2>Teste de Caminhos de Imagem:</h2>";
+$testPaths = [
+    "../uploads/fotos/default.png",
+    "./uploads/fotos/default.png", 
+    "uploads/fotos/default.png",
+    "../uploads/fotos/"
 ];
 
-try {
-    // Busca dados do aluno
-    $stmt = $pdo->prepare("SELECT * FROM alunos WHERE id = :id");
-    $stmt->bindParam(':id', $id_aluno, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    if ($stmt->rowCount() > 0) {
-        $aluno = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Preparar foto para exibição
-        if (!empty($aluno['foto'])) {
-            // Se a foto começar com http:// ou https://, não altera
-            if (strpos($aluno['foto'], 'http://') !== 0 && strpos($aluno['foto'], 'https://') !== 0) {
-                // Remove "../" do início se existir
-                $aluno['foto'] = preg_replace('/^\.\.\//', '', $aluno['foto']);
-                
-                // Adiciona caminho relativo se necessário
-                if (strpos($aluno['foto'], '/') !== 0 && strpos($aluno['foto'], 'uploads/') !== 0) {
-                    $aluno['foto'] = 'uploads/fotos/' . $aluno['foto'];
-                }
-            }
-        }
-        
-        // Busca endereço do aluno
-        $stmt_end = $pdo->prepare("SELECT * FROM enderecos WHERE aluno_id = :aluno_id");
-        $stmt_end->bindParam(':aluno_id', $id_aluno, PDO::PARAM_INT);
-        $stmt_end->execute();
-        $endereco = $stmt_end->fetch(PDO::FETCH_ASSOC);
-        
-        // Busca responsáveis do aluno
-        $stmt_resp = $pdo->prepare("
-            SELECT r.* 
-            FROM responsaveis r
-            INNER JOIN aluno_responsavel ar ON r.id = ar.responsavel_id
-            WHERE ar.aluno_id = :aluno_id
-        ");
-        $stmt_resp->bindParam(':aluno_id', $id_aluno, PDO::PARAM_INT);
-        $stmt_resp->execute();
-        $responsaveis = $stmt_resp->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Preparar resposta
-        $response['success'] = true;
-        $response['aluno'] = $aluno;
-        $response['endereco'] = $endereco;
-        $response['responsaveis'] = $responsaveis;
+foreach ($testPaths as $path) {
+    if (file_exists($path)) {
+        echo "✅ $path - EXISTE<br>";
     } else {
-        $response['message'] = 'Aluno não encontrado';
+        echo "❌ $path - NÃO EXISTE<br>";
     }
-} catch(PDOException $e) {
-    $response['message'] = 'Erro ao buscar dados: ' . $e->getMessage();
 }
 
-// Enviar resposta como JSON
-header('Content-Type: application/json');
-echo json_encode($response);
+// Teste visual
+echo "<h2>Teste Visual:</h2>";
+if (file_exists("../uploads/fotos/default.png")) {
+    echo '<img src="../uploads/fotos/default.png" alt="Teste" style="width: 100px; height: 100px; border: 2px solid red;">';
+    echo "<br>Se você vê uma imagem acima, o caminho está correto!";
+} else {
+    echo "❌ Não foi possível carregar a imagem de teste";
+}
+
+// Conectar ao banco e verificar algumas fotos de alunos
+echo "<h2>Fotos de Alunos no Banco:</h2>";
+try {
+    if (file_exists("../env_config.php")) {
+        require "../env_config.php";
+        
+        $db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", 
+                      $_ENV['DB_USER'], $_ENV['DB_PASS']);
+        
+        $query = "SELECT id, nome, foto FROM alunos WHERE foto IS NOT NULL AND foto != '' LIMIT 5";
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $alunos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        foreach ($alunos as $aluno) {
+            echo "<strong>Aluno:</strong> " . htmlspecialchars($aluno['nome']) . "<br>";
+            echo "<strong>Foto no banco:</strong> " . htmlspecialchars($aluno['foto']) . "<br>";
+            
+            // Testar se o arquivo existe
+            $testPaths = [
+                "../uploads/fotos/" . basename($aluno['foto']),
+                "../uploads/fotos/" . $aluno['foto'],
+                "../" . $aluno['foto']
+            ];
+            
+            foreach ($testPaths as $testPath) {
+                if (file_exists($testPath)) {
+                    echo "✅ Arquivo encontrado em: $testPath<br>";
+                    break;
+                }
+            }
+            echo "<hr>";
+        }
+    }
+} catch (Exception $e) {
+    echo "Erro ao conectar com banco: " . $e->getMessage();
+}
 ?>
