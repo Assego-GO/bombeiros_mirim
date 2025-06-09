@@ -55,7 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nomeAluno = limparDados($_POST['nome-aluno'] ?? '');
         $dataNascimento = limparDados($_POST['data-nascimento'] ?? '');
         $genero = limparDados($_POST['genero'] ?? '');
-        $cadastro_unico = limparDados($_POST['cadastro_unico'] ?? '');
+        // Convertendo cadastro_unico para lowercase também
+        $cadastro_unico = strtolower(limparDados($_POST['cadastro_unico'] ?? ''));
         $rgAluno = limparDados($_POST['rg-aluno'] ?? '');
         $cpfAluno = limparDados($_POST['cpf-aluno'] ?? '');
         $escola = limparDados($_POST['escola'] ?? '');
@@ -63,6 +64,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $infoSaude = limparDados($_POST['info-saude'] ?? '');
         $telefoneEscola = limparDados($_POST['telefone-escola'] ?? '');
         $diretorEscola = limparDados($_POST['nome-diretor'] ?? '');
+
+        // NOVOS CAMPOS ADICIONADOS
+        $tipoSangue = strtolower(limparDados($_POST['tipo-sangue'] ?? ''));
+        $criancaAtipica = strtolower(limparDados($_POST['atipica'] ?? ''));
+        $atipicaComLaudo = strtolower(limparDados($_POST['laudo-atipica'] ?? ''));
+        $temAlergiasCondicoes = strtolower(limparDados($_POST['condicao-crianca'] ?? ''));
+        $detalhesAlergiasCondicoes = limparDados($_POST['condicao-detalhes'] ?? '');
+        $medicacaoContinua = strtolower(limparDados($_POST['medicacao-crianca'] ?? ''));
+        $detalhesMedicacao = limparDados($_POST['medicacao-detalhes'] ?? '');
+        $numeroCadastroUnico = limparDados($_POST['numero-cadunico'] ?? '');
+        $tipoEscola = strtolower(limparDados($_POST['tipo-escola'] ?? ''));
+        $enderecoEscola = limparDados($_POST['endereco-escola'] ?? '');
+        
+        // Campos de concorrência e vaga militar
+        $amplaConcorrencia = strtolower(limparDados($_POST['concorrencia'] ?? ''));
+        $vagaMilitar = strtolower(limparDados($_POST['vaga-militar'] ?? ''));
 
         
         $nomeResponsavel = limparDados($_POST['nome-responsavel'] ?? '');
@@ -72,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $telefone = limparDados($_POST['telefone'] ?? '');
         $whatsapp = limparDados($_POST['whatsapp'] ?? '');
         $email = limparDados($_POST['email'] ?? '');
+        $profissao = limparDados($_POST['profissao-responsavel'] ?? '');
         
         $cep = limparDados($_POST['cep'] ?? '');
         $endereco = limparDados($_POST['endereco'] ?? '');
@@ -91,7 +109,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'cadastro_unico' => $cadastro_unico,
             'nomeResponsavel' => $nomeResponsavel,
             'email' => $email,
-            'consentimento' => $consentimento
+            'consentimento' => $consentimento,
+            'tipoSangue' => $tipoSangue,
+            'criancaAtipica' => $criancaAtipica
         ];
         
         $resposta['debug']['processed_data'] = $dadosProcessados;
@@ -121,6 +141,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($cidade)) $camposVazios[] = 'cidade';
         if ($consentimento !== 1) $camposVazios[] = 'consent';
         
+        // VALIDAÇÕES DOS NOVOS CAMPOS
+        if (empty($tipoSangue)) $camposVazios[] = 'tipo-sangue';
+        if (empty($criancaAtipica)) $camposVazios[] = 'atipica';
+        if (empty($temAlergiasCondicoes)) $camposVazios[] = 'condicao-crianca';
+        if (empty($medicacaoContinua)) $camposVazios[] = 'medicacao-crianca';
+        if (empty($tipoEscola)) $camposVazios[] = 'tipo-escola';
+        if (empty($enderecoEscola)) $camposVazios[] = 'endereco-escola';
+        if (empty($amplaConcorrencia)) $camposVazios[] = 'concorrencia';
+        if (empty($vagaMilitar)) $camposVazios[] = 'vaga-militar';
+        
         if (!empty($camposVazios)) {
             $resposta['debug']['empty_fields'] = $camposVazios;
             throw new Exception('Preencha todos os campos obrigatórios: ' . implode(', ', $camposVazios));
@@ -138,8 +168,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!in_array($parentesco, ['pai', 'mae', 'avó', 'avô', 'tio', 'tia', 'outro'])) {
             throw new Exception('Campo "Parentesco" deve ter um valor válido');
         }
+
+        // VALIDAÇÕES DOS NOVOS CAMPOS
+        $tiposSanguineos = ['a+', 'a-', 'b+', 'b-', 'ab+', 'ab-', 'o+', 'o-'];
+        if (!in_array(strtolower($tipoSangue), $tiposSanguineos)) {
+            throw new Exception('Tipo sanguíneo deve ser válido');
+        }
+
+        if (!in_array($criancaAtipica, ['sim', 'nao'])) {
+            throw new Exception('Campo "Criança atípica" deve ser "sim" ou "nao"');
+        }
+
+        if (!in_array($temAlergiasCondicoes, ['sim', 'nao'])) {
+            throw new Exception('Campo "Alergias/condições" deve ser "sim" ou "nao"');
+        }
+
+        if (!in_array($medicacaoContinua, ['sim', 'nao'])) {
+            throw new Exception('Campo "Medicação contínua" deve ser "sim" ou "nao"');
+        }
+
+        if (!in_array($tipoEscola, ['publica', 'particular'])) {
+            throw new Exception('Campo "Tipo da escola" deve ser "publica" ou "particular"');
+        }
+
+        if (!in_array($amplaConcorrencia, ['sim', 'nao'])) {
+            throw new Exception('Campo "Ampla concorrência" deve ser "sim" ou "nao"');
+        }
+
+        if (!in_array($vagaMilitar, ['sim', 'nao'])) {
+            throw new Exception('Campo "Vaga militar" deve ser "sim" ou "nao"');
+        }
         
-        // Processa o upload da foto
+        // Processa o upload da foto do aluno
         $caminhoFoto = null; // Valor padrão caso não haja foto
 
         // Verifica e processa o upload da foto
@@ -181,6 +241,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception("Tipo de arquivo não permitido. Apenas JPG, PNG e GIF são aceitos.");
             }
         }
+
+        // PROCESSA UPLOAD DO LAUDO DA CRIANÇA ATÍPICA
+        $caminhoArquivoLaudo = null;
+        if(isset($_FILES['arquivo-laudo']) && $_FILES['arquivo-laudo']['error'] === UPLOAD_ERR_OK) {
+            $diretorio_laudos = "../uploads/laudos/";
+            
+            if (!file_exists($diretorio_laudos)) {
+                mkdir($diretorio_laudos, 0755, true);
+            }
+            
+            $nome_arquivo_laudo = $_FILES['arquivo-laudo']['name'];
+            $arquivo_temporario_laudo = $_FILES['arquivo-laudo']['tmp_name'];
+            $tamanho_arquivo_laudo = $_FILES['arquivo-laudo']['size'];
+            $tipo_arquivo_laudo = $_FILES['arquivo-laudo']['type'];
+            
+            if ($tamanho_arquivo_laudo > 10 * 1024 * 1024) { // 10MB para documentos
+                throw new Exception("O laudo é muito grande. Tamanho máximo permitido: 10MB");
+            }
+            
+            $extensao_laudo = pathinfo($nome_arquivo_laudo, PATHINFO_EXTENSION);
+            $nome_unico_laudo = 'laudo_' . uniqid() . '_' . date('YmdHis') . '.' . $extensao_laudo;
+            $caminho_completo_laudo = $diretorio_laudos . $nome_unico_laudo;
+            
+            $tipos_permitidos_laudo = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (in_array($tipo_arquivo_laudo, $tipos_permitidos_laudo)) {
+                if (move_uploaded_file($arquivo_temporario_laudo, $caminho_completo_laudo)) {
+                    $caminhoArquivoLaudo = $caminho_completo_laudo;
+                } else {
+                    throw new Exception("Erro ao mover o arquivo do laudo.");
+                }
+            } else {
+                throw new Exception("Tipo de arquivo do laudo não permitido. Apenas JPG, PNG, GIF, PDF, DOC e DOCX são aceitos.");
+            }
+        }
+
+        // PROCESSA UPLOAD DO ATESTADO MÉDICO
+        $caminhoAtestadoMedico = null;
+        if(isset($_FILES['atestado-medico']) && $_FILES['atestado-medico']['error'] === UPLOAD_ERR_OK) {
+            $diretorio_atestados = "../uploads/atestados/";
+            
+            if (!file_exists($diretorio_atestados)) {
+                mkdir($diretorio_atestados, 0755, true);
+            }
+            
+            $nome_arquivo_atestado = $_FILES['atestado-medico']['name'];
+            $arquivo_temporario_atestado = $_FILES['atestado-medico']['tmp_name'];
+            $tamanho_arquivo_atestado = $_FILES['atestado-medico']['size'];
+            $tipo_arquivo_atestado = $_FILES['atestado-medico']['type'];
+            
+            if ($tamanho_arquivo_atestado > 10 * 1024 * 1024) { // 10MB para documentos
+                throw new Exception("O atestado é muito grande. Tamanho máximo permitido: 10MB");
+            }
+            
+            $extensao_atestado = pathinfo($nome_arquivo_atestado, PATHINFO_EXTENSION);
+            $nome_unico_atestado = 'atestado_' . uniqid() . '_' . date('YmdHis') . '.' . $extensao_atestado;
+            $caminho_completo_atestado = $diretorio_atestados . $nome_unico_atestado;
+            
+            $tipos_permitidos_atestado = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg', 'application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (in_array($tipo_arquivo_atestado, $tipos_permitidos_atestado)) {
+                if (move_uploaded_file($arquivo_temporario_atestado, $caminho_completo_atestado)) {
+                    $caminhoAtestadoMedico = $caminho_completo_atestado;
+                } else {
+                    throw new Exception("Erro ao mover o arquivo do atestado.");
+                }
+            } else {
+                throw new Exception("Tipo de arquivo do atestado não permitido. Apenas JPG, PNG, GIF, PDF, DOC e DOCX são aceitos.");
+            }
+        }
         
         $numeroMatricula = 'SA' . date('Y') . mt_rand(1000, 9999);
         $dataMatricula = date('Y-m-d H:i:s');
@@ -196,13 +324,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $conexao->beginTransaction();
         
-        // Consulta SQL corrigida para incluir todos os campos
+        // Consulta SQL ATUALIZADA para incluir os novos campos
         $sqlAluno = "INSERT INTO alunos (
             nome, data_nascimento, genero, cadastro_unico, rg, cpf, escola, serie, info_saude, 
-            numero_matricula, data_matricula, foto, telefone_escola, diretor_escola
+            numero_matricula, data_matricula, foto, telefone_escola, diretor_escola,
+            tipo_sanguineo, crianca_atipica, atipica_com_laudo, arquivo_laudo, tem_alergias_condicoes, 
+            detalhes_alergias_condicoes, medicacao_continua, detalhes_medicacao, 
+            numero_cadastro_unico, tipo_escola, endereco_escola, atestado_medico,
+            ampla_concorrencia, vaga_militar
         ) VALUES (
             :nome, :data_nascimento, :genero, :cadastro_unico, :rg, :cpf, :escola, :serie, :info_saude, 
-            :numero_matricula, :data_matricula, :foto, :telefone_escola, :diretor_escola
+            :numero_matricula, :data_matricula, :foto, :telefone_escola, :diretor_escola,
+            :tipo_sanguineo, :crianca_atipica, :atipica_com_laudo, :arquivo_laudo, :tem_alergias_condicoes, 
+            :detalhes_alergias_condicoes, :medicacao_continua, :detalhes_medicacao, 
+            :numero_cadastro_unico, :tipo_escola, :endereco_escola, :atestado_medico,
+            :ampla_concorrencia, :vaga_militar
         )";
         
         $stmtAluno = $conexao->prepare($sqlAluno);
@@ -220,6 +356,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtAluno->bindParam(':telefone_escola', $telefoneEscola);
         $stmtAluno->bindParam(':diretor_escola', $diretorEscola);
         $stmtAluno->bindParam(':foto', $caminhoFoto);
+        
+        // BIND DOS NOVOS CAMPOS
+        $stmtAluno->bindParam(':tipo_sanguineo', $tipoSangue);
+        $stmtAluno->bindParam(':crianca_atipica', $criancaAtipica);
+        $stmtAluno->bindParam(':atipica_com_laudo', $atipicaComLaudo);
+        $stmtAluno->bindParam(':arquivo_laudo', $caminhoArquivoLaudo);
+        $stmtAluno->bindParam(':tem_alergias_condicoes', $temAlergiasCondicoes);
+        $stmtAluno->bindParam(':detalhes_alergias_condicoes', $detalhesAlergiasCondicoes);
+        $stmtAluno->bindParam(':medicacao_continua', $medicacaoContinua);
+        $stmtAluno->bindParam(':detalhes_medicacao', $detalhesMedicacao);
+        $stmtAluno->bindParam(':numero_cadastro_unico', $numeroCadastroUnico);
+        $stmtAluno->bindParam(':tipo_escola', $tipoEscola);
+        $stmtAluno->bindParam(':endereco_escola', $enderecoEscola);
+        $stmtAluno->bindParam(':atestado_medico', $caminhoAtestadoMedico);
+        $stmtAluno->bindParam(':ampla_concorrencia', $amplaConcorrencia);
+        $stmtAluno->bindParam(':vaga_militar', $vagaMilitar);
+        
         $stmtAluno->execute();
         
         $alunoId = $conexao->lastInsertId();
@@ -227,9 +380,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $temSegundoResponsavel = isset($_POST['tem_segundo_responsavel']) && $_POST['tem_segundo_responsavel'] == '1';
 
         $sqlResponsavel = "INSERT INTO responsaveis (
-            nome, parentesco, rg, cpf, telefone, whatsapp, email
+            nome, parentesco, rg, cpf, telefone, whatsapp, email, profissao
         ) VALUES (
-            :nome, :parentesco, :rg, :cpf, :telefone, :whatsapp, :email
+            :nome, :parentesco, :rg, :cpf, :telefone, :whatsapp, :email, :profissao
         )";
 
         $stmtResponsavel = $conexao->prepare($sqlResponsavel);
@@ -240,6 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtResponsavel->bindParam(':telefone', $telefone);
         $stmtResponsavel->bindParam(':whatsapp', $whatsapp);
         $stmtResponsavel->bindParam(':email', $email);
+        $stmtResponsavel->bindParam(':profissao', $profissao);
         $stmtResponsavel->execute();
 
         // Recupera o ID do primeiro responsável
@@ -260,11 +414,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $telefone2 = limparDados($_POST['telefone-2'] ?? '');
             $whatsapp2 = limparDados($_POST['whatsapp-2'] ?? '');
             $email2 = limparDados($_POST['email-2'] ?? '');
+            $profissao2 = limparDados($_POST['profissao-responsavel-2'] ?? '');
             
             $sqlResponsavel2 = "INSERT INTO responsaveis (
-                nome, parentesco, rg, cpf, telefone, whatsapp, email
+                nome, parentesco, rg, cpf, telefone, whatsapp, email, profissao
             ) VALUES (
-                :nome, :parentesco, :rg, :cpf, :telefone, :whatsapp, :email
+                :nome, :parentesco, :rg, :cpf, :telefone, :whatsapp, :email, :profissao
             )";
             
             $stmtResponsavel2 = $conexao->prepare($sqlResponsavel2);
@@ -275,6 +430,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtResponsavel2->bindParam(':telefone', $telefone2);
             $stmtResponsavel2->bindParam(':whatsapp', $whatsapp2);
             $stmtResponsavel2->bindParam(':email', $email2);
+            $stmtResponsavel2->bindParam(':profissao', $profissao2);
             $stmtResponsavel2->execute();
             
             $responsavelId2 = $conexao->lastInsertId();

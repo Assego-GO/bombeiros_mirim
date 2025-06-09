@@ -4617,8 +4617,10 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
-2025-06-06 19:08:36 - Buscando aluno ID: 139
-2025-06-06 19:08:36 - Dados encontrados: Array
+
+2025-06-09 11:17:19 - Buscando aluno ID: 139
+2025-06-09 11:17:19 - Dados encontrados: Array
+
 (
     [aluno_id] => 139
     [aluno_nome] => LUIS FILIPE E SILVA
@@ -4631,8 +4633,9 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
-2025-06-06 19:09:09 - Buscando aluno ID: 139
-2025-06-06 19:09:09 - Dados encontrados: Array
+2025-06-09 11:21:19 - Buscando aluno ID: 139
+2025-06-09 11:21:19 - Dados encontrados: Array
+
 (
     [aluno_id] => 139
     [aluno_nome] => LUIS FILIPE E SILVA
@@ -4645,8 +4648,9 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
-2025-06-06 19:10:27 - Buscando aluno ID: 139
-2025-06-06 19:10:27 - Dados encontrados: Array
+2025-06-09 11:21:23 - Buscando aluno ID: 139
+2025-06-09 11:21:23 - Dados encontrados: Array
+
 (
     [aluno_id] => 139
     [aluno_nome] => LUIS FILIPE E SILVA
@@ -4659,28 +4663,16 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
-2025-06-06 19:11:26 - Buscando aluno ID: 139
-2025-06-06 19:11:26 - Dados encontrados: Array
+
+2025-06-09 11:57:10 - Buscando aluno ID: 139
+2025-06-09 11:57:10 - Dados encontrados: Array
+
 (
     [aluno_id] => 139
     [aluno_nome] => LUIS FILIPE E SILVA
     [matricula_id] => 111
     [data_matricula] => 2025-06-06 00:00:00
     [status] => ativo
-    [turma_id] => 20
-    [unidade_id] => 9
-    [turma_nome] => turma teste
-    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
-)
-
-2025-06-09 15:23:52 - Buscando aluno ID: 141
-2025-06-09 15:23:52 - Dados encontrados: Array
-(
-    [aluno_id] => 141
-    [aluno_nome] => Messinaldo
-    [matricula_id] => 113
-    [data_matricula] => 2025-06-09 14:46:09
-    [status] => pendente
     [turma_id] => 20
     [unidade_id] => 9
     [turma_nome] => turma teste
