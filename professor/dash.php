@@ -1189,6 +1189,13 @@ body {
             </div>
 
             <div class="dashboard-card">
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h2>Avaliações</h2>
+                <p>Avalie seus alunos</p>
+            </div>
+            <div class="dashboard-card">
                 <div class="card-icon" id="card-atividades">
                     <i class="fas fa-tasks"></i>
                 </div>
@@ -1196,13 +1203,6 @@ body {
                 <p>Em desenvolvimento......</p>
             </div>
             
-            <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <h2>Avaliações</h2>
-                <p>Avalie seus alunos</p>
-            </div>
 
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
