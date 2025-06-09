@@ -458,7 +458,7 @@ body {
     transform: rotate(90deg);
 }
 
-#modalTitle, #modalTitlePerfil {
+#modalTitle, #modalTitlePerfil, #modalTitleAtividades {
     color: var(--primary);
     margin-bottom: 20px;
     border-bottom: 2px solid var(--secondary);
@@ -761,6 +761,142 @@ body {
     border-bottom: 2px solid var(--secondary);
 }
 
+/* Estilos específicos para modal de atividades */
+.atividades-turma-info {
+    background: linear-gradient(135deg, rgba(255, 194, 51, 0.1), rgba(227, 6, 19, 0.05));
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    border-left: 4px solid var(--secondary);
+}
+
+.atividade-item {
+    background-color: var(--white);
+    border: 2px solid var(--gray-light);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow);
+    transition: all 0.3s ease;
+}
+
+.atividade-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+    border-color: var(--secondary);
+}
+
+.atividade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gray-light);
+}
+
+.atividade-header h3 {
+    color: var(--primary);
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.status-participacao {
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-presente {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.2), rgba(52, 199, 89, 0.1));
+    color: var(--accent);
+    border: 1px solid rgba(52, 199, 89, 0.3);
+}
+
+.status-ausente {
+    background: linear-gradient(135deg, rgba(255, 59, 48, 0.2), rgba(255, 59, 48, 0.1));
+    color: var(--danger);
+    border: 1px solid rgba(255, 59, 48, 0.3);
+}
+
+.status-justificada {
+    background: linear-gradient(135deg, rgba(255, 194, 51, 0.2), rgba(255, 194, 51, 0.1));
+    color: var(--secondary-dark);
+    border: 1px solid rgba(255, 194, 51, 0.3);
+}
+
+.status-nao-avaliado {
+    background: linear-gradient(135deg, rgba(102, 102, 102, 0.2), rgba(102, 102, 102, 0.1));
+    color: var(--gray);
+    border: 1px solid rgba(102, 102, 102, 0.3);
+}
+
+.atividade-info {
+    margin-bottom: 15px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.info-row p {
+    margin: 0;
+    flex: 1;
+    color: var(--gray-dark);
+}
+
+.atividade-detalhes {
+    margin-bottom: 15px;
+}
+
+.atividade-detalhes h4 {
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.atividade-detalhes p {
+    color: var(--gray-dark);
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.avaliacao-detalhes {
+    background: linear-gradient(135deg, rgba(52, 199, 89, 0.1), rgba(52, 199, 89, 0.05));
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--accent);
+    margin-top: 15px;
+}
+
+.avaliacao-detalhes h4 {
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.avaliacao-detalhes p {
+    margin-bottom: 8px;
+    color: var(--gray-dark);
+}
+
+.no-atividades {
+    text-align: center;
+    color: var(--gray);
+    font-style: italic;
+    font-size: 1.1rem;
+    padding: 40px;
+    background: linear-gradient(135deg, rgba(255, 194, 51, 0.1), rgba(227, 6, 19, 0.05));
+    border-radius: var(--border-radius-lg);
+    border: 2px dashed var(--gray-light);
+}
+
 @media (max-width: 768px) {
     .form-col {
         flex: 0 0 100%;
@@ -797,6 +933,24 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 0.2rem;
+    }
+    
+    .info-row {
+        flex-direction: column;
+    }
+    
+    .info-row p {
+        margin-bottom: 5px;
+    }
+    
+    .atividade-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .status-participacao {
+        align-self: flex-end;
     }
 }
 
@@ -1173,6 +1327,29 @@ body {
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Atividades -->
+        <div id="atividadesModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeAtividadesModal">&times;</span>
+                <h2 id="modalTitleAtividades">🏃‍♂️ Minhas Atividades - Bombeiro Mirim</h2>
+                
+                <div class="atividades-turma-info">
+                    <div class="matricula-group">
+                        <label>Turma:</label>
+                        <p id="atividades-turma-nome"></p>
+                    </div>
+                    <div class="matricula-group">
+                        <label>Unidade:</label>
+                        <p id="atividades-unidade-nome"></p>
+                    </div>
+                </div>
+                
+                <div id="atividades-lista">
+                    <!-- Atividades serão carregadas aqui via JavaScript -->
                 </div>
             </div>
         </div>
