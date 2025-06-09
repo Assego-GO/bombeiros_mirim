@@ -4617,3 +4617,59 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
+2025-06-06 19:08:36 - Buscando aluno ID: 139
+2025-06-06 19:08:36 - Dados encontrados: Array
+(
+    [aluno_id] => 139
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 111
+    [data_matricula] => 2025-06-06 00:00:00
+    [status] => ativo
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
+2025-06-06 19:09:09 - Buscando aluno ID: 139
+2025-06-06 19:09:09 - Dados encontrados: Array
+(
+    [aluno_id] => 139
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 111
+    [data_matricula] => 2025-06-06 00:00:00
+    [status] => ativo
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
+2025-06-06 19:10:27 - Buscando aluno ID: 139
+2025-06-06 19:10:27 - Dados encontrados: Array
+(
+    [aluno_id] => 139
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 111
+    [data_matricula] => 2025-06-06 00:00:00
+    [status] => ativo
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
+2025-06-06 19:11:26 - Buscando aluno ID: 139
+2025-06-06 19:11:26 - Dados encontrados: Array
+(
+    [aluno_id] => 139
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 111
+    [data_matricula] => 2025-06-06 00:00:00
+    [status] => ativo
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
