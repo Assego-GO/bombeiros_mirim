@@ -1295,6 +1295,7 @@ body {
                 <h2>Atividades</h2>
                 <p>Cadastre e gerencie atividades para suas turmas.</p>
             </div>
+
             
             <div class="dashboard-card" id="card-fotos">
                 <div class="card-icon">
@@ -1303,7 +1304,6 @@ body {
                 <h2>Fotos</h2>
                 <p>Anexar fotos para galeria das turmas.</p>
             </div>
-
 
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
