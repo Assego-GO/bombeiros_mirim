@@ -9,8 +9,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const closePerfilModal = document.getElementById('closePerfilModal');
     const openPerfilModal = document.getElementById('card-perfil');
     
+    // Modal para atividades
+    const atividadesModal = document.getElementById('atividadesModal');
+    const closeAtividadesModal = document.getElementById('closeAtividadesModal');
+    
     // Card de avaliações (pegando o terceiro card)
     const cardAvaliacoes = document.querySelector('.dashboard-card:nth-child(3)');
+    
+    // Card de atividades (pegando o quarto card)
+    const cardAtividades = document.querySelector('.dashboard-card:nth-child(4)');
     
     // Evento para abrir o modal de matrícula
     if (openMatriculaModal) {
@@ -39,6 +46,13 @@ document.addEventListener("DOMContentLoaded", function() {
     if (closePerfilModal) {
         closePerfilModal.addEventListener("click", function(){
             perfilModal.style.display = "none";
+        });
+    }
+    
+    // Evento para fechar o modal de atividades
+    if (closeAtividadesModal) {
+        closeAtividadesModal.addEventListener("click", function(){
+            atividadesModal.style.display = "none";
         });
     }
     
@@ -75,6 +89,14 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
+    // Evento para o botão de atividades
+    if (cardAtividades) {
+        cardAtividades.addEventListener("click", function() {
+            buscarAtividades();
+            atividadesModal.style.display = "block";
+        });
+    }
+    
     // Fechar modais quando clicar fora deles
     window.addEventListener("click", function(event) {
         if (event.target == matriculaModal) {
@@ -82,6 +104,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         if (perfilModal && event.target == perfilModal) {
             perfilModal.style.display = "none";
+        }
+        if (atividadesModal && event.target == atividadesModal) {
+            atividadesModal.style.display = "none";
         }
     });
     
@@ -276,6 +301,112 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
     
+    // Função para buscar atividades do aluno
+    function buscarAtividades(){
+        fetch("./api/buscar_atividades.php")
+        .then(resposta => resposta.json())
+        .then(dados => {
+            if(dados.success){
+                const turma = dados.turma;
+                const atividades = dados.atividades;
+                
+                // Preencher informações da turma
+                document.getElementById('atividades-turma-nome').textContent = turma.nome_turma;
+                document.getElementById('atividades-unidade-nome').textContent = turma.nome_unidade;
+                
+                // Preencher lista de atividades
+                const atividadesContainer = document.getElementById('atividades-lista');
+                atividadesContainer.innerHTML = '';
+                
+                if (atividades && atividades.length > 0) {
+                    atividades.forEach(atividade => {
+                        const atividadeDiv = document.createElement('div');
+                        atividadeDiv.className = 'atividade-item';
+                        
+                        // Formatar status da participação
+                        let statusParticipacao = '';
+                        let statusClass = '';
+                        let avaliacaoHtml = '';
+                        
+                        if (atividade.participacao) {
+                            const part = atividade.participacao;
+                            
+                            // Status de presença
+                            if (part.presenca === 'sim') {
+                                statusParticipacao = 'Presente';
+                                statusClass = 'status-presente';
+                            } else if (part.presenca === 'falta_justificada') {
+                                statusParticipacao = 'Falta Justificada';
+                                statusClass = 'status-justificada';
+                            } else {
+                                statusParticipacao = 'Ausente';
+                                statusClass = 'status-ausente';
+                            }
+                            
+                            // Informações de avaliação se presente
+                            if (part.presenca === 'sim') {
+                                avaliacaoHtml = `
+                                    <div class="avaliacao-detalhes">
+                                        <h4>📊 Avaliação da Atividade</h4>
+                                        ${part.desempenho_nota ? `<p><strong>Nota:</strong> ${part.desempenho_nota}/10</p>` : ''}
+                                        ${part.desempenho_conceito ? `<p><strong>Conceito:</strong> ${formatarConceito(part.desempenho_conceito)}</p>` : ''}
+                                        ${part.comportamento ? `<p><strong>Comportamento:</strong> ${formatarConceito(part.comportamento)}</p>` : ''}
+                                        ${part.habilidades_desenvolvidas ? `<p><strong>Habilidades:</strong> ${formatarHabilidades(part.habilidades_desenvolvidas)}</p>` : ''}
+                                        ${part.observacoes ? `<p><strong>Observações:</strong> ${part.observacoes}</p>` : ''}
+                                    </div>
+                                `;
+                            }
+                        } else {
+                            statusParticipacao = 'Não Avaliado';
+                            statusClass = 'status-nao-avaliado';
+                        }
+                        
+                        atividadeDiv.innerHTML = `
+                            <div class="atividade-header">
+                                <h3>🏃‍♂️ ${atividade.nome_atividade}</h3>
+                                <span class="status-participacao ${statusClass}">${statusParticipacao}</span>
+                            </div>
+                            
+                            <div class="atividade-info">
+                                <div class="info-row">
+                                    <p><strong>📅 Data:</strong> ${formatarData(atividade.data_atividade)}</p>
+                                    <p><strong>⏰ Horário:</strong> ${atividade.hora_inicio} - ${atividade.hora_termino}</p>
+                                </div>
+                                <div class="info-row">
+                                    <p><strong>📍 Local:</strong> ${atividade.local_atividade}</p>
+                                    <p><strong>👨‍🏫 Instrutor:</strong> ${atividade.instrutor_responsavel}</p>
+                                </div>
+                                ${atividade.nome_professor ? `<p><strong>🎓 Professor:</strong> ${atividade.nome_professor}</p>` : ''}
+                            </div>
+                            
+                            <div class="atividade-detalhes">
+                                <h4>🎯 Objetivo da Atividade</h4>
+                                <p>${atividade.objetivo_atividade}</p>
+                                
+                                <h4>📚 Conteúdo Abordado</h4>
+                                <p>${atividade.conteudo_abordado}</p>
+                            </div>
+                            
+                            ${avaliacaoHtml}
+                        `;
+                        
+                        atividadesContainer.appendChild(atividadeDiv);
+                    });
+                } else {
+                    atividadesContainer.innerHTML = '<p class="no-atividades">📅 Ainda não há atividades programadas para sua turma.</p>';
+                }
+            }
+            else{
+                console.error("Erro ao buscar atividades:", dados.message);
+                alert("Não foi possível encontrar informações sobre suas atividades. " + dados.message);
+            }
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao conectar com o servidor. Por favor, tente novamente mais tarde.");
+        });
+    }
+    
     // Função para alternar para modo de edição
     const btnEditarPerfil = document.getElementById('btn-editar-perfil');
     if (btnEditarPerfil) {
@@ -341,6 +472,37 @@ document.addEventListener("DOMContentLoaded", function() {
         
         const data = new Date(dataStr);
         return data.toLocaleDateString('pt-BR');
+    }
+    
+    // Funções auxiliares para formatação
+    function formatarConceito(conceito) {
+        const conceitos = {
+            'excelente': '⭐ Excelente',
+            'bom': '👍 Bom',
+            'regular': '👌 Regular',
+            'insuficiente': '📈 Precisa melhorar',
+            'precisa_melhorar': '📈 Precisa melhorar'
+        };
+        return conceitos[conceito] || conceito;
+    }
+    
+    function formatarHabilidades(habilidadesJson) {
+        try {
+            const habilidades = JSON.parse(habilidadesJson);
+            const habilidadesFormatadas = {
+                'trabalho_equipe': '🤝 Trabalho em equipe',
+                'lideranca': '👑 Liderança',
+                'responsabilidade': '💼 Responsabilidade',
+                'comunicacao': '💬 Comunicação',
+                'disciplina': '📏 Disciplina',
+                'criatividade': '🎨 Criatividade',
+                'colaboracao': '🤜🤛 Colaboração'
+            };
+            
+            return habilidades.map(hab => habilidadesFormatadas[hab] || hab).join(', ');
+        } catch (e) {
+            return habilidadesJson;
+        }
     }
     
     // Pré-visualização da foto
