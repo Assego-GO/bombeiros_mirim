@@ -1295,7 +1295,14 @@ body {
                 <h2>Atividades</h2>
                 <p>Cadastre e gerencie atividades para suas turmas.</p>
             </div>
-            
+
+            <div class="dashboard-card" id="card-atividades">
+                <div class="card-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <h2>Galeria de fotos</h2>
+                <p>Adicione fotos e videos as turmas.</p>
+            </div>
 
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
