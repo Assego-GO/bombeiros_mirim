@@ -1296,6 +1296,14 @@ body {
                 <p>Cadastre e gerencie atividades para suas turmas.</p>
             </div>
             
+            <div class="dashboard-card" id="card-fotos">
+                <div class="card-icon">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h2>Fotos</h2>
+                <p>Anexar fotos para galeria das turmas.</p>
+            </div>
+
 
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
