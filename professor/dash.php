@@ -1195,12 +1195,13 @@ body {
                 <h2>Avaliações</h2>
                 <p>Avalie seus alunos</p>
             </div>
-            <div class="dashboard-card">
-                <div class="card-icon" id="card-atividades">
+            
+            <div class="dashboard-card" id="card-atividades">
+                <div class="card-icon">
                     <i class="fas fa-tasks"></i>
                 </div>
                 <h2>Atividades</h2>
-                <p>Em desenvolvimento......</p>
+                <p>Cadastre e gerencie atividades para suas turmas.</p>
             </div>
             
 
