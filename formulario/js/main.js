@@ -227,6 +227,13 @@ function configurarCamposResponsaveis() {
                 <input type="tel" id="telefone-2" name="telefone-2" required>
             `
         },
+         {
+            className: 'form-group',
+            html: `
+                <label for="profissao-responsavel-2">Profissão:</label>
+                <input type="text" id="profissao-responsavel-2" name="profissao-responsavel-2" required>
+            `
+        },
         {
             className: 'form-group',
             html: `
@@ -553,113 +560,177 @@ function configurarEnvioFormulario() {
     }
     
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+    e.preventDefault();
+    
+    if (validarFormulario()) {
+        const formData = new FormData();
         
-        if (validarFormulario()) {
-            const formData = new FormData();
-            
-            formData.append('unidade', document.getElementById('unidade').value);
-            formData.append('turma', document.getElementById('turma').value);
-            
-            formData.append('nome-aluno', document.getElementById('nome-aluno').value);
-            formData.append('data-nascimento', document.getElementById('data-nascimento').value);
-            formData.append('genero', document.getElementById('genero').value);
-            formData.append('cadastro_unico', document.getElementById('cadastro_unico').value);
-            formData.append('rg-aluno', document.getElementById('rg-aluno').value);
-            formData.append('cpf-aluno', document.getElementById('cpf-aluno').value);
-            formData.append('escola', document.getElementById('escola').value);
-            formData.append('serie', document.getElementById('serie').value);
-            formData.append('info-saude', document.getElementById('info-saude').value);
-            formData.append('telefone-escola', document.getElementById('telefone-escola').value);
-            formData.append('nome-diretor', document.getElementById('nome-diretor').value);
-            
-            const inputFoto = document.getElementById('foto-aluno');
-            if (inputFoto && inputFoto.files.length > 0) {
-                formData.append('foto-aluno', inputFoto.files[0]);
-            }
-            
-            formData.append('nome-responsavel', document.getElementById('nome-responsavel').value);
-            formData.append('parentesco', document.getElementById('parentesco').value);
-            formData.append('rg-responsavel', document.getElementById('rg-responsavel').value);
-            formData.append('cpf-responsavel', document.getElementById('cpf-responsavel').value);
-            formData.append('telefone', document.getElementById('telefone').value);
-            formData.append('whatsapp', document.getElementById('whatsapp').value || '');
-            formData.append('email', document.getElementById('email').value);
-            
-            const segundoResponsavelContainer = document.getElementById('segundo-responsavel-container');
-            if (segundoResponsavelContainer && segundoResponsavelContainer.style.display === 'block') {
-                formData.append('tem_segundo_responsavel', '1');
-                
-                formData.append('nome-responsavel-2', document.getElementById('nome-responsavel-2').value);
-                formData.append('parentesco-2', document.getElementById('parentesco-2').value);
-                formData.append('rg-responsavel-2', document.getElementById('rg-responsavel-2').value);
-                formData.append('cpf-responsavel-2', document.getElementById('cpf-responsavel-2').value);
-                formData.append('telefone-2', document.getElementById('telefone-2').value);
-                formData.append('whatsapp-2', document.getElementById('whatsapp-2').value || '');
-                formData.append('email-2', document.getElementById('email-2').value);
-            } else {
-                formData.append('tem_segundo_responsavel', '0');
-            }
-            
-            formData.append('cep', document.getElementById('cep').value);
-            formData.append('endereco', document.getElementById('endereco').value);
-            formData.append('numero', document.getElementById('numero').value);
-            formData.append('complemento', document.getElementById('complemento').value || '');
-            formData.append('bairro', document.getElementById('bairro').value);
-            formData.append('cidade', document.getElementById('cidade').value);
-            
-            formData.append('consent', document.getElementById('consent').checked ? '1' : '0');
-            
-            //console.log("Arquivo selecionado:", inputFoto.files[0]);
-            //console.log("--- Conteúdo do FormData ---");
-            
-            
-            // Mostrar mensagem de carregamento
-            const mensagemCarregando = mensagemInfo('Processando matrícula, aguarde...', 0);
-            
-            fetch('processar_matricula.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na resposta do servidor: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Fechar mensagem de carregamento
-                fecharMensagem(mensagemCarregando);
-                
-                if (data.success) {
-                   
-                    mensagemSucesso('Matrícula realizada com sucesso! Número: ' + data.matricula);
-                    enviarEmail(data.matricula, data.email);
-                    console.log(data);
-                    
-                    form.reset();
-                    
-                    if (segundoResponsavelContainer) {
-                        segundoResponsavelContainer.style.display = 'none';
-                    }
-                } else {
-                    
-                    mensagemErro('Erro ao processar matrícula: ' + data.message);
-                }
-            })
-            .catch(error => {
-               
-                fecharMensagem(mensagemCarregando);
-                
-                console.error('Erro:', error);
-                
-                mensagemErro('Erro ao enviar formulário: ' + error.message);
-            });
-        } else {
-            
-            mensagemAlerta('Por favor, preencha todos os campos obrigatórios.');
+        // Função helper para obter valor seguro
+        function obterValor(id, valorPadrao = '') {
+            const elemento = document.getElementById(id);
+            return elemento ? (elemento.value || valorPadrao) : valorPadrao;
         }
-    });
+        
+        formData.append('unidade', obterValor('unidade'));
+        formData.append('turma', obterValor('turma'));
+        
+        formData.append('nome-aluno', obterValor('nome-aluno'));
+        formData.append('data-nascimento', obterValor('data-nascimento'));
+        formData.append('genero', obterValor('genero'));
+        formData.append('tipo-sangue', obterValor('tipo-sangue'));
+        formData.append('atipica', obterValor('atipica'));
+        
+        // CORREÇÃO: Garantir que laudo-atipica sempre tenha um valor válido
+        const atipicaValor = obterValor('atipica');
+        let laudoAtipicaValor = obterValor('laudo-atipica');
+        
+        // Se não é atípica, força laudo como 'nao'
+        if (atipicaValor === 'nao') {
+            laudoAtipicaValor = 'nao';
+        } else if (!laudoAtipicaValor) {
+            laudoAtipicaValor = 'nao'; // valor padrão se vazio
+        }
+        formData.append('laudo-atipica', laudoAtipicaValor);
+        
+        formData.append('condicao-crianca', obterValor('condicao-crianca'));
+        
+        // CORREÇÃO: Condições médicas
+        const condicaoValor = obterValor('condicao-crianca');
+        const condicaoDetalhes = condicaoValor === 'sim' ? obterValor('condicao-detalhes') : '';
+        formData.append('condicao-detalhes', condicaoDetalhes);
+        
+        formData.append('medicacao-crianca', obterValor('medicacao-crianca'));
+        
+        // CORREÇÃO: Medicação
+        const medicacaoValor = obterValor('medicacao-crianca');
+        const medicacaoDetalhes = medicacaoValor === 'sim' ? obterValor('medicacao-detalhes') : '';
+        formData.append('medicacao-detalhes', medicacaoDetalhes);
+        
+        formData.append('cadastro_unico', obterValor('cadastro_unico'));
+        
+        // CORREÇÃO: Número do cadastro único
+        const cadastroValor = obterValor('cadastro_unico');
+        const numeroCadastro = cadastroValor === 'sim' ? obterValor('numero-cadunico') : '';
+        formData.append('numero-cadunico', numeroCadastro);
+        
+        formData.append('rg-aluno', obterValor('rg-aluno'));
+        formData.append('cpf-aluno', obterValor('cpf-aluno'));
+        formData.append('concorrencia', obterValor('concorrencia'));
+        formData.append('vaga-militar', obterValor('vaga-militar'));
+        formData.append('escola', obterValor('escola'));
+        formData.append('tipo-escola', obterValor('tipo-escola'));
+        formData.append('endereco-escola', obterValor('endereco-escola'));
+        formData.append('serie', obterValor('serie'));
+        formData.append('info-saude', obterValor('info-saude'));
+        formData.append('telefone-escola', obterValor('telefone-escola'));
+        formData.append('nome-diretor', obterValor('nome-diretor'));
+
+        // Arquivos
+        const inputArquivoLaudo = document.getElementById('arquivo-laudo');
+        if (inputArquivoLaudo && inputArquivoLaudo.files.length > 0) {
+            formData.append('arquivo-laudo', inputArquivoLaudo.files[0]);
+        }
+
+        const inputAtestadoMedico = document.getElementById('atestado-medico');
+        if (inputAtestadoMedico && inputAtestadoMedico.files.length > 0) {
+            formData.append('atestado-medico', inputAtestadoMedico.files[0]);
+        }
+        
+        const inputFoto = document.getElementById('foto-aluno');
+        if (inputFoto && inputFoto.files.length > 0) {
+            formData.append('foto-aluno', inputFoto.files[0]);
+        }
+        
+        formData.append('nome-responsavel', obterValor('nome-responsavel'));
+        formData.append('parentesco', obterValor('parentesco'));
+        formData.append('rg-responsavel', obterValor('rg-responsavel'));
+        formData.append('cpf-responsavel', obterValor('cpf-responsavel'));
+        formData.append('telefone', obterValor('telefone'));
+        formData.append('whatsapp', obterValor('whatsapp'));
+        formData.append('email', obterValor('email'));
+        formData.append('profissao-responsavel', obterValor('profissao-responsavel'));
+        
+        const segundoResponsavelContainer = document.getElementById('segundo-responsavel-container');
+        if (segundoResponsavelContainer && segundoResponsavelContainer.style.display === 'block') {
+            formData.append('tem_segundo_responsavel', '1');
+            
+            formData.append('nome-responsavel-2', obterValor('nome-responsavel-2'));
+            formData.append('parentesco-2', obterValor('parentesco-2'));
+            formData.append('rg-responsavel-2', obterValor('rg-responsavel-2'));
+            formData.append('cpf-responsavel-2', obterValor('cpf-responsavel-2'));
+            formData.append('telefone-2', obterValor('telefone-2'));
+            formData.append('whatsapp-2', obterValor('whatsapp-2'));
+            formData.append('email-2', obterValor('email-2'));
+            formData.append('profissao-responsavel-2', obterValor('profissao-responsavel-2'));
+        } else {
+            formData.append('tem_segundo_responsavel', '0');
+        }
+        
+        formData.append('cep', obterValor('cep'));
+        formData.append('endereco', obterValor('endereco'));
+        formData.append('numero', obterValor('numero'));
+        formData.append('complemento', obterValor('complemento'));
+        formData.append('bairro', obterValor('bairro'));
+        formData.append('cidade', obterValor('cidade'));
+        
+        formData.append('consent', document.getElementById('consent').checked ? '1' : '0');
+        
+        // DEBUG: Mostrar valores dos campos problemáticos
+        console.log('=== DEBUG CAMPOS ENUM ===');
+        console.log('atipica:', obterValor('atipica'));
+        console.log('laudo-atipica:', laudoAtipicaValor);
+        console.log('condicao-crianca:', obterValor('condicao-crianca'));
+        console.log('medicacao-crianca:', obterValor('medicacao-crianca'));
+        console.log('cadastro_unico:', obterValor('cadastro_unico'));
+        console.log('concorrencia:', obterValor('concorrencia'));
+        console.log('vaga-militar:', obterValor('vaga-militar'));
+        console.log('tipo-escola:', obterValor('tipo-escola'));
+        console.log('========================');
+        
+        // Mostrar mensagem de carregamento
+        const mensagemCarregando = mensagemInfo('Processando matrícula, aguarde...', 0);
+        
+        fetch('processar_matricula.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro na resposta do servidor: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Fechar mensagem de carregamento
+            fecharMensagem(mensagemCarregando);
+            
+            if (data.success) {
+                mensagemSucesso('Matrícula realizada com sucesso! Número: ' + data.matricula);
+                enviarEmail(data.matricula, data.email);
+                console.log(data);
+                
+                form.reset();
+                
+                if (segundoResponsavelContainer) {
+                    segundoResponsavelContainer.style.display = 'none';
+                }
+            } else {
+                mensagemErro('Erro ao processar matrícula: ' + data.message);
+                // Mostrar debug se houver erro
+                if (data.debug) {
+                    console.log('Debug do servidor:', data.debug);
+                }
+            }
+        })
+        .catch(error => {
+            fecharMensagem(mensagemCarregando);
+            console.error('Erro:', error);
+            mensagemErro('Erro ao enviar formulário: ' + error.message);
+        });
+    } else {
+        mensagemAlerta('Por favor, preencha todos os campos obrigatórios.');
+    }
+});
 }
 
 function enviarEmail(matricula, email){

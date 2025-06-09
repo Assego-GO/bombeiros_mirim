@@ -708,7 +708,7 @@ button:active {
 
 /* Adicionando conteúdo visual ao container */
 .foto-upload-container:before {
-    content: "📷";
+    content: "";
     font-size: 3.5rem;
     display: block;
     margin-bottom: 1.2rem;
@@ -716,7 +716,7 @@ button:active {
 }
 
 .foto-upload-container:after {
-    content: "Clique aqui para selecionar uma foto";
+    content: "Clique aqui para selecionar um arquivo";
     display: block;
     font-size: 1.2rem;
     font-weight: 600;
