@@ -100,26 +100,6 @@ if (!empty($professor['foto'])) {
     
     // Definir o caminho correto da foto - caminho direto e absoluto
     $usuario_foto = $baseUrl . '/uploads/fotos/' . $filename;
-    
-    /* Debug - para ver os diretórios verificados (pode remover depois)
-    echo "Diretórios verificados:<br>";
-    $possiveisDiretorios = [
-        '../uploads/fotos/',
-        '../../uploads/fotos/',
-        '/uploads/fotos/',
-        'uploads/fotos/',
-        '../superacao/uploads/fotos/',
-        '../../superacao/uploads/fotos/',
-        './superacao/uploads/fotos/',
-        '../superacao/uploads/fotos/'
-    ];
-    */
-    foreach ($possiveisDiretorios as $dir) {
-        echo htmlspecialchars($dir) . " - " . 
-             (is_dir($dir) ? "Existe" : "Não existe") . "<br>";
-    }
-    
-    // echo "Caminho final da foto: " . htmlspecialchars($usuario_foto) . "<br>";
 }
 ?>
 <!DOCTYPE html>
@@ -474,7 +454,7 @@ body {
     transform: rotate(90deg);
 }
 
-#modalTitle, #modalTitlePerfil, #modalTitleAlunos {
+#modalTitle, #modalTitlePerfil, #modalTitleAlunos, #modalTitleAtividades, #modalTitleCadastroAtividade, #modalTitleDetalhesAtividade {
     color: var(--primary);
     margin-bottom: 20px;
     border-bottom: 2px solid var(--gray-light);
@@ -511,6 +491,102 @@ body {
     justify-content: flex-end;
     margin-top: 15px;
     gap: 10px;
+}
+
+/* Estilos para Atividades */
+.atividade-item {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--box-shadow);
+    border-left: 4px solid var(--secondary);
+    transition: var(--transition);
+}
+
+.atividade-item:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.atividade-item h3 {
+    color: var(--secondary-dark);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 10px;
+}
+
+.atividade-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.atividade-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 8px;
+}
+
+.atividade-field label {
+    font-weight: 600;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.atividade-field span {
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.atividade-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.detalhes-atividade {
+    margin-bottom: 25px;
+}
+
+.detalhes-atividade h4 {
+    color: var(--primary);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 8px;
+}
+
+.participacao-item {
+    background-color: var(--light);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 15px;
+    border-left: 3px solid var(--accent);
+}
+
+.participacao-item h5 {
+    color: var(--dark);
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.participacao-dados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 8px;
+}
+
+.participacao-dados span {
+    font-size: 0.9rem;
+    color: var(--gray-dark);
 }
 
 .status-em-andamento {
@@ -626,6 +702,22 @@ body {
 
 .btn-primary {
     background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+}
+
+.btn-detalhes {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+}
+
+.btn-participacao {
+    background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+}
+
+.btn-editar {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+}
+
+.btn-excluir {
+    background: linear-gradient(135deg, var(--danger), #c82333);
 }
 
 .matricula-group {
@@ -1222,16 +1314,6 @@ body {
                 <p>Em desenvolvimento......</p>
             </div>
             
-            <!-- <div class="dashboard-card">
-                <div class="card-icon">
-                    <i class="fas fa-futbol"></i>
-                </div>
-                <h2>Planos de Treino</h2>
-                <p>Crie e consulte planos de treinamento para suas turmas.</p>
-            </div> -->
-            
-            
-            
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-comment-alt"></i>
@@ -1287,13 +1369,146 @@ body {
                                 <button class="btn btn-ver-alunos" data-turma-id="<?php echo $turma['id']; ?>">
                                     <i class="fas fa-users"></i> Ver Alunos
                                 </button>
-                               <!-- <button class="btn btn-editar-turma" data-turma-id="<?php echo $turma['id']; ?>">
-                                    <i class="fas fa-edit"></i> Editar
-                                </button> -->
                             </div>
                         </div>
                     <?php endforeach; ?>
                 <?php endif; ?>
+            </div>
+        </div>
+        
+        <!-- Modal de Atividades (Principal) -->
+        <div id="atividadesModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeAtividadesModal">&times;</span>
+                <h2 id="modalTitleAtividades">Minhas Atividades</h2>
+                
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <button id="btn-nova-atividade" class="btn">
+                        <i class="fas fa-plus"></i> Nova Atividade
+                    </button>
+                </div>
+                
+                <div id="atividades-lista-container">
+                    <p>Carregando atividades...</p>
+                </div>
+            </div>
+        </div>
+
+       <!-- Modal de Cadastro/Edição de Atividade -->
+<div id="cadastroAtividadeModal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="closeCadastroAtividadeModal">&times;</span>
+        <h2 id="modalTitleCadastroAtividade">Nova Atividade</h2>
+        
+        <div id="mensagem-atividade"></div>
+        
+        <form id="form-atividade" method="post">
+            <input type="hidden" name="action" value="cadastrar">
+            <input type="hidden" id="atividade_id" name="atividade_id" value="">
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="nome_atividade" class="form-label">Tipo de Atividade <span style="color: red;">*</span></label>
+                        <select id="nome_atividade" name="nome_atividade" class="form-control" required>
+                            <option value="">Selecione o tipo de atividade</option>
+                            <option value="Ed. Física">Ed. Física</option>
+                            <option value="Salvamento">Salvamento</option>
+                            <option value="Informática">Informática</option>
+                            <option value="Primeiro Socorros">Primeiro Socorros</option>
+                            <option value="Ordem Unida">Ordem Unida</option>
+                            <option value="Combate a Incêndio">Combate a Incêndio</option>
+                            <option value="Ética e Cidadania">Ética e Cidadania</option>
+                            <option value="Higiene Pessoal">Higiene Pessoal</option>
+                            <option value="Meio Ambiente">Meio Ambiente</option>
+                            <option value="Educação no Trânsito">Educação no Trânsito</option>
+                            <option value="Temas Transversais">Temas Transversais</option>
+                            <option value="Combate uso de Drogas">Combate uso de Drogas</option>
+                            <option value="ECA e Direitos Humanos">ECA e Direitos Humanos</option>
+                            <option value="Treinamento de Formatura">Treinamento de Formatura</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="turma_id" class="form-label">Turma <span style="color: red;">*</span></label>
+                        <select id="turma_id" name="turma_id" class="form-control" required>
+                            <option value="">Selecione uma turma</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="data_atividade" class="form-label">Data <span style="color: red;">*</span></label>
+                        <input type="date" id="data_atividade" name="data_atividade" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="local_atividade" class="form-label">Local <span style="color: red;">*</span></label>
+                        <input type="text" id="local_atividade" name="local_atividade" class="form-control" required 
+                               placeholder="Ex: Quadra esportiva, Sala de aula...">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="hora_inicio" class="form-label">Hora Início <span style="color: red;">*</span></label>
+                        <input type="time" id="hora_inicio" name="hora_inicio" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="hora_termino" class="form-label">Hora Término <span style="color: red;">*</span></label>
+                        <input type="time" id="hora_termino" name="hora_termino" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="instrutor_responsavel" class="form-label">Instrutor Responsável <span style="color: red;">*</span></label>
+                <input type="text" id="instrutor_responsavel" name="instrutor_responsavel" class="form-control" required
+                       placeholder="Nome do instrutor que conduzirá a atividade">
+            </div>
+            
+            <div class="form-group">
+                <label for="objetivo_atividade" class="form-label">Objetivo da Atividade <span style="color: red;">*</span></label>
+                <textarea id="objetivo_atividade" name="objetivo_atividade" class="form-control" rows="3" required
+                          placeholder="Descreva os objetivos que se pretende alcançar com esta atividade..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="conteudo_abordado" class="form-label">Conteúdo Abordado <span style="color: red;">*</span></label>
+                <textarea id="conteudo_abordado" name="conteudo_abordado" class="form-control" rows="3" required
+                          placeholder="Descreva o conteúdo que será abordado na atividade..."></textarea>
+            </div>
+            
+            <div class="text-center">
+                <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Salvar Atividade
+                </button>
+                <button type="button" id="btn-cancelar-atividade" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+        <!-- Modal de Detalhes da Atividade -->
+        <div id="detalhesAtividadeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeDetalhesAtividadeModal">&times;</span>
+                <h2 id="modalTitleDetalhesAtividade">Detalhes da Atividade</h2>
+                
+                <div id="detalhes-atividade-container">
+                    <p>Carregando detalhes...</p>
+                </div>
             </div>
         </div>
         
@@ -1440,7 +1655,7 @@ body {
             </div>
         </div>
         
-      
+        <!-- Modal de Alunos -->
         <div id="alunosModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeAlunosModal">&times;</span>
@@ -1455,26 +1670,25 @@ body {
     </div>
 
     <footer class="main-footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-brand">
-          <i class="fas fa-futbol"></i> Bombeiros Mirins
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-futbol"></i> Bombeiros Mirins
+                </div>
+                <div class="footer-info">
+                    <p>© 2025 Projeto Bombeiro Mirim Goiás – O Projeto Bombeiro Mirim é uma iniciativa do Corpo de Bombeiros Militar do Estado de Goiás em parceria com instituições locais, voltado à formação cidadã de crianças e adolescentes.</p>
+                    <p>Área do Professor</p>
+                    <p>Desenvolvido por <a href="https://www.instagram.com/assego/" class="ftlink">@Assego</a></p>
+                </div>
+            </div>
         </div>
-        <div class="footer-info">
-          <p>© 2025 Projeto Bombeiro Mirim Goiás – O Projeto Bombeiro Mirim é uma iniciativa do Corpo de Bombeiros Militar do Estado de Goiás em parceria com instituições locais, voltado à formação cidadã de crianças e adolescentes.</p>
-          <p>Área do Professor</p>
-          <p>Desenvolvido por <a href="https://www.instagram.com/assego/" class="ftlink">@Assego</a></p>
-        </div>
-      </div>
-    </div>
-  </footer>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="js/teste1.js"></script>
+    </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/teste1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
-  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
-</html> 
+</html>
