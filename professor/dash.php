@@ -1300,7 +1300,7 @@ body {
                 <div class="card-icon">
                     <i class="fas fa-image"></i>
                 </div>
-                <h2>Galeria de fotos</h2>
+                <h2>Galeria de Fotos</h2>
                 <p>Adicione fotos e videos as turmas.</p>
             </div>
 
