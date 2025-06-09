@@ -4673,3 +4673,17 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
+2025-06-09 15:23:52 - Buscando aluno ID: 141
+2025-06-09 15:23:52 - Dados encontrados: Array
+(
+    [aluno_id] => 141
+    [aluno_nome] => Messinaldo
+    [matricula_id] => 113
+    [data_matricula] => 2025-06-09 14:46:09
+    [status] => pendente
+    [turma_id] => 20
+    [unidade_id] => 9
+    [turma_nome] => turma teste
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+

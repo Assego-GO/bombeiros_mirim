@@ -75,31 +75,60 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0a2647;
-            --primary-light: #144272;
-            --primary-dark: #071c35;
-            --secondary: #ffc233;
-            --secondary-light: #ffd566;
-            --secondary-dark: #e9b424;
-            --accent: #34c759;
-            --accent-light: #4cd377;
-            --accent-dark: #26a344;
-            --danger: #f64e60;
+            /* Cores principais do Corpo de Bombeiros de Goiás */
+            --bombeiro-red: #C41E3A;
+            --bombeiro-red-dark: #A01728;
+            --bombeiro-red-light: #D63851;
+            --bombeiro-orange: #FF6B35;
+            --bombeiro-orange-light: #FF8A5B;
+            --bombeiro-orange-dark: #E55A2B;
+            --bombeiro-yellow: #FFB627;
+            --bombeiro-yellow-light: #FFC849;
+            --bombeiro-yellow-dark: #E5A322;
+            
+            /* Cores de apoio */
+            --primary: var(--bombeiro-red);
+            --primary-light: var(--bombeiro-red-light);
+            --primary-dark: var(--bombeiro-red-dark);
+            --secondary: var(--bombeiro-yellow);
+            --secondary-light: var(--bombeiro-yellow-light);
+            --secondary-dark: var(--bombeiro-yellow-dark);
+            --accent: var(--bombeiro-orange);
+            --accent-light: var(--bombeiro-orange-light);
+            --accent-dark: var(--bombeiro-orange-dark);
+            
+            /* Cores de sistema */
+            --success: #28a745;
+            --success-light: #4cd377;
+            --success-dark: #1e7e34;
+            --warning: var(--bombeiro-yellow);
+            --warning-light: var(--bombeiro-yellow-light);
+            --warning-dark: var(--bombeiro-yellow-dark);
+            --danger: #dc3545;
             --danger-light: #ff6b7d;
-            --light: #f5f7fd;
-            --light-hover: #ecf0f9;
-            --dark: #1a2b4b;
-            --gray: #7c8db5;
-            --gray-light: #d6dff0;
-            --gray-dark: #4b5e88;
+            --danger-dark: #c82333;
+            
+            /* Cores neutras */
+            --light: #f8f9fa;
+            --light-hover: #e9ecef;
+            --dark: #2c3e50;
+            --gray: #6c757d;
+            --gray-light: #dee2e6;
+            --gray-dark: #495057;
             --white: #ffffff;
-            --box-shadow: 0 5px 15px rgba(10, 38, 71, 0.07);
-            --box-shadow-hover: 0 8px 25px rgba(10, 38, 71, 0.12);
-            --box-shadow-card: 0 10px 30px rgba(10, 38, 71, 0.05);
+            
+            /* Efeitos */
+            --box-shadow: 0 5px 15px rgba(196, 30, 58, 0.1);
+            --box-shadow-hover: 0 8px 25px rgba(196, 30, 58, 0.15);
+            --box-shadow-card: 0 10px 30px rgba(196, 30, 58, 0.08);
             --border-radius: 10px;
             --border-radius-lg: 12px;
             --border-radius-xl: 16px;
             --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Gradientes temáticos */
+            --gradient-bombeiro: linear-gradient(135deg, var(--bombeiro-red) 0%, var(--bombeiro-orange) 50%, var(--bombeiro-yellow) 100%);
+            --gradient-bombeiro-reverse: linear-gradient(135deg, var(--bombeiro-yellow) 0%, var(--bombeiro-orange) 50%, var(--bombeiro-red) 100%);
         }
 
         * {
@@ -110,22 +139,36 @@ try {
 
         body {
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f0 50%, #ffe8e0 100%);
             color: var(--dark);
             line-height: 1.6;
-            background-image: radial-gradient(circle at 10% 20%, rgba(20, 66, 114, 0.4) 0%, rgba(20, 66, 114, 0.4) 50.3%, transparent 50.3%, transparent 100%),
-              radial-gradient(circle at 85% 85%, rgba(20, 66, 114, 0.4) 0%, rgba(20, 66, 114, 0.4) 50.9%, transparent 50.9%, transparent 100%);
-            background-attachment: fixed;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(196, 30, 58, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 53, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 182, 39, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .header {
-            background-color: var(--primary-dark);
+            background: var(--gradient-bombeiro);
             color: var(--white);
             padding: 1rem 0;
             box-shadow: var(--box-shadow);
             position: sticky;
             top: 0;
             z-index: 1000;
+            border-bottom: 3px solid var(--bombeiro-yellow);
         }
 
         .header-content {
@@ -137,10 +180,16 @@ try {
             padding: 0 1.5rem;
         }
 
+        .header-content > div:first-child {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
         .btn-voltar {
-            background-color: var(--secondary);
-            color: var(--primary-dark);
-            padding: 0.5rem 1rem;
+            background: var(--white);
+            color: var(--bombeiro-red);
+            padding: 0.6rem 1.2rem;
             border-radius: var(--border-radius);
             text-decoration: none;
             display: inline-flex;
@@ -148,6 +197,7 @@ try {
             font-size: 0.9rem;
             font-weight: 600;
             transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .btn-voltar i {
@@ -155,9 +205,10 @@ try {
         }
 
         .btn-voltar:hover {
-            background-color: var(--secondary-light);
+            background: var(--bombeiro-yellow);
+            color: var(--bombeiro-red-dark);
             transform: translateY(-2px);
-            box-shadow: var(--box-shadow-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .container {
@@ -172,11 +223,24 @@ try {
             align-items: center;
             margin-bottom: 30px;
             padding: 25px;
-            background-color: var(--white);
+            background: var(--white);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow-card);
             position: relative;
             overflow: hidden;
+            border-top: 4px solid var(--bombeiro-orange);
+        }
+
+        .aluno-profile::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -50px;
+            width: 200px;
+            height: 100%;
+            background: var(--gradient-bombeiro);
+            opacity: 0.05;
+            transform: skewX(-15deg);
         }
 
         .aluno-foto {
@@ -185,8 +249,8 @@ try {
             border-radius: 50%;
             overflow: hidden;
             margin-right: 30px;
-            border: 4px solid var(--secondary);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border: 4px solid var(--bombeiro-orange);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
             flex-shrink: 0;
             position: relative;
         }
@@ -199,13 +263,15 @@ try {
 
         .aluno-info {
             flex: 1;
+            z-index: 1;
         }
 
         .aluno-nome {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 8px;
-            color: var(--primary);
+            color: var(--bombeiro-red);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .aluno-dados {
@@ -222,13 +288,13 @@ try {
 
         .aluno-dado strong {
             font-weight: 600;
-            color: var(--dark);
+            color: var(--bombeiro-red);
         }
 
         .aluno-info h4 {
             font-size: 1.4rem;
             font-weight: 600;
-            color: var(--primary);
+            color: var(--bombeiro-red);
             margin-bottom: 5px;
         }
 
@@ -239,12 +305,13 @@ try {
 
         /* Card de Avaliação */
         .avaliacao-card {
-            background-color: var(--white);
+            background: var(--white);
             border-radius: var(--border-radius-lg);
             box-shadow: var(--box-shadow-card);
             margin-bottom: 25px;
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid var(--bombeiro-orange);
         }
 
         .avaliacao-card:hover {
@@ -253,18 +320,30 @@ try {
         }
 
         .avaliacao-header {
-            background-color: var(--primary);
+            background: var(--gradient-bombeiro);
             color: var(--white);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+        }
+
+        .avaliacao-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--bombeiro-yellow);
         }
 
         .avaliacao-header h3 {
             margin: 0;
             font-size: 1.2rem;
             font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         .avaliacao-professor {
@@ -273,33 +352,34 @@ try {
         }
 
         .imc-badge {
-            background-color: var(--white);
-            color: var(--primary);
-            padding: 5px 12px;
-            border-radius: 30px;
-            font-size: 0.9rem;
+            background: var(--white);
+            color: var(--bombeiro-red);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
             display: inline-block;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .imc-normal {
-            color: var(--accent-dark);
-            background-color: rgba(52, 199, 89, 0.2);
+            color: var(--success-dark);
+            background: linear-gradient(135deg, #e8f5e8, #d4edda);
         }
 
         .imc-abaixo {
-            color: var(--warning-dark);
-            background-color: rgba(255, 194, 51, 0.2);
+            color: var(--bombeiro-yellow-dark);
+            background: linear-gradient(135deg, #fff8e1, #fff3cd);
         }
 
         .imc-sobrepeso {
-            color: var(--warning-dark);
-            background-color: rgba(255, 194, 51, 0.2);
+            color: var(--bombeiro-orange-dark);
+            background: linear-gradient(135deg, #fff0e6, #ffe8d6);
         }
 
         .imc-obesidade {
-            color: var(--danger);
-            background-color: rgba(246, 78, 96, 0.15);
+            color: var(--danger-dark);
+            background: linear-gradient(135deg, #fdf2f2, #f8d7da);
         }
 
         .avaliacao-body {
@@ -329,26 +409,30 @@ try {
             width: 42px;
             height: 42px;
             border-radius: 50%;
-            background-color: var(--primary);
+            background: var(--gradient-bombeiro);
             color: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 12px;
             font-size: 1.1rem;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 8px rgba(196, 30, 58, 0.2);
         }
 
         .comportamento .avaliacao-section-icon {
-            background-color: var(--accent);
+            background: linear-gradient(135deg, var(--bombeiro-orange), var(--bombeiro-yellow));
         }
 
         .observacoes .avaliacao-section-icon {
-            background-color: var(--gray-dark);
+            background: linear-gradient(135deg, var(--gray-dark), var(--gray));
+        }
+
+        .medidas .avaliacao-section-icon {
+            background: linear-gradient(135deg, var(--bombeiro-yellow), var(--bombeiro-orange));
         }
 
         .avaliacao-section h4 {
-            color: var(--primary);
+            color: var(--bombeiro-red);
             margin: 0;
             font-size: 1.1rem;
             font-weight: 600;
@@ -363,15 +447,23 @@ try {
 
         .avaliacao-item {
             padding: 15px;
-            background-color: var(--light);
+            background: linear-gradient(135deg, #fafafa, #f5f5f5);
             border-radius: var(--border-radius);
+            border-left: 3px solid var(--bombeiro-orange);
+            transition: var(--transition);
+        }
+
+        .avaliacao-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.1);
         }
 
         .avaliacao-label {
             font-weight: 600;
-            color: var(--primary);
+            color: var(--bombeiro-red);
             display: block;
             margin-bottom: 8px;
+            font-size: 0.9rem;
         }
 
         .avaliacao-valor {
@@ -385,69 +477,93 @@ try {
         /* Barras de Progresso */
         .avaliacao-progress {
             height: 8px;
-            background-color: var(--gray-light);
+            background: var(--gray-light);
             border-radius: 4px;
             overflow: hidden;
             position: relative;
         }
 
         .fisico .avaliacao-progress-bar {
-            background-color: var(--primary-light);
+            background: var(--gradient-bombeiro);
         }
 
         .comportamento .avaliacao-progress-bar {
-            background-color: var(--accent);
+            background: linear-gradient(90deg, var(--bombeiro-orange), var(--bombeiro-yellow));
+        }
+
+        .medidas .avaliacao-progress-bar {
+            background: linear-gradient(90deg, var(--bombeiro-yellow), var(--bombeiro-orange));
         }
 
         .avaliacao-progress-bar {
             height: 100%;
-            background-color: var(--primary-light);
+            background: var(--gradient-bombeiro);
             border-radius: 4px;
-            transition: width 0.5s ease;
+            transition: width 0.8s ease;
+            position: relative;
+        }
+
+        .avaliacao-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
 
         .avaliacao-texto {
-            background-color: var(--light);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             padding: 15px;
             border-radius: var(--border-radius);
             margin-top: 15px;
             color: var(--gray-dark);
             font-size: 0.95rem;
             line-height: 1.6;
+            border-left: 3px solid var(--bombeiro-orange);
         }
 
         /* Estado Vazio */
         .empty-state {
             text-align: center;
             padding: 50px 0;
-            color: var(--white);
-            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--bombeiro-red);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 245, 240, 0.9));
             border-radius: var(--border-radius-lg);
             backdrop-filter: blur(5px);
             margin: 40px 0;
+            border: 2px dashed var(--bombeiro-orange);
         }
 
         .empty-state i {
             font-size: 4rem;
             margin-bottom: 20px;
-            color: var(--secondary);
+            color: var(--bombeiro-orange);
+            opacity: 0.7;
         }
 
         .empty-state h3 {
             margin-bottom: 15px;
-            color: var(--white);
+            color: var(--bombeiro-red);
             font-weight: 600;
         }
 
         .empty-state p {
-            color: var(--light);
+            color: var(--gray);
             max-width: 600px;
             margin: 0 auto;
         }
 
         /* Footer */
         .footer {
-            background-color: var(--primary-dark);
+            background: var(--gradient-bombeiro);
             color: var(--white);
             text-align: center;
             padding: 20px 0;
@@ -462,11 +578,11 @@ try {
             left: 0;
             right: 0;
             height: 4px;
-            background: var(--secondary);
+            background: var(--bombeiro-yellow);
         }
 
         .footer a {
-            color: var(--secondary);
+            color: var(--bombeiro-yellow);
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition);
@@ -480,7 +596,7 @@ try {
             height: 2px;
             bottom: -2px;
             left: 0;
-            background-color: var(--secondary);
+            background: var(--bombeiro-yellow);
             transform: scaleX(0);
             transform-origin: bottom right;
             transition: transform 0.3s ease;
@@ -543,13 +659,47 @@ try {
                 padding: 15px;
             }
         }
+
+        /* Animações adicionais */
+        .avaliacao-card {
+            animation: fadeInUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .avaliacao-card:nth-child(1) { animation-delay: 0.1s; }
+        .avaliacao-card:nth-child(2) { animation-delay: 0.2s; }
+        .avaliacao-card:nth-child(3) { animation-delay: 0.3s; }
+        .avaliacao-card:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .aluno-profile {
+            animation: fadeInScale 0.8s ease forwards;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
 <body>
     <header class="header">
         <div class="header-content">
             <div>
-                <i class="fas fa-futbol"></i> Superação - Ninho de Águias
+                <i class="fas fa-fire-extinguisher"></i> Bombeiro Mirim Goiás - Minhas Avaliações
             </div>
             <a href="dashboard.php" class="btn-voltar">
                 <i class="fas fa-home"></i> Início
@@ -571,7 +721,7 @@ try {
                 </div>
                 <div>
                     <h4>Minhas Avaliações</h4>
-                    <p>Aqui você pode acompanhar suas avaliações feitas pelos professores.</p>
+                    <p>Aqui você pode acompanhar suas avaliações feitas pelos professores do programa Bombeiro Mirim.</p>
                 </div>
             </div>
         </div>
@@ -580,7 +730,7 @@ try {
             <div class="empty-state">
                 <i class="fas fa-clipboard-list"></i>
                 <h3>Nenhuma avaliação encontrada</h3>
-                <p>Você ainda não possui avaliações registradas pelos professores.</p>
+                <p>Você ainda não possui avaliações registradas pelos professores. Continue participando das atividades!</p>
             </div>
         <?php else: ?>
             <?php foreach ($avaliacoes as $avaliacao): ?>
@@ -758,7 +908,7 @@ try {
     
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 Superação - Todos os direitos reservados</p>
+            <p>&copy; 2025 Programa Educacional Bombeiro Mirim - Estado de Goiás</p>
             <p>Desenvolvido por <a href="https://www.instagram.com/assego/">@Assego</a></p>
         </div>
     </footer>

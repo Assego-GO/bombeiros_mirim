@@ -2115,3 +2115,23 @@
 2025-06-06 14:25:39 - Execute result: true
 2025-06-06 14:25:39 - Affected rows: 1
 2025-06-06 14:25:39 - Error (if any): 
+2025-06-09 15:23:55 - POST Data: {"id":"113","aluno_nome":"Messinaldo","unidade":"9","turma":"20","data_matricula":"2025-06-09","status":"ativo"}
+2025-06-09 15:23:55 - Decoded: Array
+(
+    [id] => 113
+    [aluno_nome] => Messinaldo
+    [unidade] => 9
+    [turma] => 20
+    [data_matricula] => 2025-06-09
+    [status] => ativo
+)
+
+2025-06-09 15:23:55 - SQL: UPDATE matriculas SET 
+        unidade = ?, 
+        turma = ?, 
+        data_matricula = ?, 
+        status = ? 
+    WHERE id = ?
+2025-06-09 15:23:55 - Execute result: true
+2025-06-09 15:23:55 - Affected rows: 1
+2025-06-09 15:23:55 - Error (if any): 
