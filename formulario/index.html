@@ -301,10 +301,101 @@
                         <label for="cpf-aluno">CPF (se possuir):</label>
                         <input type="text" id="cpf-aluno">
                     </div>
-                    
+
                     <div class="form-group">
-                       <label for="cadastro_unico">Faz parte do Cadastro Único:</label>
+                        <label for="tipo-sangue">Tipo sanguíneo:</label>
+                        <select id="tipo-sangue" required>
+                            <option value="">Selecione</option>
+                            <option value="a+">A+</option>
+                            <option value="a-">A-</option>
+                            <option value="b+">B+</option>
+                            <option value="b-">B-</option>
+                            <option value="ab+">AB+</option>
+                            <option value="ab-">AB-</option>
+                            <option value="o+">O+</option>
+                            <option value="o-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="atipica">Criança atípica?:</label>
+                        <select id="atipica" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="laudo-atipica">Criança atípica com laudo?:</label>
+                        <select id="laudo-atipica" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="arquivo-laudo">Laudo da criança:</label>
+                        <div class="foto-upload-container">
+                            <input type="file" id="arquivo-laudo" name="arquivo-laudo" accept="image/*,.pdf,.doc,.docx">     
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condicao-crianca">Alergias ou condições médicas?:</label>
+                        <select id="condicao-crianca" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="condicao-detalhes">Quais?:</label>
+                        <input type="text" id="condicao-detalhes" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medicacao-crianca">Medicação contínua?:</label>
+                        <select id="medicacao-crianca" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medicacao-detalhes">Detalhes:</label>
+                        <input type="text" id="medicacao-detalhes" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cadastro_unico">Faz parte do Cadastro Único:</label>
                         <select id="cadastro_unico" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="numero-cadunico">Número do cadastro único:</label>
+                        <input type="text" id="numero-cadunico" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="concorrencia">Ampla concorrência?:</label>
+                        <select id="concorrencia" required>
+                            <option value="">Selecione</option>
+                            <option value="sim">Sim</option>
+                            <option value="nao">Não</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="vaga-militar">Vaga militar?:</label>
+                        <select id="vaga-militar" required>
                             <option value="">Selecione</option>
                             <option value="sim">Sim</option>
                             <option value="nao">Não</option>
@@ -315,30 +406,53 @@
                         <label for="escola">Escola onde estuda:</label>
                         <input type="text" id="escola" required>
                     </div>
-                    
+
+                    <div class="form-group">
+                        <label for="tipo-escola">Tipo da escola:</label>
+                        <select id="tipo-escola" required>
+                            <option value="">Selecione</option>
+                            <option value="publica">Pública</option>
+                            <option value="particular">Particular</option>
+                        </select>
+                    </div>
+
                     <div class="form-group">
                         <label for="serie">Série/Ano:</label>
                         <input type="text" id="serie" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="escola">Nome do Diretor/Coordenador:</label>
+                        <label for="nome-diretor">Nome do Diretor/Coordenador:</label>
                         <input type="text" id="nome-diretor" required>
                     </div>
+
                     <div class="form-group">
-                        <label for="escola">Telefone da Escola:</label>
+                        <label for="telefone-escola">Telefone da Escola:</label>
                         <input type="tel" id="telefone-escola" required>
                     </div>
 
+                    <div class="form-group">
+                        <label for="endereco-escola">Endereço completo:</label>
+                        <input type="text" id="endereco-escola" required>
+                    </div>
 
                     <div class="form-group full">
                         <label for="foto-aluno">Foto do Aluno:</label>
                         <div class="foto-upload-container">
-                            <input type="file" id="foto-aluno" name="foto-aluno" accept="image/*"  required>     
+                            <input type="file" id="foto-aluno" name="foto-aluno" accept="image/*" required>     
                         </div>
                     </div>
+
                     <div class="form-group full">
                         <label for="info-saude">Informações de saúde relevantes:</label>
                         <textarea id="info-saude" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group full">
+                        <label for="atestado-medico">Atestado Médico Apto as Atividades do Bombeiro Mirim:</label>
+                        <div class="foto-upload-container">
+                            <input type="file" id="atestado-medico" name="atestado-medico" accept="image/*,.pdf,.doc,.docx">     
+                        </div>
                     </div>
 
                     <div class="form-group"> 
@@ -395,6 +509,11 @@
                     <div class="form-group">
                         <label for="telefone">Telefone(Whatsapp):</label>
                         <input type="tel" id="telefone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="profissao-responsavel">Profissão:</label>
+                        <input type="text" id="profissao-responsavel" required>
                     </div>
                     
                     <div class="form-group">
@@ -747,5 +866,6 @@
     <!-- Scripts originais -->
     <script src="js/app.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/exibicao.js"></script>
 </body>
 </html>
