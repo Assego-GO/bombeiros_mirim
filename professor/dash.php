@@ -1298,7 +1298,7 @@ body {
             
             <div class="dashboard-card" id="card-fotos">
                 <div class="card-icon">
-                    <i class="fas fa-user-cog"></i>
+                    <i class="fas fa-images"></i>
                 </div>
                 <h2>Fotos</h2>
                 <p>Anexar fotos para galeria das turmas.</p>
