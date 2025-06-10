@@ -1,0 +1,50 @@
+[2025-06-10 16:44:57] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:44:57] METHOD: GET
+[2025-06-10 16:44:57] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:44:57] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:44:57] Listando galerias para usuário: 13 (origem: usuarios)
+[2025-06-10 16:44:57] Encontradas 2 galerias
+[2025-06-10 16:44:57] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:44:58] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:44:58] METHOD: GET
+[2025-06-10 16:44:58] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:44:58] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:44:58] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:55:48] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:55:48] METHOD: GET
+[2025-06-10 16:55:48] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:55:48] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:55:48] Listando galerias para usuário: 13 (origem: usuarios)
+[2025-06-10 16:55:48] Encontradas 2 galerias
+[2025-06-10 16:55:48] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:55:51] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:55:51] METHOD: GET
+[2025-06-10 16:55:51] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:55:51] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:55:51] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:55:57] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:55:57] METHOD: GET
+[2025-06-10 16:55:57] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:55:57] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:55:57] Listando galerias para usuário: 13 (origem: usuarios)
+[2025-06-10 16:55:57] Encontradas 2 galerias
+[2025-06-10 16:55:57] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:56:48] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:56:48] METHOD: GET
+[2025-06-10 16:56:48] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:56:48] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:56:48] Listando galerias para usuário: 13 (origem: usuarios)
+[2025-06-10 16:56:48] Encontradas 2 galerias
+[2025-06-10 16:56:48] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
+[2025-06-10 16:56:50] === INÍCIO DA REQUISIÇÃO MULTI-TABELA ===
+[2025-06-10 16:56:50] METHOD: GET
+[2025-06-10 16:56:50] SESSION: {"usuario_id":13,"usuario_nome":"professor teste","usuario_tipo":"professor","usuario_telefone":"63984931303","usuario_foto":"default.png"}
+[2025-06-10 16:56:50] Usuário encontrado: {"id":13,"nome":"professor teste","tipo":"professor","origem":"usuarios"}
+[2025-06-10 16:56:50] === FIM DA REQUISIÇÃO MULTI-TABELA ===
+
