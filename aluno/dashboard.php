@@ -1043,7 +1043,7 @@ body {
                 <h2>Meu Perfil</h2>
                 <p>Atualize suas informações pessoais e configurações da conta.</p>
             </div>
-            
+
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-chart-line"></i>
@@ -1052,6 +1052,7 @@ body {
                 <p>Veja suas avaliações e progresso no curso.</p>
             </div>
             
+            
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-calendar-alt"></i>
@@ -1059,7 +1060,15 @@ body {
                 <h2>Atividades</h2>
                 <p>Acompanhe as atividades e exercícios práticos de bombeiro.</p>
             </div>
-            
+
+            <div class="dashboard-card" id="card-galeria">
+                <div class="card-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <h2>Galeria de Fotos</h2>
+                <p>Veja suas fotos e de sua turma</p>
+                </div>
+        
         </div>
         
         <!-- Modal de Matrícula -->

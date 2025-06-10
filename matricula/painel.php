@@ -231,6 +231,9 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
       <button class="btn btn-primary" id="novo-professor-btn">
         <i class="fas fa-user-tie"></i> Novo Professor(a)
       </button>
+      <button class="btn btn-primary" id="galeria-fotos-btn">
+    <i class="fas fa-camera"></i> Galeria de Fotos
+  </button>
       <button class="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
@@ -519,6 +522,11 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   </div>
 
 <script>
+window.IS_ADMIN = true;
+console.log('🔧 Usuário identificado como admin:', window.IS_ADMIN);
+</script>
+
+<script>
   window.addEventListener('click', function(e) {
     const menu = document.getElementById('user-menu');
     const userInfo = document.querySelector('.user-info-container');
@@ -529,6 +537,6 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
-
+<script src="./js/galeria.js"></script>
 </body>
 </html>

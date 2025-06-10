@@ -1,0 +1,276 @@
+[2025-06-10 17:53:48] === INÍCIO DA REQUISIÇÃO (Admin livre, Professor restrito) ===
+[2025-06-10 17:53:48] METHOD: GET
+[2025-06-10 17:53:48] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 17:53:48] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 17:53:48] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 17:53:48] Encontradas 2 galerias
+[2025-06-10 17:53:48] === FIM DA REQUISIÇÃO (Admin livre, Professor restrito) ===
+
+[2025-06-10 17:53:49] === INÍCIO DA REQUISIÇÃO (Admin livre, Professor restrito) ===
+[2025-06-10 17:53:49] METHOD: GET
+[2025-06-10 17:53:49] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 17:53:49] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 17:53:49] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 17:53:49] Admin: listando TODAS as turmas
+[2025-06-10 17:53:49] Encontradas 0 turmas para admin
+[2025-06-10 17:53:49] === FIM DA REQUISIÇÃO (Admin livre, Professor restrito) ===
+
+[2025-06-10 18:03:58] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:03:58] METHOD: GET
+[2025-06-10 18:03:58] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:03:58] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:03:58] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:03:58] Encontradas 2 galerias
+[2025-06-10 18:03:58] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:04:00] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:04:00] METHOD: GET
+[2025-06-10 18:04:00] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:04:00] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:04:00] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:04:00] Admin: listando TODAS as turmas
+[2025-06-10 18:04:00] Encontradas 3 turmas para admin
+[2025-06-10 18:04:00] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:04:04] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:04:04] METHOD: GET
+[2025-06-10 18:04:04] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:04:04] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:04:04] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:04:04] Admin: listando TODAS as turmas
+[2025-06-10 18:04:04] Encontradas 3 turmas para admin
+[2025-06-10 18:04:04] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:06:10] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:06:10] METHOD: GET
+[2025-06-10 18:06:10] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:06:10] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:06:10] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:06:10] Encontradas 2 galerias
+[2025-06-10 18:06:10] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:06:11] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:06:11] METHOD: GET
+[2025-06-10 18:06:11] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:06:11] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:06:11] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:06:11] Admin: listando TODAS as turmas
+[2025-06-10 18:06:11] Encontradas 3 turmas para admin
+[2025-06-10 18:06:11] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:06:22] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:06:22] METHOD: GET
+[2025-06-10 18:06:22] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:06:22] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:06:22] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:06:22] Encontradas 2 galerias
+[2025-06-10 18:06:22] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:06:23] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:06:23] METHOD: GET
+[2025-06-10 18:06:23] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:06:23] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:06:23] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:06:23] Admin: listando TODAS as turmas
+[2025-06-10 18:06:23] Encontradas 3 turmas para admin
+[2025-06-10 18:06:23] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:16] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:16] METHOD: GET
+[2025-06-10 18:10:16] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:16] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:16] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:10:16] Encontradas 2 galerias
+[2025-06-10 18:10:16] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:18] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:18] METHOD: GET
+[2025-06-10 18:10:18] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:18] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:18] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:10:18] Admin: listando TODAS as turmas
+[2025-06-10 18:10:18] Encontradas 3 turmas para admin
+[2025-06-10 18:10:18] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:37] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:37] METHOD: POST
+[2025-06-10 18:10:37] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:37] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:37] Criando galeria para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:10:37] Dados da galeria: titulo='TESTE ADMIN GALERIA', turma_id=0, atividade='Teste de fotos admin'
+[2025-06-10 18:10:37] ✅ Admin criando galeria SEM turma associada
+[2025-06-10 18:10:37] ✅ Galeria criada com ID: 38 (sem turma)
+[2025-06-10 18:10:37] Processando 2 arquivos
+[2025-06-10 18:10:37] Processando uploads para galeria: 38
+[2025-06-10 18:10:37] Caminho base: /var/www/html/luis/bombeiros_mirim/matricula/api/../../uploads/galeria/
+[2025-06-10 18:10:37] Diretório upload: /var/www/html/luis/bombeiros_mirim/matricula/api/../../uploads/galeria/2025/06/
+[2025-06-10 18:10:37] Total de arquivos a processar: 2
+[2025-06-10 18:10:37] Processando arquivo 0: chale.png (818165 bytes)
+[2025-06-10 18:10:37] Movendo para: /var/www/html/luis/bombeiros_mirim/matricula/api/../../uploads/galeria/2025/06/6848751d9b46f_1749579037.png
+[2025-06-10 18:10:37] Arquivo movido com sucesso
+[2025-06-10 18:10:37] Arquivo salvo no banco: ../uploads/galeria/2025/06/6848751d9b46f_1749579037.png
+[2025-06-10 18:10:37] Processando arquivo 1: bombeirogo.png (41259 bytes)
+[2025-06-10 18:10:37] Movendo para: /var/www/html/luis/bombeiros_mirim/matricula/api/../../uploads/galeria/2025/06/6848751d9cd50_1749579037.png
+[2025-06-10 18:10:37] Arquivo movido com sucesso
+[2025-06-10 18:10:37] Arquivo salvo no banco: ../uploads/galeria/2025/06/6848751d9cd50_1749579037.png
+[2025-06-10 18:10:37] Upload concluído: 2 arquivos salvos
+[2025-06-10 18:10:37] ✅ Resultado: Galeria criada com sucesso! 2 arquivo(s) enviado(s).
+[2025-06-10 18:10:37] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:39] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:39] METHOD: GET
+[2025-06-10 18:10:39] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:39] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:39] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:10:39] Encontradas 3 galerias
+[2025-06-10 18:10:39] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:48] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:48] METHOD: GET
+[2025-06-10 18:10:48] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:48] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:48] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:10:51] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:10:51] METHOD: GET
+[2025-06-10 18:10:51] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:10:51] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:10:51] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:10:51] Admin: listando TODAS as turmas
+[2025-06-10 18:10:51] Encontradas 3 turmas para admin
+[2025-06-10 18:10:51] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:11:03] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:11:03] METHOD: GET
+[2025-06-10 18:11:03] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:11:03] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:11:03] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:12:59] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:12:59] METHOD: GET
+[2025-06-10 18:12:59] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:12:59] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:12:59] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:12:59] Encontradas 3 galerias
+[2025-06-10 18:12:59] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:13:00] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:13:00] METHOD: GET
+[2025-06-10 18:13:00] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:13:00] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:13:00] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:13:00] Admin: listando TODAS as turmas
+[2025-06-10 18:13:00] Encontradas 3 turmas para admin
+[2025-06-10 18:13:00] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:13:54] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:13:54] METHOD: GET
+[2025-06-10 18:13:54] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:13:54] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:13:54] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:13:54] Encontradas 3 galerias
+[2025-06-10 18:13:54] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:13:56] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:13:56] METHOD: GET
+[2025-06-10 18:13:56] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:13:56] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:13:56] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:14:02] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:14:02] METHOD: GET
+[2025-06-10 18:14:02] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:14:02] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:14:02] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:14:02] Admin: listando TODAS as turmas
+[2025-06-10 18:14:02] Encontradas 3 turmas para admin
+[2025-06-10 18:14:02] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:15:20] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:15:20] METHOD: GET
+[2025-06-10 18:15:20] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:15:20] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:15:20] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:15:28] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:15:28] METHOD: GET
+[2025-06-10 18:15:28] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:15:28] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:15:28] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:15:28] Encontradas 3 galerias
+[2025-06-10 18:15:28] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:17:19] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:17:19] METHOD: GET
+[2025-06-10 18:17:19] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:17:19] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:17:19] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:17:19] Encontradas 3 galerias
+[2025-06-10 18:17:19] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:23:57] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:23:57] METHOD: GET
+[2025-06-10 18:23:57] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:23:57] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:23:57] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:23:57] Encontradas 3 galerias
+[2025-06-10 18:23:57] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:23:59] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:23:59] METHOD: GET
+[2025-06-10 18:23:59] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:23:59] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:23:59] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:24:02] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:24:02] METHOD: GET
+[2025-06-10 18:24:02] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:24:02] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:24:02] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:24:02] Admin: listando TODAS as turmas
+[2025-06-10 18:24:02] Encontradas 3 turmas para admin
+[2025-06-10 18:24:02] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:33:36] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:33:36] METHOD: GET
+[2025-06-10 18:33:36] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:33:36] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:33:36] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:33:36] Encontradas 3 galerias
+[2025-06-10 18:33:36] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:33:37] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:33:37] METHOD: GET
+[2025-06-10 18:33:37] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:33:37] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:33:37] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:33:37] Admin: listando TODAS as turmas
+[2025-06-10 18:33:37] Encontradas 3 turmas para admin
+[2025-06-10 18:33:37] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:44:23] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:44:23] METHOD: GET
+[2025-06-10 18:44:23] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:44:23] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:44:23] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:44:23] Encontradas 3 galerias
+[2025-06-10 18:44:23] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:44:26] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:44:26] METHOD: GET
+[2025-06-10 18:44:26] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:44:26] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:44:26] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:44:26] Admin: listando TODAS as turmas
+[2025-06-10 18:44:26] Encontradas 3 turmas para admin
+[2025-06-10 18:44:26] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 18:44:42] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 18:44:42] METHOD: GET
+[2025-06-10 18:44:42] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 18:44:42] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 18:44:42] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 18:44:42] Admin: listando TODAS as turmas
+[2025-06-10 18:44:42] Encontradas 3 turmas para admin
+[2025-06-10 18:44:42] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
