@@ -1,6 +1,143 @@
 <?php
 session_start();
 
+
+function carregarEnv($caminho = '.env') {
+    if (!file_exists($caminho)) {
+        return false;
+    }
+    
+    $linhas = file($caminho, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($linhas as $linha) {
+        if (strpos(trim($linha), '#') === 0) {
+            continue;
+        }
+        
+        list($nome, $valor) = explode('=', $linha, 2);
+        $nome = trim($nome);
+        $valor = trim($valor);
+        
+        if (!array_key_exists($nome, $_SERVER) && !array_key_exists($nome, $_ENV)) {
+            putenv(sprintf('%s=%s', $nome, $valor));
+            $_ENV[$nome] = $valor;
+            $_SERVER[$nome] = $valor;
+        }
+    }
+    return true;
+}
+
+
+carregarEnv();
+
+
+define('RECAPTCHA_SECRET_KEY', getenv('KEY_V3_SECRET'));
+define('RECAPTCHA_SITE_KEY', getenv('KEY_V3_SITE'));
+
+
+function validarRecaptcha($token, $action = '', $score_minimo = 0.5) {
+    if (empty($token)) {
+        return ['success' => false, 'message' => 'Token não fornecido'];
+    }
+    
+    $secret_key = RECAPTCHA_SECRET_KEY;
+    $url = "https://www.google.com/recaptcha/api/siteverify";
+    
+    $data = [
+        'secret' => $secret_key,
+        'response' => $token,
+        'remoteip' => $_SERVER['REMOTE_ADDR'] ?? ''
+    ];
+    
+    $options = [
+        'http' => [
+            'header' => "Content-Type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data)
+        ]
+    ];
+    
+    $context = stream_context_create($options);
+    $response = file_get_contents($url, false, $context);
+    
+    if ($response === false) {
+        return ['success' => false, 'message' => 'Erro ao validar token'];
+    }
+    
+    $response_data = json_decode($response, true);
+    
+    if (!$response_data['success']) {
+        $error_codes = $response_data['error-codes'] ?? [];
+        return ['success' => false, 'message' => 'Token inválido: ' . implode(', ', $error_codes)];
+    }
+    
+    if (!empty($action) && isset($response_data['action']) && $response_data['action'] !== $action) {
+        return ['success' => false, 'message' => 'Action não confere'];
+    }
+    
+    if (isset($response_data['score']) && $response_data['score'] < $score_minimo) {
+        return ['success' => false, 'message' => 'Score muito baixo: ' . $response_data['score']];
+    }
+    
+    return [
+        'success' => true, 
+        'score' => $response_data['score'] ?? 1.0,
+        'action' => $response_data['action'] ?? '',
+        'message' => 'Token válido'
+    ];
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['api'])) {
+    header('Content-Type: application/json');
+    
+    $system_token = $_POST['system_token'] ?? '';
+    if (empty($system_token)) {
+        echo json_encode(['status' => 'error', 'message' => 'Acesso não autorizado']);
+        exit;
+    }
+    
+    $api_configs = [
+        'verificar_cpf' => ['action' => 'verificar_cpf', 'score' => 0.5],
+        'cadastrar_senha' => ['action' => 'cadastrar_senha', 'score' => 0.6],
+        'login' => ['action' => 'login', 'score' => 0.6]
+    ];
+    
+    $api_name = $_GET['api'];
+    
+    if (!isset($api_configs[$api_name])) {
+        echo json_encode(['status' => 'error', 'message' => 'API não encontrada']);
+        exit;
+    }
+    
+    $config = $api_configs[$api_name];
+    
+    $resultado = validarRecaptcha($system_token, $config['action'], $config['score']);
+    
+    if (!$resultado['success']) {
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'Verificação de segurança falhou: ' . $resultado['message']
+        ]);
+        exit;
+    }
+    
+    $_SESSION['system_validated'] = true;
+    $_SESSION['system_score'] = $resultado['score'];
+    
+    unset($_POST['system_token']);
+    
+    $api_file = "api/{$api_name}.php";
+    if (file_exists($api_file)) {
+        ob_start();
+        include $api_file;
+        $response = ob_get_clean();
+        echo $response;
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'API não encontrada']);
+    }
+    exit;
+}
+
 // Verifica se o usuário já está logado
 if (isset($_SESSION['usuario_id'])) {
     // Redireciona com base no tipo de usuário
@@ -12,7 +149,7 @@ if (isset($_SESSION['usuario_id'])) {
             header('Location: ../professor/dashboard.php');
             exit;
         case 'aluno':
-            header('Location: ./aluno/dashboard.php'); // Corrigido para dashboard.php
+            header('Location: ./aluno/dashboard.php');
             exit;
         default:
             // Caso o tipo de usuário não seja reconhecido
@@ -29,6 +166,9 @@ if (isset($_SESSION['usuario_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Área do Aluno - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <script src="https://www.google.com/recaptcha/api.js?render=<?= RECAPTCHA_SITE_KEY ?>"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
@@ -115,7 +255,6 @@ if (isset($_SESSION['usuario_id'])) {
             animation-delay: 9s;
         }
         
-        /* Adicionar formas de bombeiro */
         .fire-shape {
             position: absolute;
             width: 60px;
@@ -469,7 +608,6 @@ if (isset($_SESSION['usuario_id'])) {
             background: linear-gradient(90deg, transparent, var(--secondary), transparent);
         }
         
-        /* Efeitos especiais para bombeiros */
         .fire-effect {
             position: absolute;
             bottom: -10px;
@@ -490,6 +628,10 @@ if (isset($_SESSION['usuario_id'])) {
         @keyframes flicker {
             0% { opacity: 0.5; }
             100% { opacity: 0.8; }
+        }
+        
+        .grecaptcha-badge {
+            visibility: hidden;
         }
         
         @media (max-width: 520px) {
@@ -613,14 +755,14 @@ if (isset($_SESSION['usuario_id'])) {
         <!-- Formulário de Login -->
         <div id="login-form" class="hidden">
             <div class="form-group">
-                    <input type="text" id="matricula-login" class="form-control" placeholder="📚 Digite o número da matrícula" maxlength="8">
+                    <input type="text" id="matricula-login" class="form-control" placeholder=" Digite o número da matrícula" maxlength="8">
                 <div class="icon-wrapper">
                     <i class="fas fa-user-graduate"></i>
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="password" id="senha-login" class="form-control" placeholder="🔐 Digite sua senha">
+                <input type="password" id="senha-login" class="form-control" placeholder=" Digite sua senha">
                 <div class="icon-wrapper">
                     <i class="fas fa-lock"></i>
                 </div>
@@ -639,6 +781,23 @@ if (isset($_SESSION['usuario_id'])) {
     </div>
     
     <script>
+        const RECAPTCHA_SITE_KEY = '<?= RECAPTCHA_SITE_KEY ?>';
+        
+        function getReCaptchaToken(action) {
+            return new Promise((resolve, reject) => {
+                grecaptcha.ready(function() {
+                    grecaptcha.execute(RECAPTCHA_SITE_KEY, {action: action})
+                        .then(function(token) {
+                            resolve(token);
+                        })
+                        .catch(function(error) {
+                            console.error('Erro no sistema:', error);
+                            reject(error);
+                        });
+                });
+            });
+        }
+        
         // Função para formatar CPF enquanto o usuário digita
         function formatarCPF(input) {
             let cpf = input.value.replace(/\D/g, '');
@@ -698,7 +857,7 @@ if (isset($_SESSION['usuario_id'])) {
         });
         
         // Verificar CPF do responsável
-        btnVerificar.addEventListener('click', function() {
+        btnVerificar.addEventListener('click', async function() {
             const cpf = document.getElementById('cpf-verificar').value.trim();
             
             if (!cpf) {
@@ -706,51 +865,47 @@ if (isset($_SESSION['usuario_id'])) {
                 return;
             }
             
-            // Adicionar animação de carregamento
-            const originalText = btnVerificar.innerHTML;
-            btnVerificar.innerHTML = '<div class="loading"></div> Verificando...';
-            btnVerificar.disabled = true;
-            
-            // Enviar requisição AJAX
-            fetch('api/verificar_cpf.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'cpf=' + encodeURIComponent(cpf)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Restaurar botão
+            try {
+                const systemToken = await getReCaptchaToken('verificar_cpf');
+                
+                const originalText = btnVerificar.innerHTML;
+                btnVerificar.innerHTML = '<div class="loading"></div> Verificando...';
+                btnVerificar.disabled = true;
+                
+                const response = await fetch('?api=verificar_cpf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'cpf=' + encodeURIComponent(cpf) + '&system_token=' + encodeURIComponent(systemToken)
+                });
+                
+                const data = await response.json();
+                
                 btnVerificar.innerHTML = originalText;
                 btnVerificar.disabled = false;
                 
                 if (data.status === 'success') {
-                    // Preenche os dados no formulário de cadastro
                     document.getElementById('matricula-cadastro').value = data.aluno.numero_matricula.replace('SA', '');
                     document.getElementById('nome-cadastro').value = data.aluno.nome;
                     document.getElementById('nome-responsavel-cadastro').value = data.responsavel.nome;
                     
-                    // Mostra o formulário de cadastro
                     verificarForm.classList.add('hidden');
                     cadastroForm.classList.remove('hidden');
                     mostrarMensagem(cadastroMessage, data.message, 'success');
                 } else {
                     mostrarMensagem(verificarMessage, data.message, 'error');
                 }
-            })
-            .catch(error => {
-                // Restaurar botão
+            } catch (error) {
                 btnVerificar.innerHTML = originalText;
                 btnVerificar.disabled = false;
-                
                 mostrarMensagem(verificarMessage, 'Erro ao verificar CPF. Tente novamente.', 'error');
                 console.error('Erro:', error);
-            });
+            }
         });
         
         // Cadastrar senha
-        btnCadastrar.addEventListener('click', function() {
+        btnCadastrar.addEventListener('click', async function() {
             const senha = document.getElementById('senha-cadastro').value;
             const confirmarSenha = document.getElementById('confirmar-senha').value;
             
@@ -764,52 +919,46 @@ if (isset($_SESSION['usuario_id'])) {
                 return;
             }
             
-            // Adicionar animação de carregamento
-            const originalText = btnCadastrar.innerHTML;
-            btnCadastrar.innerHTML = '<div class="loading"></div> Cadastrando...';
-            btnCadastrar.disabled = true;
-            
-            // Enviar requisição AJAX
-            fetch('api/cadastrar_senha.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'senha=' + encodeURIComponent(senha) + '&confirmar_senha=' + encodeURIComponent(confirmarSenha)
-            })
-            .then(response => {
-                // Para depuração, você pode examinar a resposta bruta
-                console.log('Resposta bruta status:', response.status);
-                return response.json(); // Converte para JSON apenas uma vez
-            })
-            .then(data => {
-                console.log('Dados JSON:', data); // Para depuração
-                // Restaurar botão
+            try {
+                const systemToken = await getReCaptchaToken('cadastrar_senha');
+                
+                const originalText = btnCadastrar.innerHTML;
+                btnCadastrar.innerHTML = '<div class="loading"></div> Cadastrando...';
+                btnCadastrar.disabled = true;
+                
+                const response = await fetch('?api=cadastrar_senha', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'senha=' + encodeURIComponent(senha) + 
+                          '&confirmar_senha=' + encodeURIComponent(confirmarSenha) +
+                          '&system_token=' + encodeURIComponent(systemToken)
+                });
+                
+                const data = await response.json();
+                
                 btnCadastrar.innerHTML = originalText;
                 btnCadastrar.disabled = false;
                 
                 mostrarMensagem(cadastroMessage, data.message, data.status);
                 
                 if (data.status === 'success') {
-                    // Redirecionar para a tela de login após 2 segundos
                     setTimeout(function() {
                         loginTab.click();
                         document.getElementById('matricula-login').value = document.getElementById('matricula-cadastro').value;
                     }, 2000);
                 }
-            })
-            .catch(error => {
-                // Restaurar botão
+            } catch (error) {
                 btnCadastrar.innerHTML = originalText;
                 btnCadastrar.disabled = false;
-                
                 mostrarMensagem(cadastroMessage, 'Erro ao cadastrar senha. Tente novamente.', 'error');
                 console.error('Erro:', error);
-            });
+            }
         });
         
         // Fazer login
-        btnLogin.addEventListener('click', function() {
+        btnLogin.addEventListener('click', async function() {
             const matricula = document.getElementById('matricula-login').value.trim();
             const senha = document.getElementById('senha-login').value;
             
@@ -818,42 +967,41 @@ if (isset($_SESSION['usuario_id'])) {
                 return;
             }
             
-            // Adicionar animação de carregamento
-            const originalText = btnLogin.innerHTML;
-            btnLogin.innerHTML = '<div class="loading"></div> Entrando...';
-            btnLogin.disabled = true;
-            
-            // Enviar requisição AJAX
-            fetch('api/login.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: 'matricula=' + encodeURIComponent(matricula) + '&senha=' + encodeURIComponent(senha)
-            })
-            .then(response => response.json())
-            .then(data => {
-                // Restaurar botão
+            try {
+                const systemToken = await getReCaptchaToken('login');
+                
+                const originalText = btnLogin.innerHTML;
+                btnLogin.innerHTML = '<div class="loading"></div> Entrando...';
+                btnLogin.disabled = true;
+                
+                const response = await fetch('?api=login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'matricula=' + encodeURIComponent(matricula) + 
+                          '&senha=' + encodeURIComponent(senha) +
+                          '&system_token=' + encodeURIComponent(systemToken)
+                });
+                
+                const data = await response.json();
+                
                 btnLogin.innerHTML = originalText;
                 btnLogin.disabled = false;
                 
                 mostrarMensagem(loginMessage, data.message, data.status);
                 
                 if (data.status === 'success' && data.redirect) {
-                    // Redirecionar para a página de dashboard
                     setTimeout(function() {
                         window.location.href = data.redirect;
                     }, 1500);
                 }
-            })
-            .catch(error => {
-                // Restaurar botão
+            } catch (error) {
                 btnLogin.innerHTML = originalText;
                 btnLogin.disabled = false;
-                
                 mostrarMensagem(loginMessage, 'Erro ao fazer login. Tente novamente.', 'error');
                 console.error('Erro:', error);
-            });
+            }
         });
         
         // Funções auxiliares
@@ -868,6 +1016,10 @@ if (isset($_SESSION['usuario_id'])) {
             cadastroMessage.classList.add('hidden');
             loginMessage.classList.add('hidden');
         }
+        
+        grecaptcha.ready(function() {
+            console.log('Sistema carregado com sucesso!');
+        });
     </script>
 </body>
 </html>
