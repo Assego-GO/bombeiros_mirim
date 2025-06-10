@@ -274,3 +274,32 @@
 [2025-06-10 18:44:42] Encontradas 3 turmas para admin
 [2025-06-10 18:44:42] === FIM DA REQUISIÇÃO (Estrutura Real) ===
 
+[2025-06-10 19:40:16] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 19:40:16] METHOD: GET
+[2025-06-10 19:40:16] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 19:40:16] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 19:40:16] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 19:40:16] Encontradas 3 galerias
+[2025-06-10 19:40:16] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 19:40:17] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 19:40:17] METHOD: GET
+[2025-06-10 19:40:17] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 19:40:17] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 19:40:17] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 19:40:20] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 19:40:20] METHOD: GET
+[2025-06-10 19:40:20] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 19:40:20] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 19:40:20] Listando turmas para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-06-10 19:40:20] Admin: listando TODAS as turmas
+[2025-06-10 19:40:20] Encontradas 3 turmas para admin
+[2025-06-10 19:40:20] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
+[2025-06-10 19:40:25] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-06-10 19:40:25] METHOD: GET
+[2025-06-10 19:40:25] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-06-10 19:40:25] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-06-10 19:40:25] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
