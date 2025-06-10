@@ -1,0 +1,14 @@
+# Proteção da galeria
+Options -Indexes
+
+# Permitir apenas tipos de arquivo específicos
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|mp4|avi|mov|wmv|flv|webm)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+# Bloquear execução de scripts
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

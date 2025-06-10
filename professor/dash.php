@@ -1296,13 +1296,13 @@ body {
                 <p>Cadastre e gerencie atividades para suas turmas.</p>
             </div>
 
-            <div class="dashboard-card" id="card-atividades">
+            <div class="dashboard-card" id="card-galeria">
                 <div class="card-icon">
                     <i class="fas fa-image"></i>
                 </div>
                 <h2>Galeria de Fotos</h2>
                 <p>Adicione fotos e videos as turmas.</p>
-            </div>
+                </div>
 
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
@@ -1697,5 +1697,6 @@ body {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
     <script src="js/dashboard.js"></script>
+    <script src="js/galeria.js"></script>
 </body>
 </html>
