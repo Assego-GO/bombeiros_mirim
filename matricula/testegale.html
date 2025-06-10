@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da Galeria - Bombeiro Mirim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .test-section h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107, #e0a800);
+            color: #212529;
+        }
+        
+        .log-area {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            border: 1px solid #333;
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            border: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-camera"></i> Teste da Galeria - Bombeiro Mirim</h1>
+        
+        <!-- Seção de Status -->
+        <div class="test-section">
+            <h3><i class="fas fa-chart-bar"></i> Status do Sistema</h3>
+            <div id="status-sistema">
+                <p><strong>DOM:</strong> <span id="dom-status" class="status">Carregando...</span></p>
+                <p><strong>Botão Galeria:</strong> <span id="botao-status" class="status">Verificando...</span></p>
+                <p><strong>Modais:</strong> <span id="modais-status" class="status">Verificando...</span></p>
+                <p><strong>API:</strong> <span id="api-status" class="status">Verificando...</span></p>
+                <p><strong>Banco de Dados:</strong> <span id="db-status" class="status">Verificando...</span></p>
+            </div>
+        </div>
+        
+        <!-- Botão de Teste -->
+        <div class="test-section">
+            <h3><i class="fas fa-play"></i> Teste da Galeria</h3>
+            <button id="galeria-fotos-btn" class="btn">
+                <i class="fas fa-camera"></i> Galeria de Fotos
+            </button>
+            <button onclick="executarTodosOsTestes()" class="btn btn-success">
+                <i class="fas fa-check"></i> Executar Todos os Testes
+            </button>
+            <button onclick="limparLog()" class="btn btn-warning">
+                <i class="fas fa-eraser"></i> Limpar Log
+            </button>
+            <button onclick="verificarTabelas()" class="btn btn-danger">
+                <i class="fas fa-database"></i> Verificar Tabelas
+            </button>
+        </div>
+        
+        <!-- Log de Debug -->
+        <div class="test-section">
+            <h3><i class="fas fa-terminal"></i> Log de Debug</h3>
+            <div id="debug-log" class="log-area">
+                Sistema de teste iniciado...<br>
+            </div>
+        </div>
+        
+        <!-- Informações -->
+        <div class="test-section">
+            <h3><i class="fas fa-info-circle"></i> Instruções</h3>
+            <div class="info-card">
+                <h4>Como usar este teste:</h4>
+                <ol>
+                    <li>Clique em <code>Executar Todos os Testes</code> para verificar se tudo está funcionando</li>
+                    <li>Clique em <code>Galeria de Fotos</code> para testar a abertura do modal</li>
+                    <li>Clique em <code>Verificar Tabelas</code> para testar a conexão com o banco</li>
+                    <li>Observe o log de debug para identificar problemas</li>
+                </ol>
+            </div>
+            
+            <div class="info-card">
+                <h4>Arquivos necessários:</h4>
+                <ul>
+                    <li><code>api/galeria.php</code> - API da galeria</li>
+                    <li><code>api/conexao.php</code> - Conexão com banco</li>
+                    <li><code>js/galeria.js</code> - Script corrigido da galeria</li>
+                    <li>Tabelas: <code>galerias</code> e <code>galeria_arquivos</code></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Função de log personalizada
+        function log(message, type = 'info') {
+            const logArea = document.getElementById('debug-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const colors = {
+                info: '#00ff00',
+                error: '#ff4444',
+                warning: '#ffaa00',
+                success: '#44ff44'
+            };
+            
+            logArea.innerHTML += `<span style="color: #888">[${timestamp}]</span> <span style="color: ${colors[type]}">${message}</span><br>`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        function limparLog() {
+            document.getElementById('debug-log').innerHTML = 'Log limpo...<br>';
+        }
+        
+        function updateStatus(element, status, text) {
+            const statusEl = document.getElementById(element);
+            statusEl.className = `status ${status}`;
+            statusEl.textContent = text;
+        }
+        
+        // Verificar status do DOM
+        function verificarDOM() {
+            log('🔍 Verificando DOM...', 'info');
+            
+            if (document.readyState === 'complete') {
+                updateStatus('dom-status', 'success', 'OK');
+                log('✅ DOM carregado completamente', 'success');
+                return true;
+            } else {
+                updateStatus('dom-status', 'error', 'Não carregado');
+                log('❌ DOM ainda não carregado', 'error');
+                return false;
+            }
+        }
+        
+        // Verificar botão da galeria
+        function verificarBotao() {
+            log('🔍 Verificando botão da galeria...', 'info');
+            
+            const btn = document.getElementById('galeria-fotos-btn');
+            if (btn) {
+                updateStatus('botao-status', 'success', 'Encontrado');
+                log('✅ Botão da galeria encontrado', 'success');
+                return true;
+            } else {
+                updateStatus('botao-status', 'error', 'Não encontrado');
+                log('❌ Botão da galeria NÃO encontrado', 'error');
+                return false;
+            }
+        }
+        
+        // Verificar modais
+        function verificarModais() {
+            log('🔍 Verificando modais...', 'info');
+            
+            const modais = ['galeriaModal', 'novaGaleriaModal', 'detalhesGaleriaModal'];
+            let encontrados = 0;
+            
+            modais.forEach(modalId => {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    encontrados++;
+                    log(`✅ Modal ${modalId} encontrado`, 'success');
+                } else {
+                    log(`❌ Modal ${modalId} NÃO encontrado`, 'error');
+                }
+            });
+            
+            if (encontrados === modais.length) {
+                updateStatus('modais-status', 'success', `${encontrados}/${modais.length} OK`);
+                return true;
+            } else {
+                updateStatus('modais-status', 'error', `${encontrados}/${modais.length} OK`);
+                return false;
+            }
+        }
+        
+        // Verificar API
+        function verificarAPI() {
+            log('🔍 Testando API da galeria...', 'info');
+            
+            return fetch('./api/galeria.php?action=listar')
+                .then(response => {
+                    log(`📡 Status da resposta: ${response.status}`, 'info');
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateStatus('api-status', 'success', 'OK');
+                    log('✅ API funcionando: ' + JSON.stringify(data), 'success');
+                    return true;
+                })
+                .catch(error => {
+                    updateStatus('api-status', 'error', error.message);
+                    log('❌ Erro na API: ' + error.message, 'error');
+                    return false;
+                });
+        }
+        
+        // Verificar tabelas do banco
+        function verificarTabelas() {
+            log('🔍 Verificando tabelas do banco...', 'info');
+            
+            fetch('./verificar_tabelas_galeria.php')
+                .then(response => response.text())
+                .then(html => {
+                    // Abrir nova janela com resultado
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(html);
+                    newWindow.document.close();
+                    
+                    updateStatus('db-status', 'success', 'Verificado');
+                    log('✅ Verificação de tabelas executada (nova janela)', 'success');
+                })
+                .catch(error => {
+                    updateStatus('db-status', 'error', error.message);
+                    log('❌ Erro ao verificar tabelas: ' + error.message, 'error');
+                });
+        }
+        
+        // Executar todos os testes
+        async function executarTodosOsTestes() {
+            log('🚀 INICIANDO BATERIA DE TESTES', 'info');
+            log('================================', 'info');
+            
+            // Testes síncronos
+            verificarDOM();
+            verificarBotao();
+            verificarModais();
+            
+            // Teste assíncrono
+            await verificarAPI();
+            
+            log('================================', 'info');
+            log('🏁 TESTES CONCLUÍDOS', 'info');
+        }
+        
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🎯 Sistema de teste carregado', 'success');
+            
+            // Verificações iniciais
+            setTimeout(() => {
+                verificarDOM();
+                verificarBotao();
+            }, 1000);
+            
+            // Carregar script da galeria se existir
+            const script = document.createElement('script');
+            script.src = './js/galeria.js';
+            script.onload = () => {
+                log('✅ Script galeria.js carregado', 'success');
+                setTimeout(verificarModais, 2000);
+            };
+            script.onerror = () => {
+                log('❌ Erro ao carregar galeria.js', 'error');
+            };
+            document.head.appendChild(script);
+        });
+    </script>
+</body>
+</html>
