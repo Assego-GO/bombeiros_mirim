@@ -1335,7 +1335,7 @@
             if (data.success) {
                 if (isAdmin) {
                     // ✅ ADMIN: Turma é OPCIONAL
-                    select.innerHTML = '<option value="">🎯 Sem turma específica (Opcional)</option>';
+                    select.innerHTML = '<option value=""> Fotos Gerais (Opcional)</option>';
                     select.required = false;
                     
                     // Atualizar label para mostrar que é opcional
