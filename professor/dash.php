@@ -1304,6 +1304,7 @@ body {
                 <p>Adicione fotos e videos as turmas.</p>
                 </div>
 
+
             <div class="dashboard-card" id="card-perfil">
                 <div class="card-icon">
                     <i class="fas fa-user-cog"></i>

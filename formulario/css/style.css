@@ -13,7 +13,7 @@
     --accent: #2ecc71;          
     --accent-hover: #27ae60;     
     --light: #f5f7fa;           
-    --dark: #2c3e50;         
+    --dark: #502c2c;         
     --text-dark: #34495e;      
     --text-light: #ffffff;      
     --text-muted: #7f8c8d;      
@@ -799,7 +799,7 @@ button:active {
 }
 
 footer {
-    background: linear-gradient(135deg, var(--dark) 0%, #1e3a52 100%);
+    background:  #E30613 ;
     color: var(--text-light);
     text-align: center;
     padding: 3rem 1rem;
