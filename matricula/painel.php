@@ -234,7 +234,11 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
       <button class="btn btn-primary" id="galeria-fotos-btn">
     <i class="fas fa-camera"></i> Galeria de Fotos
   </button>
-      <button class="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
+  <button class="btn btn-primary" id="modulo-financeiro-btn">
+    <i class="fas fa-dollar-sign"></i> Módulo Financeiro
+  </button>
+      <button class
+      ="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
       <button class="btn btn-primary" id="gerar-carterinha-btn">
@@ -538,5 +542,6 @@ console.log('🔧 Usuário identificado como admin:', window.IS_ADMIN);
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
 <script src="./js/galeria.js"></script>
+<script src="./js/financeiro.js"></script>
 </body>
 </html>
