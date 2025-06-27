@@ -362,7 +362,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
   <button class="btn btn-primary" id="saida-btn">
-    <i class="fas fa-dollar-sign"></i> Controle de Materiais
+    <i class="fas fa-clipboard-list"></i> Controle de Materiais
   </button>
       <button class="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
@@ -890,6 +890,8 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     </div>
   </div>
 
+  <!-- NOTA: O Modal de Controle de Materiais será criado dinamicamente pelo JavaScript -->
+
   <footer class="main-footer">
     <div class="container">
       <div class="footer-content">
@@ -927,9 +929,12 @@ console.log('🔧 Usuário identificado como admin:', window.IS_ADMIN);
     }
   });
 </script>
+
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
 <script src="./js/galeria.js"></script>
 <script src="./js/financeiro.js"></script>
+<script src="./js/controle.js"></script>
 </body>
 </html>
