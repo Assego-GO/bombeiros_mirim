@@ -4679,3 +4679,17 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
+2025-06-26 17:36:53 - Buscando aluno ID: 140
+2025-06-26 17:36:53 - Dados encontrados: Array
+(
+    [aluno_id] => 140
+    [aluno_nome] => Teste Tudo
+    [matricula_id] => 112
+    [data_matricula] => 2025-06-09 14:20:31
+    [status] => pendente
+    [turma_id] => 22
+    [unidade_id] => 10
+    [turma_nome] => Alpha -Matutino
+    [unidade_nome] => Formosa
+)
+
