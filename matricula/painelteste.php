@@ -361,6 +361,9 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
+  <button class="btn btn-primary" id="saida-btn">
+    <i class="fas fa-dollar-sign"></i> Controle de Materiais
+  </button>
       <button class="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
