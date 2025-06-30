@@ -768,3 +768,38 @@
 )
 
 2025-06-06 17:43:28 - Execução: Sucesso
+2025-06-30 11:24:38 - Dados recebidos: {"nome_turma":"Teste tchola","unidade":"9","professor_responsavel":"13","data_inicio":"2025-06-30","status":1}
+2025-06-30 11:24:38 - Dados processados: Array
+(
+    [nome_turma] => Teste tchola
+    [unidade] => 9
+    [professor_responsavel] => 13
+    [data_inicio] => 2025-06-30
+    [status] => 1
+)
+
+2025-06-30 11:24:38 - SQL: INSERT INTO turma (
+        nome_turma, 
+        id_unidade, 
+        id_professor, 
+        capacidade, 
+        matriculados, 
+        status, 
+        dias_aula, 
+        horario_inicio, 
+        horario_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2025-06-30 11:24:38 - Parâmetros: Array
+(
+    [nome_turma] => Teste tchola
+    [unidade] => 9
+    [professor_responsavel] => 13
+    [capacidade] => 25
+    [matriculados] => 0
+    [status] => Em Andamento
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+2025-06-30 11:24:38 - Execução: Sucesso

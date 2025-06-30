@@ -182,7 +182,7 @@ class ModuloControle {
     <div id="controle-materiais-modal" class="modal-backdrop" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;">
       <div class="modal" style="position: relative; background: white; margin: 5px auto; width: 98%; max-width: none; border-radius: 8px; overflow: hidden; height: 95vh; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
         
-        <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #fffff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
           <span style="font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px;">
             <i class="fas fa-sign-out-alt"></i> Controle de Materiais
           </span>
