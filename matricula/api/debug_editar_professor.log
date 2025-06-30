@@ -223,3 +223,20 @@
 2025-04-28 14:37:06 - Execute result: true
 2025-04-28 14:37:06 - Affected rows: 1
 2025-04-28 14:37:06 - Error (if any): 
+2025-06-30 13:38:03 - POST Data: {"id":"14","nome":"ROGERIO DE JESUS PEREIRAA","email":"admin@superacao.com","telefone":"(62) 45549-4594"}
+2025-06-30 13:38:03 - Decoded: Array
+(
+    [id] => 14
+    [nome] => ROGERIO DE JESUS PEREIRAA
+    [email] => admin@superacao.com
+    [telefone] => (62) 45549-4594
+)
+
+2025-06-30 13:38:03 - SQL without password: UPDATE professor SET 
+                nome = ?, 
+                email = ?, 
+                telefone = ? 
+                WHERE id = ?
+2025-06-30 13:38:03 - Execute result: true
+2025-06-30 13:38:03 - Affected rows: 1
+2025-06-30 13:38:03 - Error (if any): 

@@ -714,3 +714,16 @@
             horario_inicio = '08:00:00', 
             horario_fim = '10:00:00' 
             WHERE id = 18
+2025-06-30 13:40:14 - Iniciando processamento
+2025-06-30 13:40:14 - Dados recebidos: {"id":"24","nome_turma":"Teste Auditttt","id_unidade":9,"id_professor":13,"capacidade":25,"status":"Em Andamento","dias_aula":"Não definido","horario_inicio":"08:00:00","horario_fim":"10:00:00"}
+2025-06-30 13:40:14 - Valores: id=24, nome=Teste Auditttt, unidade=9, professor=13
+2025-06-30 13:40:14 - SQL: UPDATE turma SET 
+            nome_turma = ?, 
+            id_unidade = ?, 
+            id_professor = ?, 
+            capacidade = ?, 
+            status = ?, 
+            dias_aula = ?, 
+            horario_inicio = ?, 
+            horario_fim = ? 
+            WHERE id = ?

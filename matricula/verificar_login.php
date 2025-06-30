@@ -5,6 +5,10 @@ ini_set('display_errors', 1);
 
 include('./api/conexao.php');
 
+// AUDITORIA
+require "api/auditoria.php";
+$audit = new Auditoria($conn);
+
 // Verificação de campos
 if (!isset($_POST['email'], $_POST['senha'])) {
     $_SESSION['erro_login'] = "Por favor, preencha todos os campos.";
@@ -38,9 +42,22 @@ if ($resultado->num_rows === 1) {
         $_SESSION['usuario_telefone'] = $professor['telefone'];
         $_SESSION['usuario_foto'] = 'default.png'; // Foto padrão para professor
         
+        // AUDITORIA: Login sucesso professor
+        $audit->log('LOGIN_SUCESSO', 'professor', $professor['id'], [
+            'nome' => $professor['nome'],
+            'email' => $email,
+            'tipo' => 'professor'
+        ]);
+        
         header('Location: ../professor/dashboard.php');
         exit;
     } else {
+        // AUDITORIA: Login falha professor
+        $audit->log('LOGIN_FALHA', 'professor', null, [
+            'email_tentativa' => $email,
+            'motivo' => 'senha_incorreta'
+        ]);
+        
         $_SESSION['erro_login'] = "Senha incorreta para este usuário.";
         header('Location: index.php');
         exit;
@@ -69,6 +86,13 @@ if ($resultado->num_rows === 1) {
         $_SESSION['usuario_tipo'] = $usuario['tipo'];
         $_SESSION['usuario_foto'] = $usuario['foto'] ?? 'default.png';
         
+        // AUDITORIA: Login sucesso usuario
+        $audit->log('LOGIN_SUCESSO', 'usuarios', $usuario['id'], [
+            'nome' => $usuario['nome'],
+            'email' => $email,
+            'tipo' => $usuario['tipo']
+        ]);
+        
         if ($_SESSION['usuario_tipo'] == 'admin') {
             header('Location: painel.php');
             exit;
@@ -82,11 +106,23 @@ if ($resultado->num_rows === 1) {
             exit;
         }
     } else {
+        // AUDITORIA: Login falha usuario
+        $audit->log('LOGIN_FALHA', 'usuarios', null, [
+            'email_tentativa' => $email,
+            'motivo' => 'senha_incorreta'
+        ]);
+        
         $_SESSION['erro_login'] = "Usuário ou senha incorretos.";
         header('Location: index.php');
         exit;
     }
 } else {
+    // AUDITORIA: Usuario não encontrado
+    $audit->log('LOGIN_FALHA', 'sistema', null, [
+        'email_tentativa' => $email,
+        'motivo' => 'usuario_nao_encontrado'
+    ]);
+    
     $_SESSION['erro_login'] = "Usuário não encontrado.";
     header('Location: index.php');
     exit;
