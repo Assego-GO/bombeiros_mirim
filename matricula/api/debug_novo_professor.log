@@ -331,3 +331,27 @@
 )
 
 2025-06-04 14:26:04 - Execução: Sucesso
+2025-06-30 13:36:40 - Dados recebidos: {"nome":"ROGERIO DE JESUS PEREIRA","email":"admin@superacao.com","senha":"assegoadmin@sup","telefone":"(62) 45549-4594"}
+2025-06-30 13:36:40 - Dados processados: Array
+(
+    [nome] => ROGERIO DE JESUS PEREIRA
+    [email] => admin@superacao.com
+    [senha] => assegoadmin@sup
+    [telefone] => (62) 45549-4594
+)
+
+2025-06-30 13:36:40 - SQL: INSERT INTO professor (
+        nome,
+        email,
+        telefone,
+        senha
+    ) VALUES (?, ?, ?, ?)
+2025-06-30 13:36:40 - Parâmetros: Array
+(
+    [nome] => ROGERIO DE JESUS PEREIRA
+    [email] => admin@superacao.com
+    [telefone] => (62) 45549-4594
+    [senha] => [SENHA PROTEGIDA]
+)
+
+2025-06-30 13:36:40 - Execução: Sucesso

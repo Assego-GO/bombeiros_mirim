@@ -550,3 +550,51 @@
 )
 
 2025-06-06 17:40:21 - Execução: Sucesso
+2025-06-30 12:43:38 - Dados recebidos: {"nome":"fhtfhf","endereco":"Rua São Luiz","telefone":"(62) 45549-4594","coordenador":"Júlio"}
+2025-06-30 12:43:38 - Dados processados: Array
+(
+    [nome] => fhtfhf
+    [endereco] => Rua São Luiz
+    [telefone] => (62) 45549-4594
+    [coordenador] => Júlio
+)
+
+2025-06-30 12:43:38 - SQL: INSERT INTO unidade (
+        nome, 
+        endereco, 
+        telefone, 
+        coordenador
+    ) VALUES (?, ?, ?, ?)
+2025-06-30 12:43:38 - Parâmetros: Array
+(
+    [nome] => fhtfhf
+    [endereco] => Rua São Luiz
+    [telefone] => (62) 45549-4594
+    [coordenador] => Júlio
+)
+
+2025-06-30 12:43:38 - Execução: Sucesso
+2025-06-30 12:49:53 - Dados recebidos: {"nome":"Teste2","endereco":"Rua São Luiz","telefone":"61999931212","coordenador":"Júlio"}
+2025-06-30 12:49:53 - Dados processados: Array
+(
+    [nome] => Teste2
+    [endereco] => Rua São Luiz
+    [telefone] => 61999931212
+    [coordenador] => Júlio
+)
+
+2025-06-30 12:49:53 - SQL: INSERT INTO unidade (
+        nome, 
+        endereco, 
+        telefone, 
+        coordenador
+    ) VALUES (?, ?, ?, ?)
+2025-06-30 12:49:53 - Parâmetros: Array
+(
+    [nome] => Teste2
+    [endereco] => Rua São Luiz
+    [telefone] => 61999931212
+    [coordenador] => Júlio
+)
+
+2025-06-30 12:49:53 - Execução: Sucesso

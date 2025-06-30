@@ -418,3 +418,23 @@
 2025-04-28 22:52:06 - Execute result: true
 2025-04-28 22:52:06 - Affected rows: 1
 2025-04-28 22:52:06 - Error (if any): 
+2025-06-30 13:56:06 - POST Data: {"id":"12","nome":"Teste225","endereco":"Rua São Luiz","telefone":"61999931212","coordenador":"Júlio"}
+2025-06-30 13:56:06 - Decoded: Array
+(
+    [id] => 12
+    [nome] => Teste225
+    [endereco] => Rua São Luiz
+    [telefone] => 61999931212
+    [coordenador] => Júlio
+)
+
+2025-06-30 13:56:06 - SQL: UPDATE unidade SET
+        nome = ?,
+        endereco = ?,
+        telefone = ?,
+        coordenador = ?,
+        ultima_atualizacao = NOW()
+        WHERE id = ?
+2025-06-30 13:56:06 - Execute result: true
+2025-06-30 13:56:06 - Affected rows: 1
+2025-06-30 13:56:06 - Error (if any): 
