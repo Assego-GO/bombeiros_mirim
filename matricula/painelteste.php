@@ -115,6 +115,130 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     transform: scaleX(1);
     transform-origin: bottom left;
 }
+
+
+.financeiro-tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  color: #666;
+}
+
+.tab-btn.active {
+  color: #e74c3c;
+  border-bottom-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.1);
+}
+
+.tab-btn:hover {
+  background: rgba(231, 76, 60, 0.05);
+  color: #e74c3c;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.estoque-header, .romaneio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.estoque-filtros, .romaneio-filtros {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.romaneio-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.status-disponivel {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-baixo {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-esgotado {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.modal[style*="max-width: 1200px"] .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .financeiro-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .tab-btn {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .estoque-filtros, .romaneio-filtros {
+    flex-direction: column;
+  }
+  
+  .romaneio-actions {
+    flex-direction: column;
+  }
+}
   </style>
 </head>
 <body>
@@ -237,8 +361,10 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
-      <button class
-      ="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
+  <button class="btn btn-primary" id="saida-btn">
+    <i class="fas fa-clipboard-list"></i> Controle de Materiais
+  </button>
+      <button class="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
       <button class="btn btn-primary" id="gerar-carterinha-btn">
@@ -502,6 +628,270 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     </div>
   </div>
 
+  <!-- Modal Módulo Financeiro CORRIGIDO -->
+  <div id="modulo-financeiro-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal" style="max-width: 1200px; width: 95%;">
+      <div class="modal-header">
+        <span><i class="fas fa-dollar-sign"></i> Módulo Financeiro - Controle de Materiais</span>
+        <button onclick="document.getElementById('modulo-financeiro-modal').style.display='none'">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Abas do Módulo CORRIGIDAS -->
+        <div class="financeiro-tabs">
+          <button class="tab-btn active" data-tab="entrada">
+            <i class="fas fa-plus-circle"></i> Entrada de Materiais
+          </button>
+          <button class="tab-btn" data-tab="saida">
+            <i class="fas fa-minus-circle"></i> Saída de Materiais
+          </button>
+          <button class="tab-btn" data-tab="estoque">
+            <i class="fas fa-boxes"></i> Controle de Estoque
+          </button>
+          <button class="tab-btn" data-tab="romaneio">
+            <i class="fas fa-clipboard-list"></i> Romaneio de Uniformes
+          </button>
+        </div>
+
+        <!-- Conteúdo das Abas CORRIGIDO -->
+        <div class="tab-content">
+          
+          <!-- Aba Entrada de Materiais -->
+          <div id="entrada-tab" class="tab-pane active">
+            <form id="entrada-material-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tipo de Material</label>
+                  <select name="tipo_material" id="tipo-material-entrada" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="uniforme">Uniforme</option>
+                    <option value="material_didatico">Material Didático</option>
+                    <option value="equipamento">Equipamento</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Item</label>
+                  <select name="item" id="item-entrada" required>
+                    <option value="">Selecione primeiro o tipo</option>
+                  </select>
+                </div>
+                
+                <div class="form-group" id="tamanho-grupo-entrada" style="display: none;">
+                  <label>Tamanho</label>
+                  <select name="tamanho" id="tamanho-entrada">
+                    <option value="">Selecione o tamanho</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Quantidade</label>
+                  <input type="number" name="quantidade" min="1" required />
+                </div>
+                
+                <div class="form-group">
+                  <label>Valor Unitário (R$)</label>
+                  <input type="number" name="valor_unitario" step="0.01" min="0" />
+                </div>
+                
+                <div class="form-group">
+                  <label>Fornecedor</label>
+                  <input type="text" name="fornecedor" placeholder="Nome do fornecedor" />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Observações</label>
+                <textarea name="observacoes" rows="3" placeholder="Observações sobre a entrada..."></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                  <i class="fas fa-plus"></i> Registrar Entrada
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Aba Saída de Materiais -->
+          <div id="saida-tab" class="tab-pane">
+            <form id="saida-material-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Tipo de Material</label>
+                  <select name="tipo_material" id="tipo-material-saida" required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="uniforme">Uniforme</option>
+                    <option value="material_didatico">Material Didático</option>
+                    <option value="equipamento">Equipamento</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Item</label>
+                  <select name="item" id="item-saida" required>
+                    <option value="">Selecione primeiro o tipo</option>
+                  </select>
+                </div>
+                
+                <div class="form-group" id="tamanho-grupo-saida" style="display: none;">
+                  <label>Tamanho</label>
+                  <select name="tamanho" id="tamanho-saida">
+                    <option value="">Selecione o tamanho</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Aluno</label>
+                  <select name="aluno_id" id="aluno-saida" required>
+                    <option value="">Carregando alunos...</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Turma</label>
+                  <select name="turma_id" id="turma-saida" required>
+                    <option value="">Selecione o aluno primeiro</option>
+                  </select>
+                </div>
+                
+                <div class="form-group">
+                  <label>Quantidade</label>
+                  <input type="number" name="quantidade" min="1" required />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Motivo da Saída</label>
+                <select name="motivo" required>
+                  <option value="">Selecione o motivo</option>
+                  <option value="entrega_uniforme">Entrega de Uniforme</option>
+                  <option value="reposicao">Reposição</option>
+                  <option value="material_didatico">Material Didático</option>
+                  <option value="evento">Evento/Atividade</option>
+                  <option value="outros">Outros</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Observações</label>
+                <textarea name="observacoes" rows="3" placeholder="Observações sobre a saída..."></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                  <i class="fas fa-minus"></i> Registrar Saída
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Aba Controle de Estoque -->
+          <div id="estoque-tab" class="tab-pane">
+            <div class="estoque-header">
+              <h3><i class="fas fa-boxes"></i> Estoque Atual</h3>
+              <button class="btn btn-primary" id="atualizar-estoque">
+                <i class="fas fa-sync"></i> Atualizar
+              </button>
+            </div>
+
+            <div class="estoque-filtros">
+              <select id="filtro-tipo-estoque">
+                <option value="">Todos os tipos</option>
+                <option value="uniforme">Uniformes</option>
+                <option value="material_didatico">Material Didático</option>
+                <option value="equipamento">Equipamentos</option>
+              </select>
+              
+              <input type="text" id="filtro-item-estoque" placeholder="Buscar item..." />
+            </div>
+
+            <div class="table-container">
+              <table id="tabela-estoque">
+                <thead>
+                  <tr>
+                    <th>Tipo</th>
+                    <th>Item</th>
+                    <th>Tamanho</th>
+                    <th>Quantidade</th>
+                    <th>Valor Unitário</th>
+                    <th>Valor Total</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dados carregados dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Aba Romaneio de Uniformes -->
+          <div id="romaneio-tab" class="tab-pane">
+            <div class="romaneio-header">
+              <h3><i class="fas fa-clipboard-list"></i> Romaneio de Uniformes</h3>
+              <div class="romaneio-actions">
+                <button class="btn btn-success" id="gerar-romaneio">
+                  <i class="fas fa-file-excel"></i> Gerar Romaneio Excel
+                </button>
+                <button class="btn btn-primary" id="imprimir-romaneio">
+                  <i class="fas fa-print"></i> Imprimir
+                </button>
+              </div>
+            </div>
+
+            <div class="romaneio-filtros">
+              <select id="filtro-turma-romaneio">
+                <option value="">Todas as turmas</option>
+              </select>
+              
+              <select id="filtro-item-romaneio">
+                <option value="">Todos os itens</option>
+                <option value="calça">Calça</option>
+                <option value="camiseta">Camiseta</option>
+                <option value="calção">Calção</option>
+                <option value="calçado">Calçado</option>
+                <option value="maiô">Maiô</option>
+                <option value="sunga">Sunga</option>
+              </select>
+              
+              <button class="btn btn-outline" id="filtrar-romaneio">
+                <i class="fas fa-filter"></i> Filtrar
+              </button>
+            </div>
+
+            <div class="table-container">
+              <table id="tabela-romaneio">
+                <thead>
+                  <tr>
+                    <th>Aluno</th>
+                    <th>Turma</th>
+                    <th>Calça</th>
+                    <th>Camiseta</th>
+                    <th>Calção</th>
+                    <th>Calçado</th>
+                    <th>Maiô/Sunga</th>
+                    <th>Data Entrega</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Dados carregados dinamicamente -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTA: O Modal de Controle de Materiais será criado dinamicamente pelo JavaScript -->
+
   <footer class="main-footer">
     <div class="container">
       <div class="footer-content">
@@ -539,9 +929,12 @@ console.log('🔧 Usuário identificado como admin:', window.IS_ADMIN);
     }
   });
 </script>
+
+<!-- Scripts -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
 <script src="./js/galeria.js"></script>
 <script src="./js/financeiro.js"></script>
+<script src="./js/controle.js"></script>
 </body>
 </html>
