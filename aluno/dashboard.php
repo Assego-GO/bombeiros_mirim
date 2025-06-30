@@ -1068,6 +1068,16 @@ body {
                 <h2>Galeria de Fotos</h2>
                 <p>Veja suas fotos e de sua turma</p>
                 </div>
+
+            
+            <div class="dashboard-card" id="card-questionario">
+                <div class="card-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h2>Questionário</h2>
+                <p>Responda a essas perguntas para a melhoria do nosso projeto</p>
+            </div>
+            
         
         </div>
         

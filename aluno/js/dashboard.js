@@ -18,6 +18,14 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Card de atividades (pegando o quarto card)
     const cardAtividades = document.querySelector('.dashboard-card:nth-child(4)');
+
+
+    const cardQuestionario = document.getElementById('card-questionario');
+
+
+    cardQuestionario.addEventListener('click', () => {
+        window.location.href = 'questionario.php';
+    });
     
     // Evento para abrir o modal de matrícula
     if (openMatriculaModal) {
