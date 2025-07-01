@@ -118,6 +118,34 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 
 /* CSS para Sistema de Comunicados */
 
+/* Garantir que todos os inputs tenham a mesma estilização */
+.form-group input,
+.form-group select,
+.form-group textarea,
+.form-group input[list] {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background-color: #fff;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus,
+.form-group input[list]:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
 /* Modal Grande */
 .modal-large {
     width: 90%;
@@ -620,8 +648,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <i class="fas fa-bullhorn"></i>Gerar Comunicado
 </button>
 
-      <button class
-      ="btn btn-primary" id="novo-professor-btn" onclick="window.location.href='dashboard.php'">
+      <button class="btn btn-primary" id="ver-relatorio-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
       <button class="btn btn-primary" id="gerar-carterinha-btn">
@@ -744,10 +771,16 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
           </div>
           
           <div class="form-group">
-            <label>Coordenador</label>
+            <label>Comandante da Unidade</label>
             <input type="text" name="coordenador" placeholder="Nome do coordenador" />
           </div>
-          
+
+          <div class="form-group">
+            <label>Cidade</label>
+            <input list="lista-cidades" name="cidade" id="cidade" placeholder="Digite a cidade" />
+            <datalist id="lista-cidades"></datalist>
+          </div>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-outline" 
                 onclick="document.getElementById('nova-unidade-modal').style.display='none'">
@@ -875,7 +908,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
             </div>
           </div>
           
-          <div class="filter-item">
+          <div class="form-group">
               <label>Status no programa</label>
               <select name="status-programa" id="status-programa">
                 <option value="">Todas</option>
@@ -1031,6 +1064,14 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
     const userInfo = document.querySelector('.user-info-container');
     if (menu && !userInfo.contains(e.target)) {
       menu.classList.remove('show');
+    }
+  });
+
+  // Carregar cidades quando a página carregar - usando a função do JavaScript principal
+  document.addEventListener('DOMContentLoaded', function() {
+    // A função carregarCidadesIBGE está no arquivo teste1.js
+    if (typeof carregarCidadesIBGE === 'function') {
+      carregarCidadesIBGE('lista-cidades'); // Para o modal de Nova Unidade
     }
   });
 </script>

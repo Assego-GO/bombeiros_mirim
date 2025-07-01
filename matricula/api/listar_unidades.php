@@ -18,8 +18,8 @@ try {
         throw new Exception("Falha na conexão com o banco de dados: " . $conn->connect_error);
     }
     
-    // Consulta SQL para obter todos os campos da tabela unidade
-    $sql = "SELECT id, nome, endereco, telefone, coordenador, data_criacao, ultima_atualizacao 
+    // Consulta SQL incluindo o campo cidade
+    $sql = "SELECT id, nome, endereco, telefone, coordenador, cidade, data_criacao, ultima_atualizacao 
             FROM unidade 
             ORDER BY nome ASC";
     
@@ -42,6 +42,11 @@ try {
         if (isset($row['ultima_atualizacao'])) {
             $ultima_atualizacao = new DateTime($row['ultima_atualizacao']);
             $row['ultima_atualizacao'] = $ultima_atualizacao->format('Y-m-d H:i:s');
+        }
+        
+        // Garantir que cidade sempre tenha um valor (evitar null)
+        if (!isset($row['cidade']) || $row['cidade'] === null) {
+            $row['cidade'] = '';
         }
         
         $dados[] = $row;

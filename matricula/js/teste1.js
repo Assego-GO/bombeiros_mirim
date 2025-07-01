@@ -139,6 +139,10 @@ document.addEventListener("DOMContentLoaded", () => {
         dados[chave] = valor;
       });
 
+      // Debug: verificar se a cidade está sendo capturada
+      console.log('Dados enviados:', dados);
+      console.log('Cidade capturada:', dados.cidade);
+
       fetch("api/nova_unidade.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -583,7 +587,7 @@ function listarUnidades() {
       modal.style.display = 'flex';
 
       let html = `
-              <div class="modal" style="max-width: 80%; width: 900px;">
+              <div class="modal" style="max-width: 85%; width: 1000px;">
                   <div class="modal-header">
                       <span><i class="fas fa-building"></i> Lista de Unidades</span>
                       <button onclick="this.closest('.modal-backdrop').remove()">×</button>
@@ -593,10 +597,11 @@ function listarUnidades() {
                           <table style="min-width: 100%;">
                               <thead>
                                   <tr>
-                                      <th style="width: 30%;">Nome da Unidade</th>
-                                      <th style="width: 30%;">Endereço</th>
-                                      <th style="width: 15%;">Telefone</th>
-                                      <th style="width: 15%;">Coordenador</th>
+                                      <th style="width: 20%;">Nome da Unidade</th>
+                                      <th style="width: 25%;">Endereço</th>
+                                      <th style="width: 12%;">Telefone</th>
+                                      <th style="width: 18%;">Comandante</th>
+                                      <th style="width: 15%;">Cidade</th>
                                       <th style="width: 10%; text-align: center;">Ações</th>
                                   </tr>
                               </thead>
@@ -606,22 +611,30 @@ function listarUnidades() {
       if (unidades.length === 0) {
         html += `
                   <tr>
-                      <td colspan="5" style="text-align: center;">Nenhuma unidade encontrada</td>
+                      <td colspan="6" style="text-align: center;">Nenhuma unidade encontrada</td>
                   </tr>
               `;
       } else {
         unidades.forEach(unidade => {
+          // Verificação segura para campos que podem não existir
+          const nome = unidade.nome || '-';
+          const endereco = unidade.endereco || '-';
+          const telefone = unidade.telefone || '-';
+          const coordenador = unidade.coordenador || '-';
+          const cidade = unidade.cidade || '-';
+          
           html += `
                       <tr>
-                          <td>${unidade.nome || '-'}</td>
-                          <td>${unidade.endereco || '-'}</td>
-                          <td>${unidade.telefone || '-'}</td>
-                          <td>${unidade.coordenador || '-'}</td>
+                          <td>${nome}</td>
+                          <td>${endereco}</td>
+                          <td>${telefone}</td>
+                          <td>${coordenador}</td>
+                          <td>${cidade}</td>
                           <td style="text-align: center; white-space: nowrap;">
                               <button class="action-btn editar-btn" title="Editar" onclick="editarUnidade(${unidade.id})">
                                   <i class="fas fa-edit"></i>
                               </button>
-                              <button class="action-btn excluir-btn" title="Excluir" onclick="confirmarExclusaoUnidade(${unidade.id}, '${unidade.nome.replace(/'/g, "\\'")}')">
+                              <button class="action-btn excluir-btn" title="Excluir" onclick="confirmarExclusaoUnidade(${unidade.id}, '${nome.replace(/'/g, "\\'")}')">
                                   <i class="fas fa-trash-alt"></i>
                               </button>
                           </td>
@@ -705,7 +718,25 @@ function excluirUnidade(id) {
     });
 }
 
-
+// Função para carregar cidades do IBGE
+function carregarCidadesIBGE(datalistId) {
+  fetch("https://servicodados.ibge.gov.br/api/v1/localidades/estados/52/municipios")
+    .then(response => response.json())
+    .then(data => {
+      const datalist = document.getElementById(datalistId);
+      if (datalist) {
+        datalist.innerHTML = ''; // Limpar opções existentes
+        data.forEach(cidade => {
+          const option = document.createElement("option");
+          option.value = cidade.nome;
+          datalist.appendChild(option);
+        });
+      }
+    })
+    .catch(err => {
+      console.error("Erro ao carregar cidades:", err);
+    });
+}
 
 // Função para editar unidade
 function editarUnidade(id) {
@@ -758,8 +789,14 @@ function editarUnidade(id) {
                           </div>
                           
                           <div class="form-group">
-                              <label for="edit-coordenador">Coordenador</label>
+                              <label for="edit-coordenador">Comandante da Unidade</label>
                               <input type="text" id="edit-coordenador" name="coordenador" value="${unidade.coordenador || ''}">
+                          </div>
+
+                          <div class="form-group">
+                              <label>Cidade</label>
+                              <input list="lista-cidades-edit" id="edit-cidade" name="cidade" value="${unidade.cidade || ''}" placeholder="Digite a cidade">
+                              <datalist id="lista-cidades-edit"></datalist>
                           </div>
                           
                           <div class="modal-footer">
@@ -778,6 +815,9 @@ function editarUnidade(id) {
       modal.innerHTML = html;
       document.body.appendChild(modal);
 
+      // Carregar cidades do IBGE para o modal de edição
+      carregarCidadesIBGE('lista-cidades-edit');
+
       // Configurar o formulário
       document.getElementById('editar-unidade-form').addEventListener('submit', function (e) {
         e.preventDefault();
@@ -787,6 +827,10 @@ function editarUnidade(id) {
         formData.forEach((value, key) => {
           dados[key] = value;
         });
+
+        // Debug: verificar se a cidade está sendo capturada
+        console.log('Dados de edição enviados:', dados);
+        console.log('Cidade na edição:', dados.cidade);
 
         salvarEdicaoUnidade(dados, modal);
       });
