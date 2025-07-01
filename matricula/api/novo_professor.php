@@ -2,9 +2,16 @@
 header("Content-Type: application/json");
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
+
 include "conexao.php";
 
+// AUDITORIA: Adicione essas 3 linhas
+session_start();
+require_once "auditoria.php";
+$audit = new Auditoria($conn);
+
 file_put_contents('debug_novo_professor.log', date('Y-m-d H:i:s') . " - Dados recebidos: " . file_get_contents("php://input") . "\n", FILE_APPEND);
+
 try {
     $data = json_decode(file_get_contents("php://input"), true);
     if (!$data) {
@@ -18,6 +25,7 @@ try {
         echo json_encode(["status" => "erro", "mensagem" => "O nome do professor é obrigatório."]);
         exit;
     }
+
     // Preparar valores opcionais
     $email = $data['email'] ?? null;
     $telefone = $data['telefone'] ?? null;
@@ -44,6 +52,7 @@ try {
     }
   
     file_put_contents('debug_novo_professor.log', date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
+
     // Vincula os parâmetros
     $stmt->bind_param(
         "ssss",
@@ -52,6 +61,7 @@ try {
         $telefone,     
         $senha        
     );
+
     $log_params = [
         'nome' => $data['nome'],
         'email' => $email,
@@ -65,11 +75,17 @@ try {
     file_put_contents('debug_novo_professor.log', date('Y-m-d H:i:s') . " - Execução: " . ($result ? "Sucesso" : "Falha") . "\n", FILE_APPEND);
     
     if ($result) {
-        echo json_encode(["status" => "sucesso", "id" => $conn->insert_id, "mensagem" => "Professor cadastrado com sucesso!"]);
+        $professor_id = $conn->insert_id;
+        
+        // AUDITORIA: Registra a criação do professor (sem a senha!)
+        $audit->log('CRIAR_PROFESSOR', 'professor', $professor_id, $log_params);
+        
+        echo json_encode(["status" => "sucesso", "id" => $professor_id, "mensagem" => "Professor cadastrado com sucesso!"]);
     } else {
         file_put_contents('debug_novo_professor.log', date('Y-m-d H:i:s') . " - Erro: " . $stmt->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => $stmt->error]);
     }
+
 } catch (Exception $e) {
     file_put_contents('debug_novo_professor.log', date('Y-m-d H:i:s') . " - Exceção: " . $e->getMessage() . "\n", FILE_APPEND);
     echo json_encode(["status" => "erro", "mensagem" => "Exceção: " . $e->getMessage()]);

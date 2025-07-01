@@ -24,12 +24,16 @@ try {
         exit;
     }
 
-    // Usar o ID correto da matrícula
+    // Incluir status_programa na atualização (com valor padrão se não fornecido)
+    $status_programa = isset($data['status-programa']) ? $data['status-programa'] : 'novato';
+
+    // Usar o ID correto da matrícula - AGORA COM STATUS_PROGRAMA
     $sql = "UPDATE matriculas SET 
         unidade = ?, 
         turma = ?, 
         data_matricula = ?, 
-        status = ? 
+        status = ?,
+        status_programa = ?
     WHERE id = ?";
 
     file_put_contents('debug_editar.log', date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
@@ -47,12 +51,14 @@ try {
         $data_matricula .= ' 00:00:00'; // Adiciona hora se não estiver presente
     }
 
+    // ATENÇÃO: Adicionei mais um parâmetro 's' para o status_programa e mais um 'i' para o ID
     $stmt->bind_param(
-        "ssssi",
+        "sssssi",
         $data['unidade'],
         $data['turma'],
         $data_matricula,
         $data['status'],
+        $status_programa,
         $data['id']
     );
 
