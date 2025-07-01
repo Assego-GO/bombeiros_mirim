@@ -208,7 +208,6 @@ class ModuloFinanceiro {
                     style="padding: 12px 20px; border: none; background: none; cursor: pointer; border-bottom: 3px solid transparent; font-weight: 500; color: #666;">
               <i class="fas fa-minus-circle"></i> Saída
             </button>
-    
 
           </div>
 
