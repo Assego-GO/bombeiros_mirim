@@ -1,0 +1,15 @@
+2025-07-01 16:17:09 - Buscando aluno ID: 139
+2025-07-01 16:17:09 - Dados encontrados: Array
+(
+    [aluno_id] => 139
+    [aluno_nome] => LUIS FILIPE E SILVA
+    [matricula_id] => 111
+    [data_matricula] => 2025-06-06 00:00:00
+    [status] => ativo
+    [status_programa] => monitor
+    [turma_id] => 21
+    [unidade_id] => 9
+    [turma_nome] => TURMA TESTE
+    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
+)
+
