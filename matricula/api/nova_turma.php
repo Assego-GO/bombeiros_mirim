@@ -1,9 +1,14 @@
 <?php
 header("Content-Type: application/json");
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 include "conexao.php";
+
+// AUDITORIA: Adicione essas 3 linhas
+session_start();
+require_once "auditoria.php";
+$audit = new Auditoria($conn);
 
 // Log para debug
 file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Dados recebidos: " . file_get_contents("php://input") . "\n", FILE_APPEND);
@@ -93,7 +98,12 @@ try {
     file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Execução: " . ($result ? "Sucesso" : "Falha") . "\n", FILE_APPEND);
     
     if ($result) {
-        echo json_encode(["status" => "sucesso", "id" => $conn->insert_id]);
+        $turma_id = $conn->insert_id;
+        
+        // AUDITORIA: Registra a criação da turma (apenas 1 linha!)
+        $audit->log('CRIAR_TURMA', 'turma', $turma_id, $log_params);
+        
+        echo json_encode(["status" => "sucesso", "id" => $turma_id]);
     } else {
         file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Erro: " . $stmt->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => $stmt->error]);
