@@ -1,5 +1,5 @@
 // ===============================================
-// SISTEMA DE COMUNICADOS - CORRIGIDO
+// SISTEMA DE COMUNICADOS - BANCO DE DADOS
 // ===============================================
 
 // Variáveis globais
@@ -20,9 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         console.error('❌ Botão comunicado não encontrado');
     }
-    
-    // Carregar comunicados do localStorage
-    carregarComunicadosLocalStorage();
     
     // Event listeners para fechar modais
     setupEventListeners();
@@ -132,8 +129,7 @@ function mostrarAba(aba) {
         contentAtivo.style.display = 'block';
         
         if (aba === 'listar') {
-            renderizarComunicados();
-            atualizarEstatisticas();
+            carregarComunicados();
         }
         console.log('✅ Aba ativa:', aba);
     } else {
@@ -141,23 +137,21 @@ function mostrarAba(aba) {
     }
 }
 
-function salvarComunicado(event) {
+async function salvarComunicado(event) {
     event.preventDefault();
     console.log('💾 Salvando comunicado');
     
     const formData = new FormData(event.target);
     const dados = {
-        id: comunicadoEditando || Date.now(),
         titulo: formData.get('titulo'),
         conteudo: formData.get('conteudo'),
-        data_criacao: comunicadoEditando ? 
-            todosComunicados.find(c => c.id === comunicadoEditando)?.data_criacao || new Date().toISOString() :
-            new Date().toISOString(),
-        data_atualizacao: new Date().toISOString(),
-        autor_nome: window.usuarioNome || 'Administrador',
-        autor_id: window.usuarioId || 6,
         status: 'ativo'
     };
+    
+    // Se estiver editando, adicionar ID
+    if (comunicadoEditando) {
+        dados.id = comunicadoEditando;
+    }
     
     // Validar dados
     if (!dados.titulo.trim() || !dados.conteudo.trim()) {
@@ -166,27 +160,62 @@ function salvarComunicado(event) {
     }
     
     try {
-        if (comunicadoEditando) {
-            // Editar comunicado existente
-            const index = todosComunicados.findIndex(c => c.id === comunicadoEditando);
-            if (index !== -1) {
-                todosComunicados[index] = dados;
-            }
-            showNotification('Comunicado atualizado com sucesso!', 'success');
-        } else {
-            // Criar novo comunicado
-            todosComunicados.push(dados);
-            showNotification('Comunicado criado com sucesso!', 'success');
-        }
+        mostrarLoading(true);
         
-        salvarNoLocalStorage();
-        limparFormulario();
-        cancelarEdicao();
-        mostrarAba('listar');
+        const url = comunicadoEditando ? 'api/comunicados.php?action=editar' : 'api/comunicados.php?action=criar';
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dados)
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            const mensagem = comunicadoEditando ? 'Comunicado atualizado com sucesso!' : 'Comunicado criado com sucesso!';
+            showNotification(mensagem, 'success');
+            limparFormulario();
+            cancelarEdicao();
+            mostrarAba('listar');
+        } else {
+            showNotification('Erro: ' + (resultado.message || 'Erro desconhecido'), 'error');
+        }
         
     } catch (error) {
         console.error('Erro ao salvar comunicado:', error);
         showNotification('Erro ao salvar comunicado. Tente novamente.', 'error');
+    } finally {
+        mostrarLoading(false);
+    }
+}
+
+async function carregarComunicados() {
+    try {
+        mostrarLoading(true);
+        console.log('📦 Carregando comunicados do banco...');
+        
+        const response = await fetch('api/comunicados.php?action=listar');
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            todosComunicados = resultado.data || [];
+            renderizarComunicados();
+            atualizarEstatisticas();
+            console.log('✅ Comunicados carregados:', todosComunicados.length);
+        } else {
+            console.error('Erro ao carregar comunicados:', resultado.message);
+            showNotification('Erro ao carregar comunicados: ' + resultado.message, 'error');
+            renderizarComunicados([]);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao carregar comunicados:', error);
+        showNotification('Erro ao carregar comunicados. Verifique sua conexão.', 'error');
+        renderizarComunicados([]);
+    } finally {
+        mostrarLoading(false);
     }
 }
 
@@ -213,13 +242,13 @@ function renderizarComunicados() {
                 <div class="comunicado-header">
                     <h3>${escapeHtml(comunicado.titulo)}</h3>
                     <div class="comunicado-acoes">
-                        <button class="btn btn-sm btn-outline btn-visualizar-comunicado" data-id="${comunicado.id}">
+                        <button class="btn btn-sm btn-outline btn-visualizar-comunicado" data-id="${comunicado.id}" title="Visualizar">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn btn-sm btn-primary btn-editar-comunicado" data-id="${comunicado.id}">
+                        <button class="btn btn-sm btn-primary btn-editar-comunicado" data-id="${comunicado.id}" title="Editar">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-danger btn-excluir-comunicado" data-id="${comunicado.id}">
+                        <button class="btn btn-sm btn-danger btn-excluir-comunicado" data-id="${comunicado.id}" title="Excluir">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -230,6 +259,8 @@ function renderizarComunicados() {
                 <div class="comunicado-footer">
                     <span class="autor">Por: ${escapeHtml(comunicado.autor_nome)}</span>
                     <span class="data">${formatarData(comunicado.data_criacao)}</span>
+                    ${comunicado.data_atualizacao !== comunicado.data_criacao ? 
+                        `<span class="editado">Editado: ${formatarData(comunicado.data_atualizacao)}</span>` : ''}
                 </div>
             </div>
         `).join('');
@@ -293,21 +324,37 @@ function fecharModalVisualizacao() {
     }
 }
 
-function excluirComunicado(id) {
+async function excluirComunicado(id) {
     console.log('🗑️ Excluindo comunicado:', id);
     if (!confirm('Tem certeza que deseja excluir este comunicado?')) {
         return;
     }
     
     try {
-        todosComunicados = todosComunicados.filter(c => c.id !== id);
-        salvarNoLocalStorage();
-        renderizarComunicados();
-        atualizarEstatisticas();
-        showNotification('Comunicado excluído com sucesso!', 'success');
+        mostrarLoading(true);
+        
+        const response = await fetch('api/comunicados.php?action=excluir', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: id })
+        });
+        
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+            showNotification('Comunicado excluído com sucesso!', 'success');
+            carregarComunicados(); // Recarregar lista
+        } else {
+            showNotification('Erro: ' + (resultado.message || 'Erro desconhecido'), 'error');
+        }
+        
     } catch (error) {
         console.error('Erro ao excluir comunicado:', error);
         showNotification('Erro ao excluir comunicado. Tente novamente.', 'error');
+    } finally {
+        mostrarLoading(false);
     }
 }
 
@@ -344,32 +391,6 @@ function atualizarEstatisticas() {
 }
 
 // ===============================================
-// FUNÇÕES DE ARMAZENAMENTO
-// ===============================================
-
-function carregarComunicadosLocalStorage() {
-    try {
-        const dados = localStorage.getItem('comunicados_bombeiro_mirim');
-        if (dados) {
-            todosComunicados = JSON.parse(dados);
-            console.log('📦 Comunicados carregados:', todosComunicados.length);
-        }
-    } catch (error) {
-        console.error('Erro ao carregar comunicados:', error);
-        todosComunicados = [];
-    }
-}
-
-function salvarNoLocalStorage() {
-    try {
-        localStorage.setItem('comunicados_bombeiro_mirim', JSON.stringify(todosComunicados));
-        console.log('💾 Comunicados salvos no localStorage');
-    } catch (error) {
-        console.error('Erro ao salvar comunicados:', error);
-    }
-}
-
-// ===============================================
 // FUNÇÕES AUXILIARES
 // ===============================================
 
@@ -389,7 +410,7 @@ function truncarTexto(texto, limite) {
 function formatarData(dateString) {
     try {
         const date = new Date(dateString);
-        return date.toLocaleDateString('pt-BR', {
+        return date.toLocaleString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
@@ -398,6 +419,13 @@ function formatarData(dateString) {
         });
     } catch (error) {
         return 'Data inválida';
+    }
+}
+
+function mostrarLoading(show) {
+    const loading = document.getElementById('loading-overlay');
+    if (loading) {
+        loading.style.display = show ? 'flex' : 'none';
     }
 }
 
@@ -440,4 +468,4 @@ document.addEventListener('click', function(event) {
     }
 });
 
-console.log('🎯 Sistema de comunicados inicializado');
+console.log('🎯 Sistema de comunicados inicializado com banco de dados');
