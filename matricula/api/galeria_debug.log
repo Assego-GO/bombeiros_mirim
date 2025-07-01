@@ -363,3 +363,11 @@
 [2025-06-30 13:48:22] Encontradas 3 galerias
 [2025-06-30 13:48:22] === FIM DA REQUISIÇÃO (Estrutura Real) ===
 
+[2025-07-01 12:24:30] === INÍCIO DA REQUISIÇÃO (Estrutura Real) ===
+[2025-07-01 12:24:30] METHOD: GET
+[2025-07-01 12:24:30] SESSION: {"usuario_id":6,"usuario_nome":"Administrador","usuario_tipo":"admin","usuario_foto":"default.png"}
+[2025-07-01 12:24:30] Usuário encontrado: {"id":6,"nome":"Administrador","tipo":"admin","origem":"usuarios"}
+[2025-07-01 12:24:30] Listando galerias para usuário: 6 (origem: usuarios, tipo: admin)
+[2025-07-01 12:24:30] Encontradas 3 galerias
+[2025-07-01 12:24:30] === FIM DA REQUISIÇÃO (Estrutura Real) ===
+
