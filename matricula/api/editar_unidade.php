@@ -10,11 +10,8 @@ session_start();
 require_once "auditoria.php";
 $audit = new Auditoria($conn);
 
-file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - POST Data: " . file_get_contents("php://input") . "\n", FILE_APPEND);
-
 try {
     $data = json_decode(file_get_contents("php://input"), true);
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Decoded: " . print_r($data, true) . "\n", FILE_APPEND);
     
     if (!$data) {
         echo json_encode(["status" => "erro", "mensagem" => "Dados JSON inválidos."]);
@@ -46,11 +43,9 @@ try {
         ultima_atualizacao = NOW()
         WHERE id = ?";
         
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
     $stmt = $conn->prepare($sql);
     
     if (!$stmt) {
-        file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Erro na preparação: " . $conn->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => "Erro ao preparar consulta: " . $conn->error]);
         exit;
     }
@@ -82,10 +77,6 @@ try {
     $success = $stmt->execute();
     $affected = $stmt->affected_rows;
     
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Execute result: " . ($success ? "true" : "false") . "\n", FILE_APPEND);
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Affected rows: $affected\n", FILE_APPEND);
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Error (if any): " . $stmt->error . "\n", FILE_APPEND);
-    
     if ($success) {
         if ($affected > 0) {
             // AUDITORIA: Registrar a edição
@@ -102,7 +93,6 @@ try {
         echo json_encode(["status" => "erro", "mensagem" => "Erro ao atualizar: " . $stmt->error]);
     }
 } catch (Exception $e) {
-    file_put_contents('debug_editar_unidade.log', date('Y-m-d H:i:s') . " - Exception: " . $e->getMessage() . "\n", FILE_APPEND);
     echo json_encode(["status" => "erro", "mensagem" => "Exceção: " . $e->getMessage()]);
 }
 ?>

@@ -10,9 +10,6 @@ session_start();
 require_once "auditoria.php";
 $audit = new Auditoria($conn);
 
-// Log para debug
-file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Dados recebidos: " . file_get_contents("php://input") . "\n", FILE_APPEND);
-
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -20,9 +17,6 @@ try {
         echo json_encode(["status" => "erro", "mensagem" => "Dados inválidos."]);
         exit;
     }
-
-    // Log dos dados decodificados
-    file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Dados processados: " . print_r($data, true) . "\n", FILE_APPEND);
 
     // Campos obrigatórios de acordo com seu formulário HTML
     $campos_obrigatorios = ['nome_turma', 'unidade', 'professor_responsavel', 'data_inicio'];
@@ -61,9 +55,6 @@ try {
         exit;
     }
 
-    // Log da consulta SQL
-    file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
-
     // Vincula os parâmetros de acordo com os tipos corretos
     $stmt->bind_param(
         "siiisssss",
@@ -78,39 +69,31 @@ try {
         $horario_fim                    // string: horário de fim
     );
 
-    // Log dos parâmetros
-    $log_params = [
-        'nome_turma' => $data['nome_turma'],
-        'unidade' => $data['unidade'],
-        'professor_responsavel' => $data['professor_responsavel'],
-        'capacidade' => $capacidade,
-        'matriculados' => $matriculados,
-        'status' => $status,
-        'dias_aula' => $dias_aula,
-        'horario_inicio' => $horario_inicio,
-        'horario_fim' => $horario_fim
-    ];
-    file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Parâmetros: " . print_r($log_params, true) . "\n", FILE_APPEND);
-
     $result = $stmt->execute();
-    
-    // Log do resultado da execução
-    file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Execução: " . ($result ? "Sucesso" : "Falha") . "\n", FILE_APPEND);
     
     if ($result) {
         $turma_id = $conn->insert_id;
         
-        // AUDITORIA: Registra a criação da turma (apenas 1 linha!)
-        $audit->log('CRIAR_TURMA', 'turma', $turma_id, $log_params);
+        // AUDITORIA: Registra a criação da turma
+        $audit_params = [
+            'nome_turma' => $data['nome_turma'],
+            'unidade' => $data['unidade'],
+            'professor_responsavel' => $data['professor_responsavel'],
+            'capacidade' => $capacidade,
+            'matriculados' => $matriculados,
+            'status' => $status,
+            'dias_aula' => $dias_aula,
+            'horario_inicio' => $horario_inicio,
+            'horario_fim' => $horario_fim
+        ];
+        $audit->log('CRIAR_TURMA', 'turma', $turma_id, $audit_params);
         
         echo json_encode(["status" => "sucesso", "id" => $turma_id]);
     } else {
-        file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Erro: " . $stmt->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => $stmt->error]);
     }
 
 } catch (Exception $e) {
-    file_put_contents('debug_nova_turma.log', date('Y-m-d H:i:s') . " - Exceção: " . $e->getMessage() . "\n", FILE_APPEND);
     echo json_encode(["status" => "erro", "mensagem" => "Exceção: " . $e->getMessage()]);
 }
 ?>

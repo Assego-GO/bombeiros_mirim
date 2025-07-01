@@ -6,20 +6,8 @@ ini_set('log_errors', 1);
 
 session_start();
 
-// Função para log detalhado
-function logDebug($message) {
-    $log_file = __DIR__ . '/galeria_debug.log';
-    $timestamp = date('Y-m-d H:i:s');
-    file_put_contents($log_file, "[$timestamp] $message\n", FILE_APPEND | LOCK_EX);
-}
-
-logDebug("=== INÍCIO DA REQUISIÇÃO (Estrutura Real) ===");
-logDebug("METHOD: " . $_SERVER['REQUEST_METHOD']);
-logDebug("SESSION: " . json_encode($_SESSION));
-
 // Incluir arquivo de conexão
 if (!file_exists("conexao.php")) {
-    logDebug("ERRO: arquivo conexao.php não encontrado");
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Arquivo de conexão não encontrado']);
     exit;
@@ -29,7 +17,6 @@ require_once "conexao.php";
 
 // Verificar conexão
 if ($conn->connect_error) {
-    logDebug("ERRO: falha na conexão com o banco: " . $conn->connect_error);
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erro na conexão com o banco de dados']);
     exit;
@@ -37,7 +24,6 @@ if ($conn->connect_error) {
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    logDebug("ERRO: usuário não autenticado");
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Usuário não autenticado']);
     exit;
@@ -77,13 +63,10 @@ function obterDadosUsuario($conn, $usuario_id) {
 $dados_usuario = obterDadosUsuario($conn, $usuario_id);
 
 if (!$dados_usuario) {
-    logDebug("ERRO: usuário ID $usuario_id não encontrado em nenhuma tabela");
     http_response_code(401);
     echo json_encode(['success' => false, 'message' => 'Usuário não encontrado no sistema']);
     exit;
 }
-
-logDebug("Usuário encontrado: " . json_encode($dados_usuario));
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
 header('Content-Type: application/json');
@@ -111,20 +94,15 @@ try {
             break;
         
         default:
-            logDebug("ERRO: ação inválida: $action");
             http_response_code(400);
             echo json_encode(['success' => false, 'message' => 'Ação não especificada']);
     }
 } catch (Exception $e) {
-    logDebug("EXCEÇÃO: " . $e->getMessage());
-    logDebug("STACK TRACE: " . $e->getTraceAsString());
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erro interno: ' . $e->getMessage()]);
 }
 
 function listarGalerias($conn, $usuario_id, $dados_usuario) {
-    logDebug("Listando galerias para usuário: $usuario_id (origem: {$dados_usuario['origem']}, tipo: {$dados_usuario['tipo']})");
-    
     if ($dados_usuario['tipo'] === 'admin') {
         // Admin vê todas as galerias
         $sql = "SELECT g.*, 
@@ -173,13 +151,11 @@ function listarGalerias($conn, $usuario_id, $dados_usuario) {
     }
     
     if (!$stmt) {
-        logDebug("ERRO na preparação da query: " . $conn->error);
         echo json_encode(['success' => false, 'message' => 'Erro na preparação da query: ' . $conn->error]);
         return;
     }
     
     if (!$stmt->execute()) {
-        logDebug("ERRO na execução da query: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => 'Erro na execução: ' . $stmt->error]);
         return;
     }
@@ -196,14 +172,11 @@ function listarGalerias($conn, $usuario_id, $dados_usuario) {
         $galerias[] = $row;
     }
     
-    logDebug("Encontradas " . count($galerias) . " galerias");
     $stmt->close();
     echo json_encode(['success' => true, 'galerias' => $galerias]);
 }
 
 function listarTurmas($conn, $usuario_id, $dados_usuario) {
-    logDebug("Listando turmas para usuário: $usuario_id (origem: {$dados_usuario['origem']}, tipo: {$dados_usuario['tipo']})");
-    
     if ($dados_usuario['tipo'] === 'admin') {
         // ✅ ADMIN VÊ TODAS AS TURMAS
         $sql = "SELECT t.id, t.nome_turma, u.nome as unidade_nome
@@ -212,7 +185,6 @@ function listarTurmas($conn, $usuario_id, $dados_usuario) {
                 WHERE t.status IN ('Em Andamento', 'Planejada')
                 ORDER BY u.nome, t.nome_turma";
         $stmt = $conn->prepare($sql);
-        logDebug("Admin: listando TODAS as turmas");
     } else {
         // ✅ PROFESSOR VÊ APENAS SUAS TURMAS
         $sql = "SELECT t.id, t.nome_turma, u.nome as unidade_nome
@@ -224,17 +196,14 @@ function listarTurmas($conn, $usuario_id, $dados_usuario) {
         if ($stmt) {
             $stmt->bind_param("i", $usuario_id);
         }
-        logDebug("Professor: listando apenas turmas do professor ID $usuario_id");
     }
     
     if (!$stmt) {
-        logDebug("ERRO na preparação da query turmas: " . $conn->error);
         echo json_encode(['success' => false, 'message' => 'Erro na preparação da query: ' . $conn->error]);
         return;
     }
     
     if (!$stmt->execute()) {
-        logDebug("ERRO na execução da query turmas: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => 'Erro na execução: ' . $stmt->error]);
         return;
     }
@@ -246,30 +215,23 @@ function listarTurmas($conn, $usuario_id, $dados_usuario) {
         $turmas[] = $row;
     }
     
-    logDebug("Encontradas " . count($turmas) . " turmas para " . $dados_usuario['tipo']);
     $stmt->close();
     echo json_encode(['success' => true, 'turmas' => $turmas]);
 }
 
 function criarGaleria($conn, $usuario_id, $dados_usuario) {
-    logDebug("Criando galeria para usuário: $usuario_id (origem: {$dados_usuario['origem']}, tipo: {$dados_usuario['tipo']})");
-    
     $titulo = trim($_POST['titulo'] ?? '');
     $turma_id = (int)($_POST['turma_id'] ?? 0);
     $atividade_realizada = trim($_POST['atividade_realizada'] ?? '');
     $descricao = trim($_POST['descricao'] ?? '');
     
-    logDebug("Dados da galeria: titulo='$titulo', turma_id=$turma_id, atividade='$atividade_realizada'");
-    
     // Validações básicas
     if (empty($titulo)) {
-        logDebug("ERRO: título vazio");
         echo json_encode(['success' => false, 'message' => 'Título é obrigatório']);
         return;
     }
     
     if (empty($atividade_realizada)) {
-        logDebug("ERRO: atividade vazia");
         echo json_encode(['success' => false, 'message' => 'Atividade realizada é obrigatória']);
         return;
     }
@@ -286,32 +248,26 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
                 $result = $stmt->get_result();
                 
                 if ($result->num_rows === 0) {
-                    logDebug("ERRO: turma $turma_id não existe ou não está ativa");
                     echo json_encode(['success' => false, 'message' => 'Turma selecionada não encontrada ou inativa']);
                     $stmt->close();
                     return;
                 }
                 $stmt->close();
-                logDebug("✅ Admin escolheu turma válida: $turma_id");
             }
         } else {
             // Admin não escolheu turma - OK!
             $turma_id = null;
-            logDebug("✅ Admin criando galeria SEM turma associada");
         }
     } else {
         // ✅ PROFESSOR: Turma é OBRIGATÓRIA
         if ($turma_id <= 0) {
-            logDebug("ERRO: professor deve selecionar uma turma");
             echo json_encode(['success' => false, 'message' => 'Selecione uma turma válida']);
             return;
         }
         
         // Verificar se professor tem acesso à turma
-        logDebug("Verificando se professor tem acesso à turma $turma_id");
         $stmt = $conn->prepare("SELECT id FROM turma WHERE id = ? AND id_professor = ? AND status IN ('Em Andamento', 'Planejada')");
         if (!$stmt) {
-            logDebug("ERRO na preparação da query de verificação de turma: " . $conn->error);
             echo json_encode(['success' => false, 'message' => 'Erro na verificação da turma']);
             return;
         }
@@ -321,13 +277,11 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
         $result = $stmt->get_result();
         
         if ($result->num_rows === 0) {
-            logDebug("ERRO: professor não tem acesso à turma $turma_id");
             echo json_encode(['success' => false, 'message' => 'Você não tem acesso a esta turma']);
             $stmt->close();
             return;
         }
         $stmt->close();
-        logDebug("✅ Professor tem acesso à turma");
     }
     
     // Inserir galeria (turma_id pode ser NULL para admin)
@@ -340,20 +294,17 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
     }
     
     if (!$stmt) {
-        logDebug("ERRO na preparação da query de inserção: " . $conn->error);
         echo json_encode(['success' => false, 'message' => 'Erro na preparação da query: ' . $conn->error]);
         return;
     }
     
     if (!$stmt->execute()) {
-        logDebug("ERRO na execução da inserção: " . $stmt->error);
         echo json_encode(['success' => false, 'message' => 'Erro ao criar galeria: ' . $stmt->error]);
         $stmt->close();
         return;
     }
     
     $galeria_id = $conn->insert_id;
-    logDebug("✅ Galeria criada com ID: $galeria_id" . ($turma_id ? " (turma: $turma_id)" : " (sem turma)"));
     $stmt->close();
     
     // Processar uploads de arquivos
@@ -361,10 +312,7 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
     $erros_upload = [];
     
     if (isset($_FILES['arquivos']) && !empty($_FILES['arquivos']['name'][0])) {
-        logDebug("Processando " . count($_FILES['arquivos']['name']) . " arquivos");
         $arquivos_salvos = processarUploads($_FILES['arquivos'], $galeria_id, $conn, $erros_upload);
-    } else {
-        logDebug("Nenhum arquivo para upload");
     }
     
     $message = "Galeria criada com sucesso!";
@@ -375,7 +323,6 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
         $message .= " Alguns arquivos não puderam ser enviados: " . implode(', ', $erros_upload);
     }
     
-    logDebug("✅ Resultado: $message");
     echo json_encode([
         'success' => true, 
         'message' => $message,
@@ -385,8 +332,6 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
 }
 
 function processarUploads($files, $galeria_id, $conn, &$erros) {
-    logDebug("Processando uploads para galeria: $galeria_id");
-    
     // Definir estrutura de diretórios baseada na data
     $ano = date('Y');
     $mes = date('m');
@@ -395,15 +340,10 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
     $upload_base = __DIR__ . '/../../uploads/galeria/';
     $upload_dir = $upload_base . $ano . '/' . $mes . '/';
     
-    logDebug("Caminho base: $upload_base");
-    logDebug("Diretório upload: $upload_dir");
-    
     // Criar diretórios se não existirem
     if (!file_exists($upload_dir)) {
-        logDebug("Criando diretório: $upload_dir");
         if (!mkdir($upload_dir, 0755, true)) {
             $erro = "Erro ao criar diretório: $upload_dir";
-            logDebug("ERRO: $erro");
             $erros[] = $erro;
             return 0;
         }
@@ -412,7 +352,6 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
     // Verificar se o diretório é gravável
     if (!is_writable($upload_dir)) {
         $erro = "Diretório não é gravável: $upload_dir";
-        logDebug("ERRO: $erro");
         $erros[] = $erro;
         return 0;
     }
@@ -424,12 +363,9 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
     $arquivos_salvos = 0;
     $total_files = count($files['name']);
     
-    logDebug("Total de arquivos a processar: $total_files");
-    
     for ($i = 0; $i < $total_files; $i++) {
         if ($files['error'][$i] !== UPLOAD_ERR_OK) {
             $erro = $files['name'][$i] . ' (erro no upload: ' . $files['error'][$i] . ')';
-            logDebug("ERRO upload: $erro");
             $erros[] = $erro;
             continue;
         }
@@ -438,12 +374,9 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
         $tamanho = $files['size'][$i];
         $tmp_name = $files['tmp_name'][$i];
         
-        logDebug("Processando arquivo $i: $nome_original ($tamanho bytes)");
-        
         // Verificar tamanho
         if ($tamanho > $max_size) {
             $erro = $nome_original . ' (muito grande - ' . formatBytes($tamanho) . ')';
-            logDebug("ERRO: $erro");
             $erros[] = $erro;
             continue;
         }
@@ -459,7 +392,6 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
             $tipo_arquivo = 'video';
         } else {
             $erro = $nome_original . ' (tipo não permitido: .' . $extensao . ')';
-            logDebug("ERRO: $erro");
             $erros[] = $erro;
             continue;
         }
@@ -468,12 +400,8 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
         $nome_arquivo = uniqid() . '_' . time() . '.' . $extensao;
         $caminho_completo = $upload_dir . $nome_arquivo;
         
-        logDebug("Movendo para: $caminho_completo");
-        
         // Mover arquivo
         if (move_uploaded_file($tmp_name, $caminho_completo)) {
-            logDebug("Arquivo movido com sucesso");
-            
             // Salvar no banco - caminho relativo da raiz do projeto
             $stmt = $conn->prepare("INSERT INTO galeria_arquivos (galeria_id, nome_arquivo, nome_original, tipo_arquivo, extensao, tamanho, caminho) VALUES (?, ?, ?, ?, ?, ?, ?)");
             
@@ -483,28 +411,23 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
                 
                 if ($stmt->execute()) {
                     $arquivos_salvos++;
-                    logDebug("Arquivo salvo no banco: $caminho_relativo");
                 } else {
                     unlink($caminho_completo); // Remover arquivo se falhar no banco
                     $erro = $nome_original . ' (erro no banco: ' . $stmt->error . ')';
-                    logDebug("ERRO: $erro");
                     $erros[] = $erro;
                 }
                 $stmt->close();
             } else {
                 unlink($caminho_completo);
                 $erro = $nome_original . ' (erro na preparação: ' . $conn->error . ')';
-                logDebug("ERRO: $erro");
                 $erros[] = $erro;
             }
         } else {
             $erro = $nome_original . ' (erro ao mover arquivo)';
-            logDebug("ERRO: $erro");
             $erros[] = $erro;
         }
     }
     
-    logDebug("Upload concluído: $arquivos_salvos arquivos salvos");
     return $arquivos_salvos;
 }
 
@@ -647,5 +570,4 @@ function formatBytes($bytes, $precision = 2) {
 
 // Fechar conexão
 $conn->close();
-logDebug("=== FIM DA REQUISIÇÃO (Estrutura Real) ===\n");
 ?>

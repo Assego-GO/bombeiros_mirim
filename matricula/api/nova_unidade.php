@@ -10,9 +10,6 @@ session_start();
 require_once "auditoria.php";
 $audit = new Auditoria($conn);
 
-// Log para debug
-file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Dados recebidos: " . file_get_contents("php://input") . "\n", FILE_APPEND);
-
 try {
     $data = json_decode(file_get_contents("php://input"), true);
 
@@ -20,9 +17,6 @@ try {
         echo json_encode(["status" => "erro", "mensagem" => "Dados inválidos."]);
         exit;
     }
-
-    // Log dos dados decodificados
-    file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Dados processados: " . print_r($data, true) . "\n", FILE_APPEND);
 
     // Campos obrigatórios
     $campos_obrigatorios = ['nome', 'endereco'];
@@ -48,13 +42,9 @@ try {
     $stmt = $conn->prepare($sql);
     
     if (!$stmt) {
-        file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Erro na preparação: " . $conn->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => "Erro ao preparar consulta: " . $conn->error]);
         exit;
     }
-
-    // Log da consulta SQL
-    file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
 
     // Vincula os parâmetros
     $stmt->bind_param(
@@ -65,34 +55,26 @@ try {
         $coordenador           // string: coordenador (pode ser null)
     );
 
-    // Log dos parâmetros
-    $log_params = [
-        'nome' => $data['nome'],
-        'endereco' => $data['endereco'],
-        'telefone' => $telefone,
-        'coordenador' => $coordenador
-    ];
-    file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Parâmetros: " . print_r($log_params, true) . "\n", FILE_APPEND);
-
     $result = $stmt->execute();
-    
-    // Log do resultado da execução
-    file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Execução: " . ($result ? "Sucesso" : "Falha") . "\n", FILE_APPEND);
     
     if ($result) {
         $unidade_id = $conn->insert_id;
         
-        // AUDITORIA: Registra a criação da unidade (apenas 1 linha!)
-        $audit->log('CRIAR_UNIDADE', 'unidade', $unidade_id, $log_params);
+        // AUDITORIA: Registra a criação da unidade
+        $audit_params = [
+            'nome' => $data['nome'],
+            'endereco' => $data['endereco'],
+            'telefone' => $telefone,
+            'coordenador' => $coordenador
+        ];
+        $audit->log('CRIAR_UNIDADE', 'unidade', $unidade_id, $audit_params);
         
         echo json_encode(["status" => "sucesso", "id" => $unidade_id, "mensagem" => "Unidade criada com sucesso!"]);
     } else {
-        file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Erro: " . $stmt->error . "\n", FILE_APPEND);
         echo json_encode(["status" => "erro", "mensagem" => $stmt->error]);
     }
 
 } catch (Exception $e) {
-    file_put_contents('debug_nova_unidade.log', date('Y-m-d H:i:s') . " - Exceção: " . $e->getMessage() . "\n", FILE_APPEND);
     echo json_encode(["status" => "erro", "mensagem" => "Exceção: " . $e->getMessage()]);
 }
 ?>

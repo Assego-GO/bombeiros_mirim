@@ -8,10 +8,6 @@ error_reporting(E_ALL);
 session_start();
 require_once "auditoria.php";
 
-// Log para depuração
-$logFile = 'debug_editar_turma.log';
-file_put_contents($logFile, date('Y-m-d H:i:s') . " - Iniciando processamento\n", FILE_APPEND);
-
 try {
     // Incluir conexão
     include "conexao.php";
@@ -21,7 +17,6 @@ try {
     
     // Obter dados JSON
     $rawInput = file_get_contents('php://input');
-    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Dados recebidos: " . $rawInput . "\n", FILE_APPEND);
     
     // Decodificar JSON
     $data = json_decode($rawInput, true);
@@ -56,9 +51,6 @@ try {
         throw new Exception("Turma não encontrada com ID: $id");
     }
     
-    // Registrar os valores no log
-    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Valores: id=$id, nome=$nome_turma, unidade=$id_unidade, professor=$id_professor\n", FILE_APPEND);
-    
     // Atualizar turma usando prepared statement (SEGURO)
     $sql = "UPDATE turma SET 
             nome_turma = ?, 
@@ -70,8 +62,6 @@ try {
             horario_inicio = ?, 
             horario_fim = ? 
             WHERE id = ?";
-    
-    file_put_contents($logFile, date('Y-m-d H:i:s') . " - SQL: $sql\n", FILE_APPEND);
     
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
@@ -132,9 +122,6 @@ try {
     }
     
 } catch (Exception $e) {
-    // Log do erro
-    file_put_contents($logFile, date('Y-m-d H:i:s') . " - ERRO: " . $e->getMessage() . "\n", FILE_APPEND);
-    
     // Retorna erro em formato JSON
     echo json_encode([
         "status" => "erro",
