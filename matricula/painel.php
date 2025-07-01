@@ -115,6 +115,379 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     transform: scaleX(1);
     transform-origin: bottom left;
 }
+
+/* CSS para Sistema de Comunicados */
+
+/* Modal Grande */
+.modal-large {
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-medium {
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Abas do Modal */
+.modal-tabs {
+    display: flex;
+    border-bottom: 2px solid #f0f0f0;
+    background: #fafafa;
+    margin: 0 -20px;
+    padding: 0 20px;
+}
+
+.tab-comunicado {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-comunicado:hover {
+    color: var(--primary);
+    background: #f9f9f9;
+}
+
+.tab-comunicado.ativo {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: white;
+}
+
+/* Conteúdo das Abas */
+.tab-content-comunicado {
+    padding: 20px 0;
+}
+
+/* Formulário de Comunicado */
+#form-comunicado .form-group {
+    margin-bottom: 20px;
+}
+
+#form-comunicado label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+#form-comunicado input,
+#form-comunicado textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+#form-comunicado input:focus,
+#form-comunicado textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+#conteudo-comunicado {
+    resize: vertical;
+    min-height: 150px;
+    font-family: inherit;
+}
+
+.form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e5e9;
+}
+
+/* Header dos Comunicados */
+.comunicados-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.comunicados-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.comunicados-stats {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Lista de Comunicados */
+.lista-comunicados {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.lista-comunicados::-webkit-scrollbar {
+    width: 6px;
+}
+
+.lista-comunicados::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.lista-comunicados::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.lista-comunicados::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Item de Comunicado */
+.comunicado-item {
+    background: white;
+    border: 2px solid #f0f0f0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+
+.comunicado-item:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.comunicado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.comunicado-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+    flex: 1;
+    margin-right: 15px;
+}
+
+.comunicado-acoes {
+    display: flex;
+    gap: 8px;
+}
+
+.comunicado-acoes .btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: 2px solid #dc3545;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    border-color: #c82333;
+}
+
+/* Preview do Comunicado */
+.comunicado-preview {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+/* Footer do Comunicado */
+.comunicado-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: #888;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.autor {
+    font-weight: 500;
+}
+
+.data {
+    color: #aaa;
+}
+
+/* Sem Comunicados */
+.sem-comunicados {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.sem-comunicados i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.sem-comunicados p {
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Modal de Visualização */
+.comunicado-visualizacao h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+    line-height: 1.3;
+}
+
+.comunicado-meta {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.autor-info,
+.data-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+}
+
+.autor-info i,
+.data-info i {
+    color: var(--primary);
+}
+
+.comunicado-conteudo {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    line-height: 1.7;
+    font-size: 15px;
+    color: #333;
+}
+
+/* Notificações */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    max-width: 350px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification-success {
+    border-left: 4px solid #28a745;
+}
+
+.notification-success i {
+    color: #28a745;
+}
+
+.notification-info {
+    border-left: 4px solid #17a2b8;
+}
+
+.notification-info i {
+    color: #17a2b8;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .modal-large {
+        width: 95%;
+        margin: 20px auto;
+    }
+
+    .modal-tabs {
+        flex-direction: column;
+    }
+
+    .tab-comunicado {
+        text-align: center;
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+
+    .tab-comunicado.ativo {
+        border-right-color: var(--primary);
+        border-bottom: none;
+    }
+
+    .comunicado-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .comunicado-header h3 {
+        margin-right: 0;
+    }
+
+    .comunicado-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .notification {
+        left: 20px;
+        right: 20px;
+        max-width: none;
+        transform: translateY(-100px);
+    }
+
+    .notification.show {
+        transform: translateY(0);
+    }
+}
   </style>
 </head>
 <body>
@@ -524,6 +897,103 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
     </div>
   </div>
 
+  <!-- Modal Principal de Comunicados -->
+  <div id="modal-comunicados" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-large">
+          <div class="modal-header">
+              <span><i class="fas fa-bullhorn"></i> Gerenciar Comunicados</span>
+              <button class="fechar-modal-comunicado">×</button>
+          </div>
+          
+          <!-- Abas do Modal -->
+          <div class="modal-tabs">
+              <button class="tab-comunicado ativo" data-tab="criar">
+                  <i class="fas fa-plus"></i> Criar Comunicado
+              </button>
+              <button class="tab-comunicado" data-tab="listar">
+                  <i class="fas fa-list"></i> Todos os Comunicados
+              </button>
+          </div>
+
+          <div class="modal-body">
+              <!-- Aba Criar/Editar Comunicado -->
+              <div id="tab-criar" class="tab-content-comunicado">
+                  <form id="form-comunicado">
+                      <div class="form-group">
+                          <label for="titulo-comunicado">Título do Comunicado</label>
+                          <input type="text" id="titulo-comunicado" name="titulo" required 
+                                 placeholder="Digite o título do comunicado">
+                      </div>
+
+                      <div class="form-group">
+                          <label for="conteudo-comunicado">Conteúdo</label>
+                          <textarea id="conteudo-comunicado" name="conteudo" required 
+                                    rows="10" placeholder="Digite o conteúdo do comunicado..."></textarea>
+                      </div>
+
+                      <div class="form-actions">
+                          <button type="button" id="btn-cancelar-comunicado" class="btn btn-outline" style="display: none;">
+                              <i class="fas fa-times"></i> Cancelar
+                          </button>
+                          <button type="submit" class="btn btn-primary">
+                              <i class="fas fa-save"></i> Criar Comunicado
+                          </button>
+                      </div>
+                  </form>
+              </div>
+
+              <!-- Aba Listar Comunicados -->
+              <div id="tab-listar" class="tab-content-comunicado" style="display: none;">
+                  <div class="comunicados-header">
+                      <h3>Comunicados Criados</h3>
+                      <div class="comunicados-stats">
+                          <span id="total-comunicados">0 comunicados</span>
+                      </div>
+                  </div>
+                  
+                  <div id="lista-comunicados" class="lista-comunicados">
+                      <!-- Lista será preenchida dinamicamente -->
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Modal de Visualização do Comunicado -->
+  <div id="modal-visualizar-comunicado" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-medium">
+          <div class="modal-header">
+              <span><i class="fas fa-eye"></i> Visualizar Comunicado</span>
+              <button class="fechar-modal-visualizar">×</button>
+          </div>
+          
+          <div class="modal-body">
+              <div class="comunicado-visualizacao">
+                  <h2 id="visualizar-titulo"></h2>
+                  <div class="comunicado-meta">
+                      <span class="autor-info">
+                          <i class="fas fa-user"></i> 
+                          <strong>Autor:</strong> <span id="visualizar-autor"></span>
+                      </span>
+                      <span class="data-info">
+                          <i class="fas fa-calendar"></i> 
+                          <strong>Data:</strong> <span id="visualizar-data"></span>
+                      </span>
+                  </div>
+                  <div class="comunicado-conteudo">
+                      <p id="visualizar-conteudo"></p>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-visualizar">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+          </div>
+      </div>
+  </div>
+
   <footer class="main-footer">
     <div class="container">
       <div class="footer-content">
@@ -549,7 +1019,10 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 
 <script>
 window.IS_ADMIN = true;
+window.usuarioNome = '<?= addslashes($usuario_nome) ?>';
+window.usuarioId = <?= $_SESSION['usuario_id'] ?? 6 ?>;
 console.log('🔧 Usuário identificado como admin:', window.IS_ADMIN);
+console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
 </script>
 
 <script>
