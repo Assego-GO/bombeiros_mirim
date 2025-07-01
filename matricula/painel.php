@@ -167,6 +167,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
               <label>Aluno</label>
               <input type="text" name="aluno" placeholder="Nome do aluno">
             </div>
+
             
             <div class="filter-item">
               <label>Unidade</label>
@@ -457,6 +458,8 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
             <label>Nome do Aluno</label>
             <input type="text" name="aluno_nome" readonly class="readonly-field" />
           </div>
+
+          
   
           <div class="form-group">
             <label>Unidade</label>
@@ -481,14 +484,24 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
               <option value="pendente">Pendente</option>
             </select>
           </div>
-  
+
+
+          
           <div class="form-group">
             <label>Responsáveis</label>
             <div id="responsaveis-editar" class="responsaveis-list">
               <!-- Lista dos responsáveis será preenchida dinamicamente -->
             </div>
           </div>
-  
+          
+          <div class="filter-item">
+              <label>Status no programa</label>
+              <select name="status-programa" id="status-programa">
+                <option value="">Todas</option>
+                <option value="novato">Novato</option>
+                <option value="monitor">Monitor</option>
+              </select>
+            </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-outline" 
                 onclick="document.getElementById('edit-matricula-modal').style.display='none'">

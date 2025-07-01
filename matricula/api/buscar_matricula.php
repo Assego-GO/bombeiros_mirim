@@ -22,6 +22,7 @@ $sql = "
         m.id AS matricula_id, 
         m.data_matricula,
         m.status,
+        m.status_programa,
         m.turma AS turma_id,
         m.unidade AS unidade_id,
         t.nome_turma AS turma_nome,

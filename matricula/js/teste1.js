@@ -1702,6 +1702,12 @@ function editarMatricula(aluno_id) {
 
       document.querySelector("[name='status']").value = data.status;
 
+     // Preencher o status no programa
+      const statusProgramaField = document.querySelector("[name='status-programa']");
+      if (statusProgramaField) {
+          statusProgramaField.value = data.status_programa || 'novato';
+      }
+
       let dataMatricula = data.data_matricula || '';
       if (dataMatricula.includes(' ')) {
         dataMatricula = dataMatricula.split(' ')[0];
