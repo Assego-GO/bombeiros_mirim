@@ -30,14 +30,16 @@ try {
     // Preparar valores opcionais
     $telefone = $data['telefone'] ?? null;
     $coordenador = $data['coordenador'] ?? null;
+    $cidade = $data['cidade'] ?? null; // Corrigido: definir a variável $cidade
 
-    // Consulta SQL para tabela 'unidade'
+    // Consulta SQL para tabela 'unidade' - Corrigido: adicionar o quinto placeholder
     $sql = "INSERT INTO unidade (
         nome, 
         endereco, 
         telefone, 
-        coordenador
-    ) VALUES (?, ?, ?, ?)";
+        coordenador,
+        cidade
+    ) VALUES (?, ?, ?, ?, ?)"; // Corrigido: 5 placeholders
 
     $stmt = $conn->prepare($sql);
     
@@ -46,13 +48,14 @@ try {
         exit;
     }
 
-    // Vincula os parâmetros
+    // Vincula os parâmetros - Corrigido: 5 strings e 5 variáveis
     $stmt->bind_param(
-        "ssss",
-        $data['nome'],         // string: nome da unidade
-        $data['endereco'],     // string: endereço
-        $telefone,             // string: telefone (pode ser null)
-        $coordenador           // string: coordenador (pode ser null)
+        "sssss",              // Corrigido: 5 strings
+        $data['nome'],        // string: nome da unidade
+        $data['endereco'],    // string: endereço
+        $telefone,            // string: telefone (pode ser null)
+        $coordenador,         // string: coordenador (pode ser null)
+        $cidade               // string: cidade (pode ser null)
     );
 
     $result = $stmt->execute();
@@ -65,7 +68,8 @@ try {
             'nome' => $data['nome'],
             'endereco' => $data['endereco'],
             'telefone' => $telefone,
-            'coordenador' => $coordenador
+            'coordenador' => $coordenador,
+            'cidade' => $cidade // Corrigido: usar a variável $cidade
         ];
         $audit->log('CRIAR_UNIDADE', 'unidade', $unidade_id, $audit_params);
         

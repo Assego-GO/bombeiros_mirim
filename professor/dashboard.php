@@ -1312,6 +1312,14 @@ body {
                 <p>Atualize suas informações pessoais e configurações da conta.</p>
             </div>
 
+            <div class="dashboard-card" id="gerar-ocorrencia-btn" style="cursor: pointer;">
+            <div class="card-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Gerar Ocorrência</h2>
+            <p>Informe uma ocorrência com aluno e turma.</p>
+            </div>
+
 
             <div class="dashboard-card">
                 <div class="card-icon">

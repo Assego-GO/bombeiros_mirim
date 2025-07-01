@@ -35,11 +35,13 @@ try {
         exit;
     }
 
+    // SQL UPDATE incluindo o campo cidade
     $sql = "UPDATE unidade SET
         nome = ?,
         endereco = ?,
         telefone = ?,
         coordenador = ?,
+        cidade = ?,
         ultima_atualizacao = NOW()
         WHERE id = ?";
         
@@ -50,28 +52,33 @@ try {
         exit;
     }
 
+    // Preparar variáveis incluindo cidade
     $nome = $data['nome'];
     $endereco = $data['endereco'] ?? '';
     $telefone = $data['telefone'] ?? '';
     $coordenador = $data['coordenador'] ?? '';
+    $cidade = $data['cidade'] ?? '';
     $id = $data['id'];
     
+    // Bind parameters incluindo cidade (6 strings + 1 integer)
     $stmt->bind_param(
-        "ssssi",
+        "sssssi",
         $nome,
         $endereco,
         $telefone,
         $coordenador,
+        $cidade,
         $id
     );
     
-    // Preparar dados novos para auditoria
+    // Preparar dados novos para auditoria incluindo cidade
     $dados_novos = [
         'id' => $id,
         'nome' => $nome,
         'endereco' => $endereco,
         'telefone' => $telefone,
-        'coordenador' => $coordenador
+        'coordenador' => $coordenador,
+        'cidade' => $cidade
     ];
     
     $success = $stmt->execute();
