@@ -1070,6 +1070,15 @@ body {
                 </div>
 
             
+            <div class="dashboard-card" id="card-comunicados">
+                <div class="card-icon">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <h2>Comunicados</h2>
+                <p>Veja comunicados dos seus orientadores</p>
+            </div>
+
+            
             <div class="dashboard-card" id="card-questionario">
                 <div class="card-icon">
                     <i class="fas fa-clipboard-list"></i>
