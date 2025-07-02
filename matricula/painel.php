@@ -1,6 +1,18 @@
 <?php
 session_start();
 
+// ===== CONFIGURAÇÃO DE TIMEZONE E CHARSET BRASIL =====
+// Definir fuso horário do Brasil (Brasília)
+date_default_timezone_set('America/Sao_Paulo');
+
+// Configurar locale para português brasileiro
+setlocale(LC_TIME, 'pt_BR.UTF-8', 'pt_BR', 'portuguese');
+
+// Configurar charset para UTF-8
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
 // Verificação de administrador
 if (!isset($_SESSION['usuario_id'])) {
   header('Location: index.php');
@@ -12,23 +24,27 @@ $db_host =  $_ENV['DB_HOST'];
 $db_name =  $_ENV['DB_NAME'];
 $db_user = $_ENV['DB_USER'];
 $db_pass =  $_ENV['DB_PASS'];
-// Configuração do banco de dados
-
 
 try {
-  // Conexão com o banco de dados
-  $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  // Conexão com o banco de dados com configurações UTF-8 e timezone
+  $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+  ]);
+  
+  // Configurar timezone do MySQL para o Brasil
+  $pdo->exec("SET time_zone = '-03:00'");
   
   // Verificar se o usuário é um administrador
-$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND tipo = 'admin'");
-$stmt->execute([$_SESSION['usuario_id']]);
+  $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND tipo = 'admin'");
+  $stmt->execute([$_SESSION['usuario_id']]);
 
-if ($stmt->rowCount() == 0) {
-  // Não é um administrador
-  header('Location: ../aluno/dashboard.php');
-  exit;
-}
+  if ($stmt->rowCount() == 0) {
+    // Não é um administrador
+    header('Location: ../aluno/dashboard.php');
+    exit;
+  }
   
 } catch(PDOException $e) {
   // Em caso de erro no banco de dados
@@ -38,8 +54,22 @@ if ($stmt->rowCount() == 0) {
 $usuario_nome = $_SESSION['usuario_nome'] ?? 'Usuário';
 $usuario_tipo = 'Administrador';
 $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png');
-?>
 
+// Função auxiliar para formatar data/hora brasileira
+function formatarDataHoraBrasil($datetime, $formato = 'd/m/Y H:i:s') {
+    if (empty($datetime)) return '';
+    
+    $dt = new DateTime($datetime);
+    $dt->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format($formato);
+}
+
+// Função para obter data/hora atual do Brasil
+function agora() {
+    $dt = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format('Y-m-d H:i:s');
+}
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -49,7 +79,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <title>Bombeiro Mirim - Módulo de Matrículas</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/matricula.css"/>
-  <style>
+    <style>
     .user-info-container {
       position: relative;
       display: flex;
@@ -640,7 +670,9 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
-
+  <button class="btn btn-primary" id="monitoramento-btn">
+  <i class="fas fa-chart-line"></i> Monitoramento de Atividades
+</button>
   <button class="btn btn-primary" id="saida-btn">
   <i class="fas fa-sign-out-alt"></i> Controle de Materiais
 </button>
