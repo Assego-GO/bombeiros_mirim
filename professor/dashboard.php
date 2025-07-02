@@ -1320,7 +1320,6 @@ body {
             <p>Informe uma ocorrência com aluno e turma.</p>
             </div>
 
-
             <div class="dashboard-card">
                 <div class="card-icon">
                     <i class="fas fa-calendar-alt"></i>
