@@ -176,6 +176,161 @@ function agora() {
     box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
 }
 
+/* ===== ESTILOS MELHORADOS PARA CHECKBOX ===== */
+
+/* Container do checkbox customizado */
+.checkbox-container {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin: 0 !important;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    user-select: none;
+    width: fit-content !important;
+    max-width: 300px;
+}
+
+.checkbox-container:hover {
+    background: #e9ecef;
+    border-color: #dc3545;
+}
+
+/* Input checkbox oculto */
+.checkbox-container input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilo do checkbox customizado */
+.checkbox-container::before {
+    content: '';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ced4da;
+    border-radius: 4px;
+    background: white;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 12px;
+    color: white;
+}
+
+/* Estado checado */
+.checkbox-container input[type="checkbox"]:checked + .checkbox-label::before,
+.checkbox-container:has(input[type="checkbox"]:checked)::before {
+    background: #dc3545;
+    border-color: #dc3545;
+    content: '\f00c'; /* Ícone de check do Font Awesome */
+}
+
+/* Label do checkbox */
+.checkbox-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    cursor: pointer;
+    line-height: 1.4;
+    margin: 0 !important;
+    width: auto !important;
+    padding: 0 !important;
+}
+
+/* Estado ativo quando checado */
+.checkbox-container:has(input[type="checkbox"]:checked) {
+    background: #fff5f5;
+    border-color: #dc3545;
+}
+
+.checkbox-container:has(input[type="checkbox"]:checked) .checkbox-label {
+    color: #dc3545;
+    font-weight: 600;
+}
+
+/* Estado de foco para acessibilidade */
+.checkbox-container input[type="checkbox"]:focus + .checkbox-label::before,
+.checkbox-container:has(input[type="checkbox"]:focus)::before {
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25);
+}
+
+/* Versão alternativa com switch (opcional) */
+.switch-checkbox {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    margin: 0 !important;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    user-select: none;
+    width: fit-content !important;
+    max-width: 300px;
+}
+
+.switch-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-slider {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #ced4da;
+    border-radius: 24px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.switch-slider::before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.switch-checkbox input[type="checkbox"]:checked + .switch-slider {
+    background: #dc3545;
+}
+
+.switch-checkbox input[type="checkbox"]:checked + .switch-slider::before {
+    transform: translateX(20px);
+}
+
+.switch-checkbox:hover {
+    background: #e9ecef;
+    border-color: #dc3545;
+}
+
+.switch-checkbox:has(input[type="checkbox"]:checked) {
+    background: #fff5f5;
+    border-color: #dc3545;
+}
+
 /* Modal Grande */
 .modal-large {
     width: 95%;
@@ -494,6 +649,7 @@ function agora() {
 .notification-info i {
     color: #17a2b8;
 }
+
 /* correcao do modal de monitoramento */
 /* ===== CENTRALIZAÇÃO ESPECÍFICA DOS MODAIS DE MONITORAMENTO ===== */
 
@@ -583,7 +739,6 @@ function agora() {
         padding: 10px;
     }
 }
-
 
 /* ===== ESTILOS DO MODAL DE MONITORAMENTO ===== */
 
@@ -1056,6 +1211,13 @@ function agora() {
         min-height: 80px;
         padding: 5px;
     }
+
+    /* Checkbox responsivo */
+    .checkbox-container,
+    .switch-checkbox {
+        max-width: none;
+        width: 100% !important;
+    }
 }
   </style>
 </head>
@@ -1303,6 +1465,22 @@ function agora() {
             <label>Nome da Unidade</label>
             <input type="text" name="nome" placeholder="Nome da Unidade" required />
           </div>
+          
+          <div class="form-group">
+              <label>Unidade CRBM</label>
+              <select name="unidade-crbm" id="unidade-crbm">
+                <option value="">Clique e escolha uma unidade</option>
+                <option value="goiania">1º Comando Regional Bombeiro Militar - Goiânia -Comando Bombeiro Militar da Capital - CBC</option>
+                <option value="rioVerde">2º Comando Regional Bombeiro Militar - Rio Verde</option>
+                <option value="anapolis">3º Comando Regional Bombeiro Militar - Anápolis</option>
+                <option value="luziania">4º Comando Regional Bombeiro Militar - Luziânia</option>
+                <option value="aparecidaDeGoiania">5º Comando Regional Bombeiro Militar – Aparecida de Goiânia</option>
+                <option value="goias">6º Comando Regional Bombeiro Militar - Goiás</option>
+                <option value="caldasNovas">7º Comando Regional Bombeiro Militar – Caldas Novas</option>
+                <option value="uruacu">8º Comando Regional Bombeiro Militar - Uruaçu</option>
+                <option value="Formosa">9º Comando Regional Bombeiro Militar - Formosa</option>
+              </select>
+            </div>
           
           <div class="form-group">
             <label>Endereço</label>

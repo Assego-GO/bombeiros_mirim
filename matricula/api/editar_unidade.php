@@ -35,9 +35,10 @@ try {
         exit;
     }
 
-    // SQL UPDATE incluindo o campo cidade
+    // SQL UPDATE incluindo o campo unidade_crbm e cidade
     $sql = "UPDATE unidade SET
         nome = ?,
+        unidade_crbm = ?,
         endereco = ?,
         telefone = ?,
         coordenador = ?,
@@ -52,18 +53,20 @@ try {
         exit;
     }
 
-    // Preparar variáveis incluindo cidade
+    // Preparar variáveis incluindo unidade_crbm e cidade
     $nome = $data['nome'];
+    $unidade_crbm = $data['unidade-crbm'] ?? null; // Novo campo adicionado
     $endereco = $data['endereco'] ?? '';
     $telefone = $data['telefone'] ?? '';
     $coordenador = $data['coordenador'] ?? '';
     $cidade = $data['cidade'] ?? '';
     $id = $data['id'];
     
-    // Bind parameters incluindo cidade (6 strings + 1 integer)
+    // Bind parameters incluindo unidade_crbm e cidade (7 strings + 1 integer)
     $stmt->bind_param(
-        "sssssi",
+        "ssssssi",
         $nome,
+        $unidade_crbm,
         $endereco,
         $telefone,
         $coordenador,
@@ -71,10 +74,11 @@ try {
         $id
     );
     
-    // Preparar dados novos para auditoria incluindo cidade
+    // Preparar dados novos para auditoria incluindo unidade_crbm e cidade
     $dados_novos = [
         'id' => $id,
         'nome' => $nome,
+        'unidade_crbm' => $unidade_crbm,
         'endereco' => $endereco,
         'telefone' => $telefone,
         'coordenador' => $coordenador,
