@@ -1,6 +1,18 @@
 <?php
 session_start();
 
+// ===== CONFIGURAÇÃO DE TIMEZONE E CHARSET BRASIL =====
+// Definir fuso horário do Brasil (Brasília)
+date_default_timezone_set('America/Sao_Paulo');
+
+// Configurar locale para português brasileiro
+setlocale(LC_TIME, 'pt_BR.UTF-8', 'pt_BR', 'portuguese');
+
+// Configurar charset para UTF-8
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
 // Verificação de administrador
 if (!isset($_SESSION['usuario_id'])) {
   header('Location: index.php');
@@ -12,23 +24,27 @@ $db_host =  $_ENV['DB_HOST'];
 $db_name =  $_ENV['DB_NAME'];
 $db_user = $_ENV['DB_USER'];
 $db_pass =  $_ENV['DB_PASS'];
-// Configuração do banco de dados
-
 
 try {
-  // Conexão com o banco de dados
-  $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
-  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  // Conexão com o banco de dados com configurações UTF-8 e timezone
+  $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8mb4", $db_user, $db_pass, [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+  ]);
+  
+  // Configurar timezone do MySQL para o Brasil
+  $pdo->exec("SET time_zone = '-03:00'");
   
   // Verificar se o usuário é um administrador
-$stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND tipo = 'admin'");
-$stmt->execute([$_SESSION['usuario_id']]);
+  $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id = ? AND tipo = 'admin'");
+  $stmt->execute([$_SESSION['usuario_id']]);
 
-if ($stmt->rowCount() == 0) {
-  // Não é um administrador
-  header('Location: ../aluno/dashboard.php');
-  exit;
-}
+  if ($stmt->rowCount() == 0) {
+    // Não é um administrador
+    header('Location: ../aluno/dashboard.php');
+    exit;
+  }
   
 } catch(PDOException $e) {
   // Em caso de erro no banco de dados
@@ -38,8 +54,22 @@ if ($stmt->rowCount() == 0) {
 $usuario_nome = $_SESSION['usuario_nome'] ?? 'Usuário';
 $usuario_tipo = 'Administrador';
 $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png');
-?>
 
+// Função auxiliar para formatar data/hora brasileira
+function formatarDataHoraBrasil($datetime, $formato = 'd/m/Y H:i:s') {
+    if (empty($datetime)) return '';
+    
+    $dt = new DateTime($datetime);
+    $dt->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format($formato);
+}
+
+// Função para obter data/hora atual do Brasil
+function agora() {
+    $dt = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format('Y-m-d H:i:s');
+}
+?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -49,7 +79,7 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <title>Bombeiro Mirim - Módulo de Matrículas</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/matricula.css"/>
-  <style>
+    <style>
     .user-info-container {
       position: relative;
       display: flex;
@@ -148,8 +178,8 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 
 /* Modal Grande */
 .modal-large {
-    width: 90%;
-    max-width: 900px;
+    width: 95%;
+    max-width: 1200px;
     max-height: 90vh;
     overflow-y: auto;
 }
@@ -464,6 +494,495 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 .notification-info i {
     color: #17a2b8;
 }
+/* correcao do modal de monitoramento */
+/* ===== CENTRALIZAÇÃO ESPECÍFICA DOS MODAIS DE MONITORAMENTO ===== */
+
+/* Modal de Monitoramento Principal */
+#modal-monitoramento.modal-backdrop {
+    position: fixed;
+    margin-right: 40px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex ;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#modal-monitoramento .modal-large {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0;
+    transform: none;
+    animation: modalAppear 0.3s ease;
+}
+
+/* Modal de Detalhes da Atividade */
+#modal-detalhes-atividade.modal-backdrop {
+    position: fixed;
+    margin-left: 40px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex ;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#modal-detalhes-atividade .modal-medium {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 80%;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    margin: 0;
+    transform: none;
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+    #modal-monitoramento .modal-large,
+    #modal-detalhes-atividade .modal-medium {
+        width: 95%;
+        max-height: 95vh;
+    }
+    
+    #modal-monitoramento.modal-backdrop,
+    #modal-detalhes-atividade.modal-backdrop {
+        padding: 10px;
+    }
+}
+
+
+/* ===== ESTILOS DO MODAL DE MONITORAMENTO ===== */
+
+/* Abas do Modal de Monitoramento */
+.tab-monitoramento {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-monitoramento:hover {
+    color: var(--primary);
+    background: #f9f9f9;
+}
+
+.tab-monitoramento.ativo {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: white;
+}
+
+/* Conteúdo das Abas de Monitoramento */
+.tab-content-monitoramento {
+    padding: 20px 0;
+}
+
+/* Cards de Resumo */
+.cards-resumo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card-resumo {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card-resumo:hover {
+    transform: translateY(-2px);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+}
+
+.card-resumo.planejadas .card-icon {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+}
+
+.card-resumo.em-andamento .card-icon {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
+}
+
+.card-resumo.concluidas .card-icon {
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+}
+
+.card-resumo.canceladas .card-icon {
+    background: linear-gradient(135deg, #ef5350, #e53935);
+}
+
+.card-info h3 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-info p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Seções de Status */
+.status-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.status-section {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: white;
+}
+
+.section-header.planejadas {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+}
+
+.section-header.em-andamento {
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
+}
+
+.section-header.concluidas {
+    background: linear-gradient(135deg, #66bb6a, #43a047);
+}
+
+.section-header h3 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header .count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Lista de Atividades */
+.atividades-lista {
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.atividade-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.atividade-item:hover {
+    border-color: var(--primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.atividade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.atividade-titulo {
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-badge.planejada {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-badge.em_andamento {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-badge.concluida {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.cancelada {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.atividade-detalhes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.detalhe-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.detalhe-item i {
+    color: var(--primary);
+    width: 16px;
+}
+
+/* Filtros */
+.filtros-atividades {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filtro-item label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.filtro-item select,
+.filtro-item input {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* Lista de todas as atividades */
+.todas-atividades-lista {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* Calendário */
+.calendario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.calendario-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.calendario {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    background: #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dia-calendario {
+    background: white;
+    padding: 10px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.dia-calendario.header-dia {
+    background: #f8f9fa;
+    min-height: auto;
+    padding: 10px;
+    text-align: center;
+}
+
+.dia-calendario.vazio {
+    background: #f8f9fa;
+}
+
+.dia-numero {
+    font-weight: 600;
+    color: #333;
+}
+
+.atividade-calendario {
+    background: var(--primary);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.atividade-calendario.planejada {
+    background: #ffa726;
+}
+
+.atividade-calendario.em_andamento {
+    background: #42a5f5;
+}
+
+.atividade-calendario.concluida {
+    background: #66bb6a;
+}
+
+.atividade-calendario.cancelada {
+    background: #ef5350;
+}
+
+/* Modal de Detalhes da Atividade */
+.detalhes-atividade {
+    padding: 20px 0;
+}
+
+.detalhes-atividade .atividade-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.detalhes-atividade .atividade-header h2 {
+    margin: 0;
+    color: #333;
+}
+
+.atividade-info {
+    display: grid;
+    gap: 20px;
+}
+
+.info-grupo h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-grupo p {
+    margin: 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.acoes-atividade {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Estados vazios */
+.sem-atividades {
+    text-align: center;
+    padding: 40px 20px;
+    color: #888;
+}
+
+.sem-atividades i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #ddd;
+}
 
 /* Responsividade */
 @media (max-width: 768px) {
@@ -514,6 +1033,28 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
 
     .notification.show {
         transform: translateY(0);
+    }
+    
+    .cards-resumo {
+        grid-template-columns: 1fr;
+    }
+    
+    .filtros-atividades {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .atividade-detalhes {
+        grid-template-columns: 1fr;
+    }
+    
+    .calendario {
+        font-size: 12px;
+    }
+    
+    .dia-calendario {
+        min-height: 80px;
+        padding: 5px;
     }
 }
   </style>
@@ -640,9 +1181,11 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
-
   <button class="btn btn-primary" id="saida-btn">
   <i class="fas fa-sign-out-alt"></i> Controle de Materiais
+</button>
+<button class="btn btn-primary" id="monitoramento-btn">
+  <i class="fas fa-chart-line"></i> Monitoramento de Atividades
 </button>
 <button class="btn btn-primary" id="comunicado-btn">
   <i class="fas fa-bullhorn"></i>Gerar Comunicado
@@ -1027,6 +1570,258 @@ $usuario_foto = './img/usuarios/' . ($_SESSION['usuario_foto'] ?? 'default.png')
       </div>
   </div>
 
+  <!-- Modal Monitoramento de Atividades -->
+  <div id="modal-monitoramento" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-large">
+          <div class="modal-header">
+              <span><i class="fas fa-chart-line"></i> Monitoramento de Atividades</span>
+              <button class="fechar-modal-monitoramento">×</button>
+          </div>
+          
+          <!-- Abas do Modal -->
+          <div class="modal-tabs">
+              <button class="tab-monitoramento ativo" data-tab="dashboard">
+                  <i class="fas fa-tachometer-alt"></i> Dashboard
+              </button>
+              <button class="tab-monitoramento" data-tab="atividades">
+                  <i class="fas fa-list"></i> Todas as Atividades
+              </button>
+              <button class="tab-monitoramento" data-tab="calendario">
+                  <i class="fas fa-calendar"></i> Calendário
+              </button>
+          </div>
+
+          <div class="modal-body">
+              <!-- Aba Dashboard -->
+              <div id="tab-dashboard" class="tab-content-monitoramento">
+                  <!-- Cards de Resumo -->
+                  <div class="cards-resumo">
+                      <div class="card-resumo planejadas">
+                          <div class="card-icon">
+                              <i class="fas fa-clock"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-planejadas">0</h3>
+                              <p>Atividades Planejadas</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-resumo em-andamento">
+                          <div class="card-icon">
+                              <i class="fas fa-play"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-em-andamento">0</h3>
+                              <p>Em Andamento</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-resumo concluidas">
+                          <div class="card-icon">
+                              <i class="fas fa-check"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-concluidas">0</h3>
+                              <p>Concluídas</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-resumo canceladas">
+                          <div class="card-icon">
+                              <i class="fas fa-times"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-canceladas">0</h3>
+                              <p>Canceladas</p>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Atividades por Status -->
+                  <div class="status-sections">
+                      <!-- Atividades em Andamento -->
+                      <div class="status-section">
+                          <div class="section-header em-andamento">
+                              <h3><i class="fas fa-play"></i> Atividades em Andamento</h3>
+                              <span class="count" id="count-em-andamento">0</span>
+                          </div>
+                          <div id="atividades-em-andamento" class="atividades-lista">
+                              <!-- Preenchido dinamicamente -->
+                          </div>
+                      </div>
+
+                      <!-- Próximas Atividades -->
+                      <div class="status-section">
+                          <div class="section-header planejadas">
+                              <h3><i class="fas fa-clock"></i> Próximas Atividades</h3>
+                              <span class="count" id="count-proximas">0</span>
+                          </div>
+                          <div id="atividades-proximas" class="atividades-lista">
+                              <!-- Preenchido dinamicamente -->
+                          </div>
+                      </div>
+
+                      <!-- Atividades Concluídas Hoje -->
+                      <div class="status-section">
+                          <div class="section-header concluidas">
+                              <h3><i class="fas fa-check"></i> Concluídas Hoje</h3>
+                              <span class="count" id="count-concluidas-hoje">0</span>
+                          </div>
+                          <div id="atividades-concluidas-hoje" class="atividades-lista">
+                              <!-- Preenchido dinamicamente -->
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Aba Todas as Atividades -->
+              <div id="tab-atividades" class="tab-content-monitoramento" style="display: none;">
+                  <!-- Filtros -->
+                  <div class="filtros-atividades">
+                      <div class="filtro-item">
+                          <label>Status</label>
+                          <select id="filtro-status-atividade">
+                              <option value="">Todos</option>
+                              <option value="planejada">Planejadas</option>
+                              <option value="em_andamento">Em Andamento</option>
+                              <option value="concluida">Concluídas</option>
+                              <option value="cancelada">Canceladas</option>
+                          </select>
+                      </div>
+                      
+                      <div class="filtro-item">
+                          <label>Tipo de Atividade</label>
+                          <select id="filtro-tipo-atividade">
+                              <option value="">Todas</option>
+                              <option value="Ed. Física">Ed. Física</option>
+                              <option value="Salvamento">Salvamento</option>
+                              <option value="Informática">Informática</option>
+                              <option value="Primeiro Socorros">Primeiro Socorros</option>
+                              <option value="Ordem Unida">Ordem Unida</option>
+                              <option value="Combate a Incêndio">Combate a Incêndio</option>
+                              <option value="Ética e Cidadania">Ética e Cidadania</option>
+                              <option value="Higiene Pessoal">Higiene Pessoal</option>
+                              <option value="Meio Ambiente">Meio Ambiente</option>
+                              <option value="Educação no Trânsito">Educação no Trânsito</option>
+                              <option value="Temas Transversais">Temas Transversais</option>
+                              <option value="Combate uso de Drogas">Combate uso de Drogas</option>
+                              <option value="ECA e Direitos Humanos">ECA e Direitos Humanos</option>
+                              <option value="Treinamento de Formatura">Treinamento de Formatura</option>
+                          </select>
+                      </div>
+                      
+                      <div class="filtro-item">
+                          <label>Data</label>
+                          <input type="date" id="filtro-data-atividade">
+                      </div>
+                      
+                      <button class="btn btn-primary btn-sm" onclick="aplicarFiltrosAtividades()">
+                          <i class="fas fa-filter"></i> Filtrar
+                      </button>
+                      
+                      <button class="btn btn-outline btn-sm" onclick="limparFiltrosAtividades()">
+                          <i class="fas fa-eraser"></i> Limpar
+                      </button>
+                  </div>
+
+                  <!-- Lista de Todas as Atividades -->
+                  <div id="todas-atividades" class="todas-atividades-lista">
+                      <!-- Preenchido dinamicamente -->
+                  </div>
+              </div>
+
+              <!-- Aba Calendário -->
+              <div id="tab-calendario" class="tab-content-monitoramento" style="display: none;">
+                  <div class="calendario-header">
+                      <button class="btn btn-outline btn-sm" id="mes-anterior">
+                          <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <h3 id="mes-atual"></h3>
+                      <button class="btn btn-outline btn-sm" id="mes-proximo">
+                          <i class="fas fa-chevron-right"></i>
+                      </button>
+                  </div>
+                  
+                  <div id="calendario-atividades" class="calendario">
+                      <!-- Calendário será gerado dinamicamente -->
+                  </div>
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-monitoramento">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+              <button class="btn btn-success" onclick="exportarRelatorioAtividades()">
+                  <i class="fas fa-download"></i> Exportar Relatório
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Modal Detalhes da Atividade -->
+  <div id="modal-detalhes-atividade" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-medium">
+          <div class="modal-header">
+              <span><i class="fas fa-info-circle"></i> Detalhes da Atividade</span>
+              <button class="fechar-modal-detalhes">×</button>
+          </div>
+          
+          <div class="modal-body">
+              <div class="detalhes-atividade">
+                  <div class="atividade-header">
+                      <h2 id="detalhe-nome-atividade"></h2>
+                      <span id="detalhe-status-badge" class="status-badge"></span>
+                  </div>
+                  
+                  <div class="atividade-info">
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-calendar"></i> Data e Horário</h4>
+                          <p id="detalhe-data-horario"></p>
+                      </div>
+                      
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-map-marker-alt"></i> Local</h4>
+                          <p id="detalhe-local"></p>
+                      </div>
+                      
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-chalkboard-teacher"></i> Instrutor</h4>
+                          <p id="detalhe-instrutor"></p>
+                      </div>
+                      
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-users"></i> Turma</h4>
+                          <p id="detalhe-turma"></p>
+                      </div>
+                      
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                          <p id="detalhe-objetivo"></p>
+                      </div>
+                      
+                      <div class="info-grupo">
+                          <h4><i class="fas fa-book"></i> Conteúdo Abordado</h4>
+                          <p id="detalhe-conteudo"></p>
+                      </div>
+                  </div>
+                  
+                  <div class="acoes-atividade">
+                      <button class="btn btn-primary btn-sm" onclick="editarStatusAtividade()">
+                          <i class="fas fa-edit"></i> Alterar Status
+                      </button>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-detalhes">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+          </div>
+      </div>
+  </div>
+
   <footer class="main-footer">
     <div class="container">
       <div class="footer-content">
@@ -1075,12 +1870,14 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
     }
   });
 </script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
 <script src="./js/galeria.js"></script>
 <script src="./js/financeiro.js"></script>
 <script src="./js/controle.js"></script>
 <script src="./js/comunicado.js"></script>
-
+<script src="./js/atividades.js"></script>
+<script src="./js/monitoramento.js"></script>
 </body>
 </html>

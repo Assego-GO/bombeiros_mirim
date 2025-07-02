@@ -1,7 +1,27 @@
 <?php
-// api/galeria.php - ADAPTADA PARA ESTRUTURA REAL DO BANCO
+// api/galeria.php - VERSÃO CORRIGIDA SEM ERROS
+
+// 🇧🇷 ===== CONFIGURAÇÕES PARA BRASIL - ADICIONAR NO INÍCIO =====
+date_default_timezone_set('America/Sao_Paulo');
+
+// Configurar charset UTF-8
+ini_set('default_charset', 'UTF-8');
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+
+// Headers UTF-8 - IMPORTANTE: antes de qualquer output
+header('Content-Type: application/json; charset=UTF-8');
+header('Accept-Charset: UTF-8');
+
+// 🇧🇷 FUNÇÃO PARA OBTER DATA/HORA ATUAL DO BRASIL
+function agora() {
+    $dt = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+    return $dt->format('Y-m-d H:i:s');
+}
+
+// ===== RESTO DO CÓDIGO ORIGINAL =====
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0); // 🔧 DESABILITAR para não quebrar JSON
 ini_set('log_errors', 1);
 
 session_start();
@@ -21,6 +41,10 @@ if ($conn->connect_error) {
     echo json_encode(['success' => false, 'message' => 'Erro na conexão com o banco de dados']);
     exit;
 }
+
+// 🇧🇷 CONFIGURAR UTF-8 E TIMEZONE NO MYSQL
+$conn->set_charset("utf8mb4");
+$conn->query("SET time_zone = '-03:00'");
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
@@ -69,7 +93,6 @@ if (!$dados_usuario) {
 }
 
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
-header('Content-Type: application/json');
 
 try {
     switch ($action) {
@@ -284,11 +307,13 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
         $stmt->close();
     }
     
-    // Inserir galeria (turma_id pode ser NULL para admin)
+    // 🇧🇷 INSERIR GALERIA - CONSERVATIVO (sem assumir colunas que podem não existir)
     if ($turma_id === null) {
+        // Para admin sem turma
         $stmt = $conn->prepare("INSERT INTO galerias (titulo, turma_id, atividade_realizada, descricao, criado_por, status) VALUES (?, NULL, ?, ?, ?, 'ativo')");
         $stmt->bind_param("sssi", $titulo, $atividade_realizada, $descricao, $usuario_id);
     } else {
+        // Para admin com turma ou professor
         $stmt = $conn->prepare("INSERT INTO galerias (titulo, turma_id, atividade_realizada, descricao, criado_por, status) VALUES (?, ?, ?, ?, ?, 'ativo')");
         $stmt->bind_param("sissi", $titulo, $turma_id, $atividade_realizada, $descricao, $usuario_id);
     }
@@ -307,6 +332,9 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
     $galeria_id = $conn->insert_id;
     $stmt->close();
     
+    // 🇧🇷 ATUALIZAR DATA_CRIACAO COM HORÁRIO BRASILEIRO (se a coluna existir)
+    $conn->query("UPDATE galerias SET data_criacao = '" . agora() . "' WHERE id = " . $galeria_id);
+    
     // Processar uploads de arquivos
     $arquivos_salvos = 0;
     $erros_upload = [];
@@ -315,7 +343,7 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
         $arquivos_salvos = processarUploads($_FILES['arquivos'], $galeria_id, $conn, $erros_upload);
     }
     
-    $message = "Galeria criada com sucesso!";
+    $message = "✅ Galeria criada com sucesso!";
     if ($arquivos_salvos > 0) {
         $message .= " {$arquivos_salvos} arquivo(s) enviado(s).";
     }
@@ -332,9 +360,10 @@ function criarGaleria($conn, $usuario_id, $dados_usuario) {
 }
 
 function processarUploads($files, $galeria_id, $conn, &$erros) {
-    // Definir estrutura de diretórios baseada na data
-    $ano = date('Y');
-    $mes = date('m');
+    // Definir estrutura de diretórios baseada na data BRASILEIRA
+    $agora_br = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+    $ano = $agora_br->format('Y');
+    $mes = $agora_br->format('m');
     
     // Caminho absoluto da raiz do projeto
     $upload_base = __DIR__ . '/../../uploads/galeria/';
@@ -402,7 +431,7 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
         
         // Mover arquivo
         if (move_uploaded_file($tmp_name, $caminho_completo)) {
-            // Salvar no banco - caminho relativo da raiz do projeto
+            // Salvar no banco - SEM assumir que data_upload existe
             $stmt = $conn->prepare("INSERT INTO galeria_arquivos (galeria_id, nome_arquivo, nome_original, tipo_arquivo, extensao, tamanho, caminho) VALUES (?, ?, ?, ?, ?, ?, ?)");
             
             if ($stmt) {
@@ -410,6 +439,9 @@ function processarUploads($files, $galeria_id, $conn, &$erros) {
                 $stmt->bind_param("issssis", $galeria_id, $nome_arquivo, $nome_original, $tipo_arquivo, $extensao, $tamanho, $caminho_relativo);
                 
                 if ($stmt->execute()) {
+                    $arquivo_id = $conn->insert_id;
+                    // 🇧🇷 ATUALIZAR DATA_UPLOAD com horário brasileiro (se a coluna existir)
+                    $conn->query("UPDATE galeria_arquivos SET data_upload = '" . agora() . "' WHERE id = " . $arquivo_id);
                     $arquivos_salvos++;
                 } else {
                     unlink($caminho_completo); // Remover arquivo se falhar no banco
@@ -481,7 +513,7 @@ function obterDetalhesGaleria($conn, $galeria_id) {
     $stmt->close();
     
     // Buscar arquivos da galeria
-    $stmt = $conn->prepare("SELECT * FROM galeria_arquivos WHERE galeria_id = ? ORDER BY data_upload ASC");
+    $stmt = $conn->prepare("SELECT * FROM galeria_arquivos WHERE galeria_id = ? ORDER BY id ASC");
     $stmt->bind_param("i", $galeria_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -555,9 +587,10 @@ function excluirGaleria($conn, $galeria_id, $usuario_id, $dados_usuario) {
     $stmt->execute();
     $stmt->close();
     
-    echo json_encode(['success' => true, 'message' => 'Galeria excluída com sucesso']);
+    echo json_encode(['success' => true, 'message' => '✅ Galeria excluída com sucesso']);
 }
 
+// 🇧🇷 FUNÇÃO FORMATBYTES COM FORMATO BRASILEIRO
 function formatBytes($bytes, $precision = 2) {
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
     
@@ -565,7 +598,9 @@ function formatBytes($bytes, $precision = 2) {
         $bytes /= 1024;
     }
     
-    return round($bytes, $precision) . ' ' . $units[$i];
+    // Usar formatação brasileira para números
+    $numero = number_format($bytes, $precision, ',', '.');
+    return $numero . ' ' . $units[$i];
 }
 
 // Fechar conexão
