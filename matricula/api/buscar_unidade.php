@@ -25,8 +25,17 @@ try {
     
     $id = intval($_GET['id']);
     
-    // Preparar consulta SQL
-    $sql = "SELECT id, nome, endereco, telefone, coordenador, data_criacao, ultima_atualizacao 
+    // Preparar consulta SQL incluindo unidade_crbm e cidade
+    $sql = "SELECT 
+                id, 
+                nome, 
+                unidade_crbm,
+                endereco, 
+                telefone, 
+                coordenador, 
+                cidade,
+                data_criacao, 
+                ultima_atualizacao 
             FROM unidade 
             WHERE id = ?";
     
@@ -55,6 +64,27 @@ try {
     
     $unidade = $resultado->fetch_assoc();
     
+    // Garantir que os campos sempre tenham um valor (evitar null)
+    if (!isset($unidade['cidade']) || $unidade['cidade'] === null) {
+        $unidade['cidade'] = '';
+    }
+    
+    if (!isset($unidade['unidade_crbm']) || $unidade['unidade_crbm'] === null) {
+        $unidade['unidade_crbm'] = '';
+    }
+    
+    if (!isset($unidade['telefone']) || $unidade['telefone'] === null) {
+        $unidade['telefone'] = '';
+    }
+    
+    if (!isset($unidade['coordenador']) || $unidade['coordenador'] === null) {
+        $unidade['coordenador'] = '';
+    }
+    
+    if (!isset($unidade['endereco']) || $unidade['endereco'] === null) {
+        $unidade['endereco'] = '';
+    }
+    
     // Formatar datas para exibição mais amigável, se necessário
     if (isset($unidade['data_criacao'])) {
         $data_criacao = new DateTime($unidade['data_criacao']);
@@ -64,6 +94,26 @@ try {
     if (isset($unidade['ultima_atualizacao'])) {
         $ultima_atualizacao = new DateTime($unidade['ultima_atualizacao']);
         $unidade['ultima_atualizacao'] = $ultima_atualizacao->format('Y-m-d H:i:s');
+    }
+    
+    // Converter o valor de unidade_crbm para o nome completo para referência
+    $unidades_crbm = [
+        'goiania' => '1º Comando Regional Bombeiro Militar - Goiânia - CBC',
+        'rioVerde' => '2º Comando Regional Bombeiro Militar - Rio Verde',
+        'anapolis' => '3º Comando Regional Bombeiro Militar - Anápolis',
+        'luziania' => '4º Comando Regional Bombeiro Militar - Luziânia',
+        'aparecidaDeGoiania' => '5º Comando Regional Bombeiro Militar – Aparecida de Goiânia',
+        'goias' => '6º Comando Regional Bombeiro Militar - Goiás',
+        'caldasNovas' => '7º Comando Regional Bombeiro Militar – Caldas Novas',
+        'uruacu' => '8º Comando Regional Bombeiro Militar - Uruaçu',
+        'Formosa' => '9º Comando Regional Bombeiro Militar - Formosa'
+    ];
+    
+    // Adicionar o nome completo da unidade CRBM para referência
+    if (isset($unidades_crbm[$unidade['unidade_crbm']])) {
+        $unidade['unidade_crbm_display'] = $unidades_crbm[$unidade['unidade_crbm']];
+    } else {
+        $unidade['unidade_crbm_display'] = $unidade['unidade_crbm'] ?: '';
     }
     
     // Retornar dados no formato JSON

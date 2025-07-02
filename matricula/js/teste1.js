@@ -587,7 +587,7 @@ function listarUnidades() {
       modal.style.display = 'flex';
 
       let html = `
-              <div class="modal" style="max-width: 85%; width: 1000px;">
+              <div class="modal" style="max-width: 95%; width: 1400px;">
                   <div class="modal-header">
                       <span><i class="fas fa-building"></i> Lista de Unidades</span>
                       <button onclick="this.closest('.modal-backdrop').remove()">×</button>
@@ -597,12 +597,13 @@ function listarUnidades() {
                           <table style="min-width: 100%;">
                               <thead>
                                   <tr>
-                                      <th style="width: 20%;">Nome da Unidade</th>
-                                      <th style="width: 25%;">Endereço</th>
-                                      <th style="width: 12%;">Telefone</th>
-                                      <th style="width: 18%;">Comandante</th>
-                                      <th style="width: 15%;">Cidade</th>
-                                      <th style="width: 10%; text-align: center;">Ações</th>
+                                      <th style="width: 15%;">Nome da Unidade</th>
+                                      <th style="width: 25%;">Comando Regional (CRBM)</th>
+                                      <th style="width: 20%;">Endereço</th>
+                                      <th style="width: 10%;">Telefone</th>
+                                      <th style="width: 15%;">Comandante</th>
+                                      <th style="width: 10%;">Cidade</th>
+                                      <th style="width: 5%; text-align: center;">Ações</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -611,7 +612,7 @@ function listarUnidades() {
       if (unidades.length === 0) {
         html += `
                   <tr>
-                      <td colspan="6" style="text-align: center;">Nenhuma unidade encontrada</td>
+                      <td colspan="7" style="text-align: center;">Nenhuma unidade encontrada</td>
                   </tr>
               `;
       } else {
@@ -623,9 +624,25 @@ function listarUnidades() {
           const coordenador = unidade.coordenador || '-';
           const cidade = unidade.cidade || '-';
           
+          // Mapeamento de unidades CRBM para exibição
+          const unidades_crbm_display = {
+            'goiania': '1º CRBM - Goiânia - CBC',
+            'rioVerde': '2º CRBM - Rio Verde',
+            'anapolis': '3º CRBM - Anápolis',
+            'luziania': '4º CRBM - Luziânia',
+            'aparecidaDeGoiania': '5º CRBM - Aparecida de Goiânia',
+            'goias': '6º CRBM - Goiás',
+            'caldasNovas': '7º CRBM - Caldas Novas',
+            'uruacu': '8º CRBM - Uruaçu',
+            'Formosa': '9º CRBM - Formosa'
+          };
+          
+          const unidade_crbm_display = unidades_crbm_display[unidade.unidade_crbm] || unidade.unidade_crbm || '-';
+          
           html += `
                       <tr>
                           <td>${nome}</td>
+                          <td style="font-size: 12px;">${unidade_crbm_display}</td>
                           <td>${endereco}</td>
                           <td>${telefone}</td>
                           <td>${coordenador}</td>
@@ -648,13 +665,11 @@ function listarUnidades() {
                           </table>
                       </div>
                   </div>
-                  
               </div>
           `;
 
       modal.innerHTML = html;
       document.body.appendChild(modal);
-
 
       modal.addEventListener('click', function (e) {
         if (e.target === this) {
@@ -758,13 +773,13 @@ function editarUnidade(id) {
 
       const unidade = response.data;
 
-      // Criar modal de edição maior
+      // Criar modal de edição
       const modal = document.createElement('div');
       modal.className = 'modal-backdrop';
       modal.style.display = 'flex';
 
       let html = `
-              <div class="modal" style="width: 600px; max-width: 90%;">
+              <div class="modal" style="width: 700px; max-width: 90%;">
                   <div class="modal-header">
                       <span><i class="fas fa-edit"></i> Editar Unidade</span>
                       <button onclick="this.closest('.modal-backdrop').remove()">×</button>
@@ -776,6 +791,22 @@ function editarUnidade(id) {
                           <div class="form-group">
                               <label for="edit-nome">Nome da Unidade</label>
                               <input type="text" id="edit-nome" name="nome" value="${unidade.nome || ''}" required>
+                          </div>
+
+                          <div class="form-group">
+                              <label for="edit-unidade-crbm">Unidade CRBM</label>
+                              <select id="edit-unidade-crbm" name="unidade-crbm">
+                                  <option value="">Clique e escolha uma unidade</option>
+                                  <option value="goiania" ${unidade.unidade_crbm === 'goiania' ? 'selected' : ''}>1º Comando Regional Bombeiro Militar - Goiânia - CBC</option>
+                                  <option value="rioVerde" ${unidade.unidade_crbm === 'rioVerde' ? 'selected' : ''}>2º Comando Regional Bombeiro Militar - Rio Verde</option>
+                                  <option value="anapolis" ${unidade.unidade_crbm === 'anapolis' ? 'selected' : ''}>3º Comando Regional Bombeiro Militar - Anápolis</option>
+                                  <option value="luziania" ${unidade.unidade_crbm === 'luziania' ? 'selected' : ''}>4º Comando Regional Bombeiro Militar - Luziânia</option>
+                                  <option value="aparecidaDeGoiania" ${unidade.unidade_crbm === 'aparecidaDeGoiania' ? 'selected' : ''}>5º Comando Regional Bombeiro Militar – Aparecida de Goiânia</option>
+                                  <option value="goias" ${unidade.unidade_crbm === 'goias' ? 'selected' : ''}>6º Comando Regional Bombeiro Militar - Goiás</option>
+                                  <option value="caldasNovas" ${unidade.unidade_crbm === 'caldasNovas' ? 'selected' : ''}>7º Comando Regional Bombeiro Militar – Caldas Novas</option>
+                                  <option value="uruacu" ${unidade.unidade_crbm === 'uruacu' ? 'selected' : ''}>8º Comando Regional Bombeiro Militar - Uruaçu</option>
+                                  <option value="Formosa" ${unidade.unidade_crbm === 'Formosa' ? 'selected' : ''}>9º Comando Regional Bombeiro Militar - Formosa</option>
+                              </select>
                           </div>
                           
                           <div class="form-group">
@@ -828,9 +859,9 @@ function editarUnidade(id) {
           dados[key] = value;
         });
 
-        // Debug: verificar se a cidade está sendo capturada
+        // Debug: verificar se os campos estão sendo capturados
         console.log('Dados de edição enviados:', dados);
-        console.log('Cidade na edição:', dados.cidade);
+        console.log('Unidade CRBM na edição:', dados['unidade-crbm']);
 
         salvarEdicaoUnidade(dados, modal);
       });
