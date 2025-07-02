@@ -1079,8 +1079,9 @@ function agora() {
           </div>
           <div id="user-menu" class="dropdown-menu">
             <!--<a href="#"><i class="fas fa-cog"></i> Configurações</a> -->
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a>
+            
             <a href="auditoria_page.php"><i class="fas fa-clipboard-check"></i> Auditoria</a>
+            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Sair</a>
           </div>
         </div>
       </div>
