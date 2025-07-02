@@ -670,11 +670,11 @@ function agora() {
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
-  <button class="btn btn-primary" id="monitoramento-btn">
-  <i class="fas fa-chart-line"></i> Monitoramento de Atividades
-</button>
   <button class="btn btn-primary" id="saida-btn">
   <i class="fas fa-sign-out-alt"></i> Controle de Materiais
+</button>
+<button class="btn btn-primary" id="monitoramento-btn">
+  <i class="fas fa-chart-line"></i> Monitoramento de Atividades
 </button>
 <button class="btn btn-primary" id="comunicado-btn">
   <i class="fas fa-bullhorn"></i>Gerar Comunicado
@@ -1113,6 +1113,6 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
 <script src="./js/financeiro.js"></script>
 <script src="./js/controle.js"></script>
 <script src="./js/comunicado.js"></script>
-
+<script src="./js/atividades.js"></script>
 </body>
 </html>

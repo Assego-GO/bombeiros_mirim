@@ -1,4 +1,4 @@
-// controle.js - Módulo de Controle de Materiais - VERSÃO COMPLETA COM UTF-8 PARA BRASIL
+// controle.js - Módulo de Controle de Materiais - VERSÃO COMPLETA COM UTF-8 E FUSO HORÁRIO BRASILEIRO CORRETO
 
 class ModuloControle {
   constructor() {
@@ -16,17 +16,20 @@ class ModuloControle {
       data_final: ''
     };
     
-    // 🇧🇷 CONFIGURAÇÕES PARA BRASIL
+    // 🇧🇷 CONFIGURAÇÕES PARA BRASIL COM FUSO HORÁRIO CORRETO
     this.configurarLocaleBrasil();
     this.init();
   }
 
-  // 🇧🇷 Configuração completa para Brasil
+  // 🇧🇷 Configuração completa para Brasil com correção de fuso horário
   configurarLocaleBrasil() {
-    // Configurar timezone brasileiro
+    // Configurar timezone brasileiro - América/São Paulo (GMT-3)
     this.timezone = 'America/Sao_Paulo';
     
-    // Configurar formatadores brasileiros
+    // Offset do Brasil em relação ao UTC (em horas)
+    this.offsetBrasil = -3; // Brasil está GMT-3
+    
+    // Configurar formatadores brasileiros com timezone correto
     this.formatadorData = new Intl.DateTimeFormat('pt-BR', {
       timeZone: this.timezone,
       day: '2-digit',
@@ -38,7 +41,8 @@ class ModuloControle {
       timeZone: this.timezone,
       hour: '2-digit',
       minute: '2-digit',
-      second: '2-digit'
+      second: '2-digit',
+      hour12: false
     });
     
     this.formatadorDataHora = new Intl.DateTimeFormat('pt-BR', {
@@ -47,7 +51,8 @@ class ModuloControle {
       month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: false
     });
     
     this.formatadorMoeda = new Intl.NumberFormat('pt-BR', {
@@ -55,7 +60,67 @@ class ModuloControle {
       currency: 'BRL'
     });
     
-    console.log('🇧🇷 Configurações brasileiras aplicadas');
+    console.log('🇧🇷 Configurações brasileiras aplicadas com fuso horário correto');
+    console.log(`⏰ Timezone: ${this.timezone} (GMT${this.offsetBrasil})`);
+    console.log(`⏰ Hora atual do Brasil: ${this.getHoraBrasil()}`);
+  }
+
+  // 🕒 FUNÇÃO PARA OBTER DATA/HORA ATUAL DO BRASIL
+  getHoraBrasil() {
+    const agora = new Date();
+    return new Intl.DateTimeFormat('pt-BR', {
+      timeZone: this.timezone,
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(agora);
+  }
+
+  // 🕒 FUNÇÃO PARA CONVERTER UTC PARA HORÁRIO BRASILEIRO
+  converterUTCParaBrasil(utcDateString) {
+    if (!utcDateString) return null;
+    
+    try {
+      // Criar data a partir da string UTC
+      let data = new Date(utcDateString);
+      
+      // Se a data não tem informação de timezone, assumir que é UTC
+      if (!utcDateString.includes('Z') && !utcDateString.includes('+') && !utcDateString.includes('-')) {
+        // Adicionar 'Z' para indicar UTC se não tiver timezone
+        data = new Date(utcDateString + (utcDateString.includes('T') ? 'Z' : ''));
+      }
+      
+      // Verificar se a data é válida
+      if (isNaN(data.getTime())) {
+        console.warn('Data inválida:', utcDateString);
+        return new Date();
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Erro ao converter data UTC para Brasil:', error);
+      return new Date();
+    }
+  }
+
+  // 🕒 FUNÇÃO PARA CRIAR DATA NO FUSO HORÁRIO BRASILEIRO
+  criarDataBrasil(ano, mes, dia, hora = 0, minuto = 0, segundo = 0) {
+    // Criar data no timezone brasileiro
+    const data = new Date();
+    data.setFullYear(ano);
+    data.setMonth(mes - 1); // Mês é zero-based
+    data.setDate(dia);
+    data.setHours(hora, minuto, segundo, 0);
+    
+    // Ajustar para o timezone brasileiro
+    const offsetLocal = data.getTimezoneOffset() * 60 * 1000; // offset local em ms
+    const offsetBrasil = this.offsetBrasil * 60 * 60 * 1000; // offset brasil em ms
+    
+    return new Date(data.getTime() + offsetLocal + offsetBrasil);
   }
 
   init() {
@@ -180,6 +245,7 @@ class ModuloControle {
       this.carregarDados();
       
       console.log('✅ Modal de controle aberto e configurado');
+      console.log(`⏰ Horário de abertura: ${this.getHoraBrasil()}`);
     } else {
       console.error('❌ Erro ao criar/encontrar modal de controle');
     }
@@ -265,16 +331,18 @@ class ModuloControle {
     return div.innerHTML;
   }
 
-  // 🇧🇷 FUNÇÕES DE FORMATAÇÃO BRASILEIRAS MELHORADAS
+  // 🇧🇷 FUNÇÕES DE FORMATAÇÃO BRASILEIRAS COM FUSO HORÁRIO CORRETO
   formatarData(datetime) {
     if (!datetime) return '-';
     
     try {
-      const data = new Date(datetime);
+      const data = this.converterUTCParaBrasil(datetime);
       return this.formatadorData.format(data);
     } catch (error) {
       console.warn('Erro ao formatar data:', datetime, error);
-      return new Date(datetime).toLocaleDateString('pt-BR');
+      // Fallback para formatação manual
+      const data = new Date(datetime);
+      return data.toLocaleDateString('pt-BR', { timeZone: this.timezone });
     }
   }
 
@@ -282,11 +350,13 @@ class ModuloControle {
     if (!datetime) return '-';
     
     try {
-      const data = new Date(datetime);
+      const data = this.converterUTCParaBrasil(datetime);
       return this.formatadorHora.format(data);
     } catch (error) {
       console.warn('Erro ao formatar hora:', datetime, error);
-      return new Date(datetime).toLocaleTimeString('pt-BR');
+      // Fallback para formatação manual
+      const data = new Date(datetime);
+      return data.toLocaleTimeString('pt-BR', { timeZone: this.timezone, hour12: false });
     }
   }
 
@@ -294,11 +364,13 @@ class ModuloControle {
     if (!datetime) return '-';
     
     try {
-      const data = new Date(datetime);
+      const data = this.converterUTCParaBrasil(datetime);
       return this.formatadorDataHora.format(data);
     } catch (error) {
       console.warn('Erro ao formatar data/hora:', datetime, error);
-      return new Date(datetime).toLocaleString('pt-BR');
+      // Fallback para formatação manual
+      const data = new Date(datetime);
+      return data.toLocaleString('pt-BR', { timeZone: this.timezone, hour12: false });
     }
   }
 
@@ -342,6 +414,7 @@ class ModuloControle {
 
   async carregarDados() {
     console.log('📊 Carregando dados do controle...');
+    console.log(`⏰ Horário da requisição: ${this.getHoraBrasil()}`);
     this.showLoading();
     
     try {
@@ -358,9 +431,9 @@ class ModuloControle {
       this.dados.alunos = alunosData;
       this.dados.turmas = turmasData;
       
-      // Processar dados de saídas com informações completas
+      // Processar dados de saídas com informações completas E correção de fuso horário
       this.dados.saidas = this.processarSaidasCompletas(saidasData.filter(item => item.tipo_operacao === 'saida'));
-      this.dados.entradas = saidasData.filter(item => item.tipo_operacao === 'entrada');
+      this.dados.entradas = this.processarEntradasCompletas(saidasData.filter(item => item.tipo_operacao === 'entrada'));
       this.dados.estoque = estoqueData;
       
       console.log('📊 Dados carregados:', {
@@ -370,6 +443,13 @@ class ModuloControle {
         alunos: this.dados.alunos.length,
         turmas: this.dados.turmas.length
       });
+      
+      // Debug das datas carregadas
+      if (this.dados.saidas.length > 0) {
+        const ultimaSaida = this.dados.saidas[0];
+        console.log(`⏰ Data da última saída (original): ${ultimaSaida.created_at_original}`);
+        console.log(`⏰ Data da última saída (Brasil): ${this.formatarDataHora(ultimaSaida.created_at)}`);
+      }
       
       this.atualizarEstatisticas();
       this.atualizarAbaAtiva(this.getAbaAtiva());
@@ -467,12 +547,34 @@ class ModuloControle {
         turma = this.dados.turmas.find(t => t.id == aluno.turma_id);
       }
       
+      // ARMAZENAR DATA ORIGINAL E CORRIGIR FUSO HORÁRIO
+      const dataOriginal = saida.created_at;
+      const dataCorrigida = this.converterUTCParaBrasil(dataOriginal);
+      
       return {
         ...saida,
+        created_at_original: dataOriginal, // Manter original para debug
+        created_at: dataCorrigida.toISOString(), // Data corrigida para o Brasil
         aluno_nome: this.sanitizarTexto(aluno ? aluno.nome : (saida.aluno_nome || 'Aluno não encontrado')),
         turma_nome: this.sanitizarTexto(turma ? turma.nome : (aluno ? aluno.turma_nome : 'Turma não encontrada')),
         motivo: this.sanitizarTexto(saida.motivo || 'Entrega de material'),
         usuario_nome: this.sanitizarTexto(saida.usuario_nome || 'Sistema')
+      };
+    });
+  }
+
+  processarEntradasCompletas(entradas) {
+    return entradas.map(entrada => {
+      // ARMAZENAR DATA ORIGINAL E CORRIGIR FUSO HORÁRIO
+      const dataOriginal = entrada.created_at;
+      const dataCorrigida = this.converterUTCParaBrasil(dataOriginal);
+      
+      return {
+        ...entrada,
+        created_at_original: dataOriginal, // Manter original para debug
+        created_at: dataCorrigida.toISOString(), // Data corrigida para o Brasil
+        fornecedor: this.sanitizarTexto(entrada.fornecedor || ''),
+        observacoes: this.sanitizarTexto(entrada.observacoes || '')
       };
     });
   }
@@ -492,8 +594,14 @@ class ModuloControle {
       { id: 2, nome: 'Turma B - Vespertino', unidade_nome: 'Unidade Norte - Anápolis' }
     ];
     
-    // Criar data atual brasileira
-    const agora = new Date().toISOString();
+    // Criar data atual brasileira CORRETA
+    const agora = new Date();
+    const agoraBrasil = this.converterUTCParaBrasil(agora.toISOString());
+    const agoraBrasilISO = agoraBrasil.toISOString();
+    
+    console.log(`⏰ Mock data criada - UTC: ${agora.toISOString()}`);
+    console.log(`⏰ Mock data criada - Brasil: ${agoraBrasilISO}`);
+    console.log(`⏰ Mock data formatada: ${this.formatarDataHora(agoraBrasilISO)}`);
     
     this.dados.saidas = [
       {
@@ -509,7 +617,8 @@ class ModuloControle {
         turma_nome: 'Turma A - Matutino',
         motivo: 'Entrega de uniforme novo',
         usuario_nome: 'Administrador',
-        created_at: agora
+        created_at: agoraBrasilISO,
+        created_at_original: agora.toISOString()
       },
       {
         id: 2,
@@ -524,7 +633,8 @@ class ModuloControle {
         turma_nome: 'Turma A - Matutino',
         motivo: 'Material didático mensal',
         usuario_nome: 'Professor João',
-        created_at: agora
+        created_at: agoraBrasilISO,
+        created_at_original: agora.toISOString()
       }
     ];
     
@@ -655,10 +765,17 @@ class ModuloControle {
       return;
     }
     
-    dadosFiltrados.forEach(saida => {
+    dadosFiltrados.forEach((saida, index) => {
       const row = document.createElement('tr');
       
-      console.log('🔍 Processando saída:', saida); // Debug
+      // Debug da data para cada linha
+      if (index === 0) {
+        console.log('🔍 Primeira saída - Debug da data:');
+        console.log('  - Data original (do banco):', saida.created_at_original);
+        console.log('  - Data corrigida (ISO):', saida.created_at);
+        console.log('  - Data formatada (Brasil):', this.formatarDataHora(saida.created_at));
+        console.log('  - Hora formatada (Brasil):', this.formatarHora(saida.created_at));
+      }
       
       row.innerHTML = `
         <td style="padding: 12px; border-bottom: 1px solid #e9ecef;">
@@ -834,12 +951,15 @@ class ModuloControle {
         
         if (this.filtros.data_inicial) {
           const dataInicial = new Date(this.filtros.data_inicial);
+          // Ajustar para timezone brasileiro
+          dataInicial.setHours(0, 0, 0, 0);
           if (dataItem < dataInicial) return false;
         }
         
         if (this.filtros.data_final) {
           const dataFinal = new Date(this.filtros.data_final);
-          dataFinal.setHours(23, 59, 59); // Incluir o dia inteiro
+          // Ajustar para timezone brasileiro e incluir o dia inteiro
+          dataFinal.setHours(23, 59, 59, 999);
           if (dataItem > dataFinal) return false;
         }
       }
@@ -952,8 +1072,12 @@ class ModuloControle {
         <div class="modal-header" style="background: linear-gradient(135deg, #e74c3c, #c0392b); color: #ffffff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
           <span style="font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; gap: 10px;">
             <i class="fas fa-sign-out-alt"></i> Controle de Materiais
+            <small style="font-size: 0.8rem; opacity: 0.8; margin-left: 10px;">🇧🇷 Horário de Brasília</small>
           </span>
           <div style="display: flex; gap: 10px; align-items: center;">
+            <span style="font-size: 0.85rem; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 15px;">
+              <i class="fas fa-clock"></i> ${this.getHoraBrasil()}
+            </span>
             <button id="maximizar-modal" title="Maximizar" style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1rem; display: flex; align-items: center;">
               <i class="fas fa-expand"></i>
             </button>
@@ -1058,7 +1182,7 @@ class ModuloControle {
                   <table id="tabela-saidas-controle" style="width: 100%; border-collapse: collapse; min-width: 800px;">
                     <thead style="position: sticky; top: 0; z-index: 2;">
                       <tr style="background: linear-gradient(135deg, #343a40, #495057); color: white;">
-                        <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Data/Hora</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Data/Hora 🇧🇷</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Tipo</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Item</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Tamanho</th>
@@ -1092,7 +1216,7 @@ class ModuloControle {
                   <table id="tabela-entradas-controle" style="width: 100%; border-collapse: collapse; min-width: 700px;">
                     <thead style="position: sticky; top: 0; z-index: 2;">
                       <tr style="background: linear-gradient(135deg, #343a40, #495057); color: white;">
-                        <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Data/Hora</th>
+                        <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Data/Hora 🇧🇷</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Tipo</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Item</th>
                         <th style="padding: 15px; text-align: left; font-weight: 600; font-size: 0.95rem;">Tamanho</th>
@@ -1299,11 +1423,11 @@ class ModuloControle {
     </style>`;
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    console.log('✅ Modal de controle completo com UTF-8 criado');
+    console.log('✅ Modal de controle completo com UTF-8 e fuso horário brasileiro correto criado');
   }
 }
 
 // Inicializar
-console.log('🎯 Inicializando Módulo de Controle Completo com UTF-8 para Brasil...');
+console.log('🎯 Inicializando Módulo de Controle Completo com UTF-8 e Fuso Horário Brasileiro...');
 window.moduloControle = new ModuloControle();
 window.ModuloControle = ModuloControle;
