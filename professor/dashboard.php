@@ -24,7 +24,6 @@ $db_name =  $_ENV['DB_NAME'];
 $db_user = $_ENV['DB_USER'];
 $db_pass =  $_ENV['DB_PASS'];
 
-
 // Conexão com o banco de dados
 try {
     $pdo = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_pass);
@@ -84,11 +83,6 @@ try {
 }
 
 // Definir a URL base do projeto
-$baseUrl = '';
-// Detectar URL base automaticamente
-// Substitua o trecho problemático em dashboard.php com este código
-
-// Definir a URL base do projeto
 $protocolo = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'];
 $baseUrl = $protocolo . $host . '';
@@ -110,1134 +104,8 @@ if (!empty($professor['foto'])) {
     <title>Painel do Professor - Escolinha de Futebol</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="./css/style.css"/>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-
-:root {
-    --primary: #E30613;        
-    --primary-light: #9c0202;   
-    --primary-dark: #071e3a;  
-    --secondary: #ffc233;     
-    --secondary-light: #ffd566; 
-    --secondary-dark: #d9a012;
-    --accent: #34c759;        
-    --accent-light: #4cd377;  
-    --accent-dark: #26a344;     
-    --danger: #ff3b30;        
-    --danger-light: #ff6259;    
-    --light: #f5f7fa;         
-    --light-hover: #e9ecef;     
-    --dark: #1c2b41;           
-    --gray: #8e9aaf;           
-    --gray-light: #d1d9e6;     
-    --gray-dark: #64748b;     
-    --white: #ffffff;
-    
-    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --box-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
-    --border-radius: 8px;
-    --border-radius-lg: 12px;
-    --border-radius-xl: 16px;
-    --transition: all 0.25s ease;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-    background-color: var(--light);
-    color: var(--dark);
-    line-height: 1.6;
-    font-size: 14px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-image: url('/superacao/uploads/fotos/soccer-pattern-light.png');
-    background-repeat: repeat;
-    background-size: 200px;
-    background-attachment: fixed;
-}
-
-.header {
-    background: var(--primary);
-    color: var(--white);
-    padding: 0.5rem;
-    box-shadow: var(--box-shadow);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1800px;
-    margin: 0 auto;
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--white);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 1rem;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.user-avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.user-avatar i {
-    font-size: 20px;
-    color: var(--primary);
-}
-
-.user-details h3 {
-    font-size: 1rem;
-    margin-bottom: 0.2rem;
-    font-weight: 600;
-    color: var(--white);
-}
-
-.user-details p {
-    font-size: 0.8rem;
-    opacity: 0.9;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.logout-btn {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: var(--white);
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 0.5rem 1rem;
-    cursor: pointer;
-    transition: var(--transition);
-    text-decoration: none;
-    font-size: 0.9rem;
-    display: inline-flex;
-    align-items: center;
-    font-weight: 500;
-}
-
-.logout-btn i {
-    margin-right: 0.5rem;
-}
-
-.logout-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: translateY(-3px);
-    box-shadow: var(--box-shadow);
-}
-
-.container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 1.5rem;
-    flex: 1;
-}
-
-.welcome-card {
-    background-color: var(--white);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.welcome-card:hover {
-    box-shadow: var(--box-shadow-hover);
-    transform: translateY(-5px);
-}
-
-.welcome-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, var(--secondary-light), var(--secondary));
-    opacity: 0.05;
-    border-radius: 50%;
-    transform: translate(30%, -30%);
-    z-index: 0;
-}
-
-.welcome-card h1 {
-    color: #9c0202;
-    margin-bottom: 1rem;
-    font-size: 1.8rem;
-    font-weight: 700;
-    position: relative;
-    z-index: 1;
-}
-
-.welcome-card p {
-    color: var(--gray-dark);
-    line-height: 1.6;
-    position: relative;
-    z-index: 1;
-}
-
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.dashboard-card {
-    background-color: var(--white);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--box-shadow-hover);
-}
-
-.dashboard-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(to right, var(--primary), var(--primary-light));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.dashboard-card:hover::before {
-    opacity: 1;
-}
-
-.dashboard-card:nth-child(2)::before {
-    background: linear-gradient(to right, var(--accent), var(--accent-light));
-}
-
-.dashboard-card:nth-child(3)::before {
-    background: linear-gradient(to right, var(--secondary), var(--secondary-light));
-}
-
-.card-icon {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    color: var(--white);
-    width: 50px;
-    height: 50px;
-    border-radius: var(--border-radius);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
-    box-shadow: var(--box-shadow);
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.dashboard-card:nth-child(2) .card-icon {
-    background: linear-gradient(135deg, var(--accent), var(--accent-light));
-}
-
-.dashboard-card:nth-child(3) .card-icon {
-    background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
-}
-
-.dashboard-card h2 {
-    color: var(--dark);
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.dashboard-card:hover h2 {
-    color: var(--primary);
-}
-
-.dashboard-card p {
-    color: var(--gray);
-    font-size: 0.9rem;
-}
-
-.dashboard-card::after {
-    content: '\f054';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
-    color: var(--gray-light);
-    transition: transform 0.3s ease, color 0.3s ease;
-    opacity: 0;
-    transform: translateX(-10px);
-}
-
-.dashboard-card:hover::after {
-    opacity: 1;
-    transform: translateX(0);
-    color: var(--primary);
-}
-
-.modal, .perfil-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    overflow-y: auto;
-    backdrop-filter: blur(4px);
-}
-
-.modal-content, .perfil-content {
-    background-color: var(--white);
-    margin: 5% auto;
-    padding: 25px;
-    width: 80%;
-    max-width: 600px;
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--box-shadow-hover);
-    max-height: 90vh;
-    overflow-y: auto;
-    animation: modal-fade-in 0.3s ease;
-}
-
-@keyframes modal-fade-in {
-    from { opacity: 0; transform: translateY(-20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.close {
-    color: var(--gray);
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.close:hover {
-    color: var(--danger);
-    transform: rotate(90deg);
-}
-
-#modalTitle, #modalTitlePerfil, #modalTitleAlunos, #modalTitleAtividades, #modalTitleCadastroAtividade, #modalTitleDetalhesAtividade {
-    color: var(--primary);
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--gray-light);
-    padding-bottom: 10px;
-    font-weight: 600;
-}
-
-.turma-item {
-    background-color: var(--white);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--primary);
-    transition: var(--transition);
-}
-
-.turma-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--box-shadow-hover);
-}
-
-.turma-item h3 {
-    color: var(--primary);
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 10px;
-}
-
-.turma-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-    gap: 10px;
-}
-
-/* Estilos para Atividades */
-.atividade-item {
-    background-color: var(--white);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--secondary);
-    transition: var(--transition);
-}
-
-.atividade-item:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--box-shadow-hover);
-}
-
-.atividade-item h3 {
-    color: var(--secondary-dark);
-    margin-bottom: 15px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 10px;
-}
-
-.atividade-info {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.atividade-field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 8px;
-}
-
-.atividade-field label {
-    font-weight: 600;
-    color: var(--gray-dark);
-    font-size: 0.9rem;
-    margin-bottom: 2px;
-}
-
-.atividade-field span {
-    color: var(--dark);
-    font-size: 0.95rem;
-}
-
-.atividade-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 15px;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.detalhes-atividade {
-    margin-bottom: 25px;
-}
-
-.detalhes-atividade h4 {
-    color: var(--primary);
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 8px;
-}
-
-.participacao-item {
-    background-color: var(--light);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    margin-bottom: 15px;
-    border-left: 3px solid var(--accent);
-}
-
-.participacao-item h5 {
-    color: var(--dark);
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.participacao-dados {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 8px;
-}
-
-.participacao-dados span {
-    font-size: 0.9rem;
-    color: var(--gray-dark);
-}
-
-.status-em-andamento {
-    color: var(--accent);
-    font-weight: 600;
-}
-
-.status-planejada {
-    color: var(--secondary-dark);
-    font-weight: 600;
-}
-
-.status-concluída, .status-concluida {
-    color: var(--primary);
-    font-weight: 600;
-}
-
-.status-cancelada {
-    color: var(--danger);
-    font-weight: 600;
-}
-
-.aluno-item {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 15px;
-    border-radius: var(--border-radius);
-    margin-bottom: 12px;
-    background-color: var(--light);
-    transition: var(--transition);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.aluno-item:hover {
-    background-color: var(--light-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-}
-
-.aluno-foto {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-    object-fit: cover;
-    background-color: var(--gray-light);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border: 2px solid var(--white);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0;
-}
-
-.aluno-foto img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.aluno-foto i {
-    font-size: 22px;
-    color: var(--gray);
-}
-
-.aluno-info {
-    flex: 1;
-    min-width: 180px;
-}
-
-.aluno-nome {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--dark);
-    margin-bottom: 4px;
-}
-
-.aluno-dados {
-    font-size: 0.85rem;
-    color: var(--gray-dark);
-}
-
-.aluno-acoes {
-    display: flex;
-    gap: 8px;
-    margin-left: auto;
-    flex-wrap: wrap;
-}
-
-.aluno-acoes .btn {
-    padding: 6px 12px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.aluno-acoes .btn i {
-    margin-right: 6px;
-}
-
-/* Botões específicos */
-.btn-success {
-    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-}
-
-.btn-info {
-    background: linear-gradient(135deg, #0288d1, #0277bd);
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-}
-
-.btn-detalhes {
-    background: linear-gradient(135deg, #6c757d, #5a6268);
-}
-
-.btn-participacao {
-    background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
-}
-
-.btn-editar {
-    background: linear-gradient(135deg, #17a2b8, #138496);
-}
-
-.btn-excluir {
-    background: linear-gradient(135deg, var(--danger), #c82333);
-}
-
-.matricula-group {
-    margin-bottom: 15px;
-    display: flex;
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 12px;
-    transition: background-color 0.2s ease;
-}
-
-.matricula-group:hover {
-    background-color: var(--light);
-}
-
-.matricula-group label {
-    font-weight: 600;
-    width: 180px;
-    color: var(--gray-dark);
-}
-
-.matricula-group p {
-    margin: 0;
-    flex: 1;
-    color: var(--dark);
-}
-
-#m-status-matricula {
-    font-weight: 600;
-}
-
-.status-ativo {
-    color: var(--accent);
-}
-
-.status-pendente {
-    color: var(--secondary-dark);
-}
-
-.status-inativo {
-    color: var(--danger);
-}
-
-.perfil-foto {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 0 auto 20px;
-    display: block;
-    border: 3px solid var(--primary);
-    box-shadow: var(--box-shadow);
-    transition: transform 0.3s ease;
-}
-
-.perfil-foto:hover {
-    transform: scale(1.05);
-}
-
-.perfil-foto-placeholder {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--gray-light);
-    border: 3px solid var(--primary);
-    box-shadow: var(--box-shadow);
-}
-
-.perfil-foto-placeholder i {
-    font-size: 60px;
-    color: var(--gray);
-}
-
-.perfil-section {
-    margin-bottom: 25px;
-}
-
-.perfil-section h3 {
-    color: var(--primary);
-    border-bottom: 1px solid var(--gray-light);
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.data-item {
-    margin-bottom: 12px;
-    display: flex;
-    padding: 8px 0;
-}
-
-.data-item:not(:last-child) {
-    border-bottom: 1px dashed var(--gray-light);
-}
-
-.data-item strong {
-    font-weight: 600;
-    color: var(--gray-dark);
-    min-width: 150px;
-    display: inline-block;
-}
-
-.responsavel-item {
-    background-color: var(--light);
-    padding: 15px;
-    border-radius: var(--border-radius);
-    margin-bottom: 15px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.btn {
-    display: inline-block;
-    font-weight: 500;
-    color: var(--white);
-    text-align: center;
-    vertical-align: middle;
-    text-decoration: none;
-    cursor: pointer;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
-    border: none;
-    padding: 10px 16px;
-    font-size: 14px;
-    line-height: 1.5;
-    border-radius: var(--border-radius);
-    transition: all 0.3s;
-    margin-right: 8px;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: 0.5s;
-}
-
-.btn:hover::before {
-    left: 100%;
-}
-
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--box-shadow-hover);
-}
-
-.btn:active {
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background: linear-gradient(135deg, var(--gray), var(--gray-dark));
-}
-
-.btn-sm {
-    padding: 4px 8px;
-    font-size: 0.8rem;
-}
-
-.btn-ver-alunos{
-    font-size: 0.9rem;
-    background: #0d2d56;
-    border-radius: 5px;
-    color: var(--white);
-    margin-left: 15px;
-    width: 100px;
-}
-.btn-editar-turma {
-    font-size: 0.9rem;
-    background: #0d2d56;
-    border-radius: var(--border-radius);
-    color: var(--white);
-    margin-left: 15px;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-label {
-    display: block;
-    font-weight: 500;
-    margin-bottom: 8px;
-    color: var(--gray-dark);
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--gray-light);
-    border-radius: var(--border-radius);
-    font-size: 14px;
-    transition: all 0.2s ease;
-    background-color: var(--light);
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(13, 86, 35, 0.1);
-    background-color: var(--white);
-}
-
-.form-row {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0 -10px;
-}
-
-.form-col {
-    flex: 0 0 50%;
-    max-width: 50%;
-    padding: 0 10px;
-}
-
-.main-footer {
-    background: var(--primary);
-    color: var(--white);
-    padding: 15px 0;
-    margin-top: auto;
-    position: relative;
-    text-align: center;
-}
-
-.main-footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--secondary);
-}
-
-.footer-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-}
-
-.footer-brand {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.footer-brand i {
-    color: var(--secondary);
-}
-
-.footer-info {
-    font-size: 14px;
-    opacity: 0.9;
-}
-
-.footer-info p {
-    margin-bottom: 5px;
-}
-
-.ftlink {
-    color: var(--secondary);
-    text-decoration: none;
-    font-weight: 600;
-    transition: var(--transition);
-    position: relative;
-}
-
-.ftlink:after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background-color: var(--secondary);
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease;
-}
-
-.ftlink:hover {
-    color: var(--secondary-light);
-}
-
-.ftlink:hover:after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-}
-
-.alert {
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    border-radius: var(--border-radius);
-    font-weight: 500;
-}
-
-.alert-success {
-    background-color: rgba(52, 199, 89, 0.1);
-    color: var(--accent);
-    border: 1px solid rgba(52, 199, 89, 0.2);
-}
-
-.alert-danger {
-    background-color: rgba(255, 59, 48, 0.1);
-    color: var(--danger);
-    border: 1px solid rgba(255, 59, 48, 0.2);
-}
-
-.alert-info {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: #0066cc;
-    border: 1px solid rgba(0, 123, 255, 0.2);
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    border-radius: var(--border-radius);
-    font-weight: 500;
-}
-
-.responsavel-form-item {
-    background-color: var(--light);
-    padding: 20px;
-    border-radius: var(--border-radius);
-    margin-bottom: 20px;
-    border: 1px solid var(--gray-light);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.responsavel-form-item h4 {
-    color: var(--primary);
-    margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--gray-light);
-}
-
-#alunosModal .modal-content {
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 20px;
-}
-
-.alunos-section {
-    margin-top: 20px;
-}
-
-@media (max-width: 992px) {
-    .aluno-acoes {
-        flex-wrap: wrap;
-    }
-    
-    .aluno-acoes .btn {
-        padding: 6px 10px;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .form-col {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-    
-    .data-item {
-        flex-direction: column;
-    }
-    
-    .data-item strong {
-        margin-bottom: 5px;
-    }
-    
-    .matricula-group {
-        flex-direction: column;
-    }
-    
-    .matricula-group label {
-        margin-bottom: 5px;
-        width: 100%;
-    }
-    
-    .modal-content, .perfil-content {
-        width: 95%;
-        padding: 20px 15px;
-    }
-    
-    .dashboard-card {
-        flex: 0 1 100%; 
-        width: 100%;
-        min-height: auto;
-    }
-    
-    .welcome-card h1 {
-        font-size: 1.5rem;
-    }
-    
-    .aluno-item {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    
-    .aluno-foto {
-        margin-right: 0;
-        margin-bottom: 10px;
-    }
-    
-    .aluno-info {
-        width: 100%;
-        margin-bottom: 15px;
-    }
-    
-    .aluno-acoes {
-        width: 100%;
-        justify-content: flex-start;
-        margin-left: 0;
-    }
-    
-    .aluno-acoes .btn {
-        flex: 1;
-        max-width: calc(50% - 5px);
-    }
-}
-
-@media (max-width: 576px) {
-    .container {
-        padding: 1rem;
-    }
-    
-    .welcome-card {
-        padding: 1.5rem;
-    }
-    
-    .welcome-card h1 {
-        font-size: 1.3rem;
-    }
-    
-    .aluno-acoes {
-        flex-direction: column;
-    }
-    
-    .aluno-acoes .btn {
-        width: 100%;
-        max-width: none;
-        margin-bottom: 6px;
-        margin-right: 0;
-    }
-    
-    #alunosModal .modal-content {
-        padding: 15px 10px;
-    }
-    
-    .header-content {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .logout-btn {
-        align-self: flex-end;
-    }
-}
-
-@media (max-width: 480px) {
-    .perfil-foto, .perfil-foto-placeholder {
-        width: 100px;
-        height: 100px;
-    }
-    
-    .perfil-foto-placeholder i {
-        font-size: 50px;
-    }
-    
-    .user-details h3 {
-        font-size: 0.9rem;
-    }
-    
-    .user-details p {
-        font-size: 0.75rem;
-    }
-}
-
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--light);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-light);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-}
-
-.logo img {
-    height: 100px;
-    width: auto;
-    padding: 3px;
-    transition: transform 0.3s ease;
-}
- 
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
+   
 </head>
 <body>
     <header class="header">
@@ -1312,7 +180,7 @@ body {
                 <p>Atualize suas informações pessoais e configurações da conta.</p>
             </div>
 
-            <div class="dashboard-card" id="gerar-ocorrencia-btn" style="cursor: pointer;">
+            <div class="dashboard-card" id="card-ocorrencias" style="cursor: pointer;">
             <div class="card-icon">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
@@ -1680,6 +548,134 @@ body {
                 </div>
             </div>
         </div>
+
+        <!-- Modal de Ocorrências -->
+        <div id="ocorrenciasModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeOcorrenciasModal">&times;</span>
+                <h2 id="modalTitleOcorrencias">Gerar Ocorrência</h2>
+                
+                <div style="margin-bottom: 20px; text-align: right;">
+                    <button id="btn-nova-ocorrencia" class="btn">
+                        <i class="fas fa-plus"></i> Nova Ocorrência
+                    </button>
+                    <button id="btn-listar-ocorrencias" class="btn btn-secondary">
+                        <i class="fas fa-list"></i> Listar Ocorrências
+                    </button>
+                </div>
+                
+                <div id="ocorrencias-container">
+                    <p>Selecione uma opção acima para começar.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Cadastro de Ocorrência -->
+        <div id="cadastroOcorrenciaModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeCadastroOcorrenciaModal">&times;</span>
+                <h2 id="modalTitleCadastroOcorrencia">Nova Ocorrência</h2>
+                
+                <div id="mensagem-ocorrencia"></div>
+                
+                <form id="form-ocorrencia" method="post">
+                    <input type="hidden" name="action" value="cadastrar">
+                    <input type="hidden" id="ocorrencia_id" name="ocorrencia_id" value="">
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="turma_ocorrencia" class="form-label">Turma <span style="color: red;">*</span></label>
+                                <select id="turma_ocorrencia" name="turma_id" class="form-control" required>
+                                    <option value="">Selecione uma turma</option>
+                                    <?php foreach ($turmas as $turma): ?>
+                                        <option value="<?php echo $turma['id']; ?>"><?php echo htmlspecialchars($turma['nome_turma']); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="aluno_ocorrencia" class="form-label">Aluno <span style="color: red;">*</span></label>
+                                <select id="aluno_ocorrencia" name="aluno_id" class="form-control" required>
+                                    <option value="">Primeiro selecione uma turma</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="data_ocorrencia" class="form-label">Data da Ocorrência <span style="color: red;">*</span></label>
+                                <input type="date" id="data_ocorrencia" name="data_ocorrencia" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descricao_ocorrencia" class="form-label">Descrição da Ocorrência <span style="color: red;">*</span></label>
+                        <textarea id="descricao_ocorrencia" name="descricao" class="form-control" rows="4" required
+                                  placeholder="Descreva detalhadamente o que aconteceu..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="acoes_tomadas" class="form-label">Ações Tomadas</label>
+                        <textarea id="acoes_tomadas" name="acoes_tomadas" class="form-control" rows="3"
+                                  placeholder="Descreva as ações que foram tomadas em relação à ocorrência..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="houve_reuniao" name="houve_reuniao_responsaveis" value="1">
+                                <span class="checkmark"></span>
+                                Houve reunião com os responsáveis?
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="detalhes_reuniao_group" style="display: none;">
+                        <label for="detalhes_reuniao" class="form-label">Detalhes da Reunião</label>
+                        <textarea id="detalhes_reuniao" name="detalhes_reuniao" class="form-control" rows="3"
+                                  placeholder="Descreva os detalhes da reunião com os responsáveis..."></textarea>
+                    </div>
+                    
+                    <div class="text-center">
+                        <button type="submit" class="btn">
+                            <i class="fas fa-save"></i> Salvar Ocorrência
+                        </button>
+                        <button type="button" id="btn-cancelar-ocorrencia" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de Lista de Ocorrências -->
+        <div id="listaOcorrenciasModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeListaOcorrenciasModal">&times;</span>
+                <h2 id="modalTitleListaOcorrencias">Minhas Ocorrências</h2>
+                
+                <div id="lista-ocorrencias-container">
+                    <p>Carregando ocorrências...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Detalhes da Ocorrência -->
+        <div id="detalhesOcorrenciaModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeDetalhesOcorrenciaModal">&times;</span>
+                <h2 id="modalTitleDetalhesOcorrencia">Detalhes da Ocorrência</h2>
+                
+                <div id="detalhes-ocorrencia-container">
+                    <p>Carregando detalhes...</p>
+                </div>
+            </div>
+        </div>
         
     </div>
 
@@ -1705,5 +701,6 @@ body {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation/1.19.3/jquery.validate.min.js"></script>
     <script src="js/dashboard.js"></script>
     <script src="js/galeria.js"></script>
+    <script src="js/ocorrencias.js"></script>
 </body>
 </html>

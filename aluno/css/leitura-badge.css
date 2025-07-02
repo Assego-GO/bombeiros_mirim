@@ -1,0 +1,138 @@
+/* Adicione este CSS ao seu arquivo dashboard.css (complementar ao CSS anterior) */
+
+/* Status de Leitura dos Comunicados */
+.comunicado-item.nao-lido {
+    border-left: 4px solid #ff4444;
+    background: linear-gradient(135deg, #fff9f9, #ffffff);
+}
+
+.comunicado-item.lido {
+    border-left: 4px solid #28a745;
+    opacity: 0.9;
+}
+
+.comunicado-item.nao-lido .comunicado-header {
+    background: linear-gradient(135deg, #fff2f2, #ffe8e8);
+}
+
+.status-leitura {
+    margin-left: auto;
+    color: #6c757d;
+}
+
+.comunicado-item.nao-lido .status-leitura {
+    color: #ff4444;
+}
+
+.comunicado-item.lido .status-leitura {
+    color: #28a745;
+}
+
+/* Meta informações de leitura */
+.comunicado-lido-em {
+    color: #28a745 !important;
+    font-size: 0.85rem;
+}
+
+/* Botões de ação */
+.comunicados-actions-top {
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.btn-marcar-todos {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-marcar-todos:hover {
+    background: linear-gradient(135deg, #218838, #17a2b8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.btn-marcar-lido {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+}
+
+.btn-marcar-lido:hover {
+    background: linear-gradient(135deg, #218838, #17a2b8);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Comunicados não lidos com destaque especial */
+.comunicado-item.nao-lido::before {
+    content: '';
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 8px;
+    height: 8px;
+    background: #ff4444;
+    border-radius: 50%;
+    animation: pulse-new 2s infinite;
+}
+
+@keyframes pulse-new {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Ajustes para responsividade */
+@media (max-width: 768px) {
+    .comunicado-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .comunicado-lido-em {
+        font-size: 0.8rem;
+    }
+    
+    .btn-marcar-lido {
+        margin-left: 0;
+        margin-top: 8px;
+        font-size: 0.8rem;
+        padding: 6px 12px;
+    }
+    
+    .btn-marcar-todos {
+        font-size: 0.85rem;
+        padding: 8px 16px;
+    }
+}

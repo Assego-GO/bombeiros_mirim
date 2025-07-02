@@ -1,0 +1,366 @@
+/* CSS SIMPLES COM TEMA BOMBEIROS - Substitua o CSS do modal */
+
+/* Modal de Comunicados - Tema Simples */
+#comunicadosModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+#comunicadosModal .modal-content {
+    background-color: #fefefe;
+    margin: 2% auto;
+    padding: 0;
+    border: none;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+/* Header simples com cor de bombeiro */
+#comunicadosModal .modal-content h2 {
+    background-color: #d32f2f;
+    color: white;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    border-radius: 10px 10px 0 0;
+}
+
+#comunicadosModal .close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    z-index: 1001;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#comunicadosModal .close:hover {
+    color: #ffeb3b;
+}
+
+/* Informações da Turma */
+.comunicados-turma-info {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.comunicados-turma-info .matricula-group {
+    margin: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
+.comunicados-turma-info .matricula-group label {
+    font-weight: 600;
+    color: #d32f2f;
+    margin-bottom: 5px;
+}
+
+.comunicados-turma-info .matricula-group p {
+    margin: 0;
+    color: #6c757d;
+    font-size: 0.95rem;
+}
+
+/* Container dos Comunicados */
+.comunicados-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 20px;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Botão marcar todos */
+.comunicados-actions-top {
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #e9ecef;
+    margin-bottom: 20px;
+}
+
+.btn-marcar-todos {
+    background-color: #d32f2f;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-marcar-todos:hover {
+    background-color: #b71c1c;
+}
+
+/* Item de Comunicado */
+.comunicado-item {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.comunicado-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comunicado-item.expandido {
+    border-color: #d32f2f;
+}
+
+/* Comunicados não lidos - destaque simples */
+.comunicado-item.nao-lido {
+    border-left: 4px solid #d32f2f;
+    background-color: #fff8f8;
+}
+
+.comunicado-item.lido {
+    border-left: 4px solid #4caf50;
+    opacity: 0.9;
+}
+
+/* Header do Comunicado */
+.comunicado-header {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.comunicado-titulo {
+    color: #d32f2f;
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comunicado-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.comunicado-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.comunicado-meta i {
+    color: #d32f2f;
+}
+
+/* Status de leitura */
+.status-leitura {
+    margin-left: auto;
+    color: #6c757d;
+}
+
+.comunicado-item.nao-lido .status-leitura {
+    color: #d32f2f;
+}
+
+.comunicado-item.lido .status-leitura {
+    color: #4caf50;
+}
+
+/* Conteúdo do Comunicado */
+.comunicado-conteudo {
+    padding: 15px;
+}
+
+.comunicado-preview,
+.comunicado-completo {
+    line-height: 1.5;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+/* Botões de ação */
+.comunicado-actions {
+    padding: 0 15px 15px 15px;
+    text-align: center;
+}
+
+.btn-ver-mais,
+.btn-marcar-lido {
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 5px;
+}
+
+.btn-ver-mais {
+    background-color: #d32f2f;
+    color: white;
+}
+
+.btn-ver-mais:hover {
+    background-color: #b71c1c;
+}
+
+.btn-marcar-lido {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-marcar-lido:hover {
+    background-color: #45a049;
+}
+
+/* Estados especiais */
+.loading-comunicados,
+.comunicados-vazio,
+.comunicados-erro {
+    text-align: center;
+    padding: 30px;
+}
+
+.loading-comunicados i {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #d32f2f;
+}
+
+.comunicados-vazio i {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #d32f2f;
+}
+
+.comunicados-erro {
+    color: #dc3545;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    margin: 20px;
+}
+
+/* Scrollbar simples */
+.comunicados-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.comunicados-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.comunicados-container::-webkit-scrollbar-thumb {
+    background: #d32f2f;
+    border-radius: 4px;
+}
+
+.comunicados-container::-webkit-scrollbar-thumb:hover {
+    background: #b71c1c;
+}
+
+/* Badge de notificação simples */
+.notification-badge {
+    background-color: #d32f2f !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+
+/* Data de atualização */
+.comunicado-updated {
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    text-align: right;
+}
+
+.comunicado-updated small {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.comunicado-updated i {
+    color: #d32f2f;
+    margin-right: 5px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #comunicadosModal .modal-content {
+        width: 95%;
+        margin: 5% auto;
+    }
+    
+    .comunicados-turma-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .comunicados-turma-info .matricula-group {
+        min-width: auto;
+    }
+    
+    .comunicado-header {
+        padding: 12px;
+    }
+    
+    .comunicado-titulo {
+        font-size: 1.1rem;
+    }
+    
+    .comunicado-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .comunicado-conteudo {
+        padding: 12px;
+    }
+    
+    .comunicado-actions {
+        padding: 0 12px 12px 12px;
+    }
+    
+    .btn-ver-mais,
+    .btn-marcar-lido {
+        font-size: 0.8rem;
+        padding: 6px 12px;
+        margin: 2px;
+    }
+}
