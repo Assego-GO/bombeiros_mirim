@@ -11,10 +11,10 @@ if (!isset($_SESSION['usuario_id'])) {
     exit;
 }
 
-// Incluir configurações do banco - CORRIGIDO
+// Incluir configurações do banco
 $env_paths = [
-    __DIR__ . "/conexao.php",  // ✅ Corrigido - adicionada barra
-    __DIR__ . "/../../env_config.php",
+    __DIR__ . "/conexao.php",
+    __DIR__ . "/../../env_config.php", 
     dirname(__DIR__) . "/env_config.php",
     dirname(dirname(__DIR__)) . "/env_config.php"
 ];
@@ -33,18 +33,25 @@ if (!$loaded) {
     exit;
 }
 
-$host = $_ENV['DB_HOST'];
-$usuario = $_ENV['DB_USER'];
-$senha = $_ENV['DB_PASS'];
-$db_name = $_ENV['DB_NAME'];
+// Configurar conexão com o banco
+try {
+    $host = $_ENV['DB_HOST'];
+    $usuario = $_ENV['DB_USER'];
+    $senha = $_ENV['DB_PASS'];
+    $db_name = $_ENV['DB_NAME'];
 
-// Conexão com o banco
-$conn = new mysqli($host, $usuario, $senha, $db_name);
-if ($conn->connect_error) {
-    echo json_encode(['success' => false, 'message' => 'Conexão falhou: ' . $conn->connect_error]);
+    $conn = new mysqli($host, $usuario, $senha, $db_name);
+    
+    if ($conn->connect_error) {
+        throw new Exception('Conexão falhou: ' . $conn->connect_error);
+    }
+    
+    $conn->set_charset("utf8mb4");
+    
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Erro de conexão com o banco de dados: ' . $e->getMessage()]);
     exit;
 }
-$conn->set_charset("utf8");
 
 // Verificar se a tabela unidade existe
 $check_table = $conn->query("SHOW TABLES LIKE 'unidade'");
@@ -53,6 +60,10 @@ $has_unidades_table = $check_table->num_rows > 0;
 // Obter ação
 $action = $_REQUEST['action'] ?? '';
 
+// Log da ação para debug
+error_log("Uniformes.php - Ação recebida: " . $action);
+
+// Roteador de ações
 switch($action) {
     case 'listar_uniformes':
         listarUniformes();
@@ -95,17 +106,21 @@ switch($action) {
         break;
     
     default:
-        echo json_encode(['success' => false, 'message' => 'Ação não reconhecida']);
+        echo json_encode(['success' => false, 'message' => 'Ação não reconhecida: ' . $action]);
         break;
 }
 
-// Função para listar uniformes - CORRIGIDA
+// ====================================
+// FUNÇÕES PRINCIPAIS
+// ====================================
+
 function listarUniformes() {
     global $conn, $has_unidades_table;
     
     try {
+        error_log("Listando uniformes - Tabela unidade existe: " . ($has_unidades_table ? 'Sim' : 'Não'));
+        
         if ($has_unidades_table) {
-            // Se a tabela unidade existe, usar query completa
             $sql = "SELECT 
                         a.id,
                         a.nome as aluno_nome,
@@ -124,7 +139,6 @@ function listarUniformes() {
                     WHERE a.status = 'ativo'
                     ORDER BY a.nome";
         } else {
-            // Se não existe, usar query sem unidades
             $sql = "SELECT 
                         a.id,
                         a.nome as aluno_nome,
@@ -146,7 +160,7 @@ function listarUniformes() {
         $result = $conn->query($sql);
         
         if ($result === false) {
-            throw new Exception('Erro na consulta: ' . $conn->error);
+            throw new Exception('Erro na consulta SQL: ' . $conn->error);
         }
         
         $uniformes = [];
@@ -154,12 +168,16 @@ function listarUniformes() {
             $uniformes[] = $row;
         }
         
+        error_log("Uniformes encontrados: " . count($uniformes));
+        
         echo json_encode([
             'success' => true,
-            'uniformes' => $uniformes
+            'uniformes' => $uniformes,
+            'total' => count($uniformes)
         ]);
         
     } catch(Exception $e) {
+        error_log("Erro ao listar uniformes: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao listar uniformes: ' . $e->getMessage()
@@ -167,7 +185,6 @@ function listarUniformes() {
     }
 }
 
-// Função para listar turmas - CORRIGIDA
 function listarTurmas() {
     global $conn;
     
@@ -176,7 +193,7 @@ function listarTurmas() {
         $result = $conn->query($sql);
         
         if ($result === false) {
-            throw new Exception('Erro na consulta: ' . $conn->error);
+            throw new Exception('Erro na consulta SQL: ' . $conn->error);
         }
         
         $turmas = [];
@@ -190,6 +207,7 @@ function listarTurmas() {
         ]);
         
     } catch(Exception $e) {
+        error_log("Erro ao listar turmas: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao listar turmas: ' . $e->getMessage()
@@ -197,7 +215,6 @@ function listarTurmas() {
     }
 }
 
-// Função para listar unidades - CORRIGIDA
 function listarUnidades() {
     global $conn, $has_unidades_table;
     
@@ -207,7 +224,7 @@ function listarUnidades() {
             $result = $conn->query($sql);
             
             if ($result === false) {
-                throw new Exception('Erro na consulta: ' . $conn->error);
+                throw new Exception('Erro na consulta SQL: ' . $conn->error);
             }
             
             $unidades = [];
@@ -215,7 +232,6 @@ function listarUnidades() {
                 $unidades[] = $row;
             }
         } else {
-            // Se não existe a tabela, retornar array vazio
             $unidades = [];
         }
         
@@ -225,6 +241,7 @@ function listarUnidades() {
         ]);
         
     } catch(Exception $e) {
+        error_log("Erro ao listar unidades: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao listar unidades: ' . $e->getMessage()
@@ -232,7 +249,6 @@ function listarUnidades() {
     }
 }
 
-// Função para atualizar uniforme
 function atualizarUniforme() {
     global $conn;
     
@@ -243,22 +259,20 @@ function atualizarUniforme() {
         $tamanho_calcado = $_POST['tamanho_calcado'] ?? '';
         
         if (empty($aluno_id)) {
-            echo json_encode(['success' => false, 'message' => 'ID do aluno não fornecido']);
-            return;
+            throw new Exception('ID do aluno é obrigatório');
         }
         
-        // Validar se o aluno existe
+        // Verificar se o aluno existe
         $stmt = $conn->prepare("SELECT id FROM alunos WHERE id = ?");
         $stmt->bind_param("i", $aluno_id);
         $stmt->execute();
         $result = $stmt->get_result();
         
         if ($result->num_rows === 0) {
-            echo json_encode(['success' => false, 'message' => 'Aluno não encontrado']);
-            return;
+            throw new Exception('Aluno não encontrado');
         }
         
-        // Atualizar os tamanhos
+        // Atualizar os dados
         $stmt = $conn->prepare("UPDATE alunos SET 
                                 tamanho_camisa = ?, 
                                 tamanho_calca = ?, 
@@ -276,6 +290,7 @@ function atualizarUniforme() {
         }
         
     } catch(Exception $e) {
+        error_log("Erro ao atualizar uniforme: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao atualizar uniforme: ' . $e->getMessage()
@@ -283,69 +298,69 @@ function atualizarUniforme() {
     }
 }
 
-// Função para gerar estatísticas
 function gerarEstatisticas() {
     global $conn;
     
     try {
-        // Contar total de itens
-        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != ''");
-        $total_camisas = $result->fetch_assoc()['total'];
+        $estatisticas = [];
         
-        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_calca IS NOT NULL AND tamanho_calca != ''");
-        $total_calcas = $result->fetch_assoc()['total'];
+        // Total de camisas definidas
+        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != '' AND status = 'ativo'");
+        $estatisticas['total_camisas'] = $result->fetch_assoc()['total'];
         
-        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != ''");
-        $total_calcados = $result->fetch_assoc()['total'];
+        // Total de calças definidas
+        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_calca IS NOT NULL AND tamanho_calca != '' AND status = 'ativo'");
+        $estatisticas['total_calcas'] = $result->fetch_assoc()['total'];
         
-        // Contar uniformes completos
+        // Total de calçados definidos
+        $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != '' AND status = 'ativo'");
+        $estatisticas['total_calcados'] = $result->fetch_assoc()['total'];
+        
+        // Uniformes completos
         $result = $conn->query("SELECT COUNT(*) as total FROM alunos WHERE 
                               tamanho_camisa IS NOT NULL AND tamanho_camisa != '' AND
                               tamanho_calca IS NOT NULL AND tamanho_calca != '' AND
-                              tamanho_calcado IS NOT NULL AND tamanho_calcado != ''");
-        $uniformes_completos = $result->fetch_assoc()['total'];
+                              tamanho_calcado IS NOT NULL AND tamanho_calcado != '' AND
+                              status = 'ativo'");
+        $estatisticas['uniformes_completos'] = $result->fetch_assoc()['total'];
         
         // Distribuição de tamanhos de camisas
         $result = $conn->query("SELECT tamanho_camisa, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != '' 
+                              WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != '' AND status = 'ativo'
                               GROUP BY tamanho_camisa ORDER BY tamanho_camisa");
         $distribuicao_camisas = [];
         while($row = $result->fetch_assoc()) {
             $distribuicao_camisas[$row['tamanho_camisa']] = $row['quantidade'];
         }
+        $estatisticas['distribuicao_camisas'] = $distribuicao_camisas;
         
         // Distribuição de tamanhos de calças
         $result = $conn->query("SELECT tamanho_calca, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_calca IS NOT NULL AND tamanho_calca != '' 
+                              WHERE tamanho_calca IS NOT NULL AND tamanho_calca != '' AND status = 'ativo'
                               GROUP BY tamanho_calca ORDER BY tamanho_calca");
         $distribuicao_calcas = [];
         while($row = $result->fetch_assoc()) {
             $distribuicao_calcas[$row['tamanho_calca']] = $row['quantidade'];
         }
+        $estatisticas['distribuicao_calcas'] = $distribuicao_calcas;
         
         // Distribuição de tamanhos de calçados
         $result = $conn->query("SELECT tamanho_calcado, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != '' 
+                              WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != '' AND status = 'ativo'
                               GROUP BY tamanho_calcado ORDER BY CAST(tamanho_calcado AS UNSIGNED)");
         $distribuicao_calcados = [];
         while($row = $result->fetch_assoc()) {
             $distribuicao_calcados[$row['tamanho_calcado']] = $row['quantidade'];
         }
+        $estatisticas['distribuicao_calcados'] = $distribuicao_calcados;
         
         echo json_encode([
             'success' => true,
-            'estatisticas' => [
-                'total_camisas' => $total_camisas,
-                'total_calcas' => $total_calcas,
-                'total_calcados' => $total_calcados,
-                'uniformes_completos' => $uniformes_completos,
-                'distribuicao_camisas' => $distribuicao_camisas,
-                'distribuicao_calcas' => $distribuicao_calcas,
-                'distribuicao_calcados' => $distribuicao_calcados
-            ]
+            'estatisticas' => $estatisticas
         ]);
         
     } catch(Exception $e) {
+        error_log("Erro ao gerar estatísticas: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao gerar estatísticas: ' . $e->getMessage()
@@ -353,7 +368,10 @@ function gerarEstatisticas() {
     }
 }
 
-// Função para gerar relatório geral - CORRIGIDA
+// ====================================
+// FUNÇÕES DE RELATÓRIOS
+// ====================================
+
 function gerarRelatorioGeral() {
     global $conn, $has_unidades_table;
     
@@ -392,7 +410,7 @@ function gerarRelatorioGeral() {
         $result = $conn->query($sql);
         
         if ($result === false) {
-            throw new Exception('Erro na consulta: ' . $conn->error);
+            throw new Exception('Erro na consulta SQL: ' . $conn->error);
         }
         
         $dados = [];
@@ -400,10 +418,10 @@ function gerarRelatorioGeral() {
             $dados[] = $row;
         }
         
-        // Gerar PDF
         gerarPDFRelatorio($dados, 'Relatório Geral de Uniformes', 'relatorio_geral_uniformes.pdf');
         
     } catch(Exception $e) {
+        error_log("Erro ao gerar relatório geral: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao gerar relatório: ' . $e->getMessage()
@@ -411,7 +429,6 @@ function gerarRelatorioGeral() {
     }
 }
 
-// Função para gerar relatório por turma - CORRIGIDA
 function gerarRelatorioPorTurma() {
     global $conn, $has_unidades_table;
     
@@ -450,7 +467,7 @@ function gerarRelatorioPorTurma() {
         $result = $conn->query($sql);
         
         if ($result === false) {
-            throw new Exception('Erro na consulta: ' . $conn->error);
+            throw new Exception('Erro na consulta SQL: ' . $conn->error);
         }
         
         $dados = [];
@@ -458,10 +475,10 @@ function gerarRelatorioPorTurma() {
             $dados[] = $row;
         }
         
-        // Gerar PDF
         gerarPDFRelatorio($dados, 'Relatório de Uniformes por Turma', 'relatorio_turmas_uniformes.pdf');
         
     } catch(Exception $e) {
+        error_log("Erro ao gerar relatório por turma: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao gerar relatório: ' . $e->getMessage()
@@ -469,17 +486,15 @@ function gerarRelatorioPorTurma() {
     }
 }
 
-// Função para gerar relatório de tamanhos
 function gerarRelatorioTamanhos() {
     global $conn;
     
     try {
-        // Buscar distribuição de tamanhos
         $dados = [];
         
         // Camisas
         $result = $conn->query("SELECT tamanho_camisa, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != '' 
+                              WHERE tamanho_camisa IS NOT NULL AND tamanho_camisa != '' AND status = 'ativo'
                               GROUP BY tamanho_camisa ORDER BY tamanho_camisa");
         $dados['camisas'] = [];
         while($row = $result->fetch_assoc()) {
@@ -488,7 +503,7 @@ function gerarRelatorioTamanhos() {
         
         // Calças
         $result = $conn->query("SELECT tamanho_calca, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_calca IS NOT NULL AND tamanho_calca != '' 
+                              WHERE tamanho_calca IS NOT NULL AND tamanho_calca != '' AND status = 'ativo'
                               GROUP BY tamanho_calca ORDER BY tamanho_calca");
         $dados['calcas'] = [];
         while($row = $result->fetch_assoc()) {
@@ -497,17 +512,17 @@ function gerarRelatorioTamanhos() {
         
         // Calçados
         $result = $conn->query("SELECT tamanho_calcado, COUNT(*) as quantidade FROM alunos 
-                              WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != '' 
+                              WHERE tamanho_calcado IS NOT NULL AND tamanho_calcado != '' AND status = 'ativo'
                               GROUP BY tamanho_calcado ORDER BY CAST(tamanho_calcado AS UNSIGNED)");
         $dados['calcados'] = [];
         while($row = $result->fetch_assoc()) {
             $dados['calcados'][] = $row;
         }
         
-        // Gerar PDF especial para tamanhos
         gerarPDFTamanhos($dados, 'Relatório de Tamanhos para Compras', 'relatorio_tamanhos_uniformes.pdf');
         
     } catch(Exception $e) {
+        error_log("Erro ao gerar relatório de tamanhos: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao gerar relatório: ' . $e->getMessage()
@@ -515,7 +530,6 @@ function gerarRelatorioTamanhos() {
     }
 }
 
-// Função para gerar relatório de incompletos - CORRIGIDA
 function gerarRelatorioIncompletos() {
     global $conn, $has_unidades_table;
     
@@ -562,7 +576,7 @@ function gerarRelatorioIncompletos() {
         $result = $conn->query($sql);
         
         if ($result === false) {
-            throw new Exception('Erro na consulta: ' . $conn->error);
+            throw new Exception('Erro na consulta SQL: ' . $conn->error);
         }
         
         $dados = [];
@@ -570,10 +584,10 @@ function gerarRelatorioIncompletos() {
             $dados[] = $row;
         }
         
-        // Gerar PDF
         gerarPDFRelatorio($dados, 'Relatório de Uniformes Incompletos', 'relatorio_incompletos_uniformes.pdf');
         
     } catch(Exception $e) {
+        error_log("Erro ao gerar relatório de incompletos: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => 'Erro ao gerar relatório: ' . $e->getMessage()
@@ -581,20 +595,29 @@ function gerarRelatorioIncompletos() {
     }
 }
 
-// Função para gerar PDF (implementação básica)
+function exportarTodosRelatorios() {
+    echo json_encode([
+        'success' => true,
+        'message' => 'Funcionalidade de exportação completa em desenvolvimento'
+    ]);
+}
+
+// ====================================
+// FUNÇÕES DE GERAÇÃO DE PDF
+// ====================================
+
 function gerarPDFRelatorio($dados, $titulo, $filename) {
-    // Configurar headers para download
+    // Configurar headers para HTML
     header('Content-Type: text/html; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     header('Cache-Control: private, max-age=0, must-revalidate');
     header('Pragma: public');
     
-    // Implementação básica usando HTML
     $html = '<!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>' . $titulo . '</title>
+        <title>' . htmlspecialchars($titulo) . '</title>
         <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -603,6 +626,9 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
             .header { text-align: center; margin-bottom: 20px; }
             .data { font-size: 12px; margin-bottom: 10px; }
             .logo { margin-bottom: 20px; }
+            .status-completo { color: green; font-weight: bold; }
+            .status-incompleto { color: orange; font-weight: bold; }
+            .status-pendente { color: red; font-weight: bold; }
         </style>
     </head>
     <body>
@@ -610,7 +636,7 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
             <div class="logo">
                 <h2>🔥 Bombeiro Mirim - Estado de Goiás</h2>
             </div>
-            <h1>' . $titulo . '</h1>
+            <h1>' . htmlspecialchars($titulo) . '</h1>
             <div class="data">Gerado em: ' . date('d/m/Y H:i:s') . '</div>
         </div>
         
@@ -631,12 +657,17 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
     
     foreach($dados as $linha) {
         $status = '';
+        $statusClass = '';
+        
         if ($linha['tamanho_camisa'] && $linha['tamanho_calca'] && $linha['tamanho_calcado']) {
             $status = 'Completo';
+            $statusClass = 'status-completo';
         } elseif (!$linha['tamanho_camisa'] && !$linha['tamanho_calca'] && !$linha['tamanho_calcado']) {
             $status = 'Pendente';
+            $statusClass = 'status-pendente';
         } else {
             $status = 'Incompleto';
+            $statusClass = 'status-incompleto';
         }
         
         $html .= '<tr>
@@ -647,7 +678,7 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
                     <td>' . htmlspecialchars($linha['tamanho_camisa'] ?: 'N/D') . '</td>
                     <td>' . htmlspecialchars($linha['tamanho_calca'] ?: 'N/D') . '</td>
                     <td>' . htmlspecialchars($linha['tamanho_calcado'] ?: 'N/D') . '</td>
-                    <td>' . $status . '</td>
+                    <td class="' . $statusClass . '">' . $status . '</td>
                   </tr>';
     }
     
@@ -656,6 +687,7 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
         
         <div style="margin-top: 30px; text-align: center; font-size: 12px; color: #666;">
             <p>Relatório gerado automaticamente pelo Sistema de Gestão do Bombeiro Mirim</p>
+            <p>Total de registros: ' . count($dados) . '</p>
         </div>
     </body>
     </html>';
@@ -663,7 +695,6 @@ function gerarPDFRelatorio($dados, $titulo, $filename) {
     echo $html;
 }
 
-// Função para gerar PDF de tamanhos
 function gerarPDFTamanhos($dados, $titulo, $filename) {
     header('Content-Type: text/html; charset=utf-8');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
@@ -672,7 +703,7 @@ function gerarPDFTamanhos($dados, $titulo, $filename) {
     <html>
     <head>
         <meta charset="UTF-8">
-        <title>' . $titulo . '</title>
+        <title>' . htmlspecialchars($titulo) . '</title>
         <style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -689,11 +720,11 @@ function gerarPDFTamanhos($dados, $titulo, $filename) {
             <div class="logo">
                 <h2>🔥 Bombeiro Mirim - Estado de Goiás</h2>
             </div>
-            <h1>' . $titulo . '</h1>
+            <h1>' . htmlspecialchars($titulo) . '</h1>
             <div>Gerado em: ' . date('d/m/Y H:i:s') . '</div>
         </div>';
     
-    // Seção de camisas
+    // Camisas
     $html .= '<div class="section">
                 <h3>👕 Camisas</h3>
                 <table>
@@ -717,7 +748,7 @@ function gerarPDFTamanhos($dados, $titulo, $filename) {
               </tr>';
     $html .= '</tbody></table></div>';
     
-    // Seção de calças
+    // Calças
     $html .= '<div class="section">
                 <h3>👖 Calças</h3>
                 <table>
@@ -741,7 +772,7 @@ function gerarPDFTamanhos($dados, $titulo, $filename) {
               </tr>';
     $html .= '</tbody></table></div>';
     
-    // Seção de calçados
+    // Calçados
     $html .= '<div class="section">
                 <h3>👟 Calçados</h3>
                 <table>
@@ -771,14 +802,6 @@ function gerarPDFTamanhos($dados, $titulo, $filename) {
     $html .= '</body></html>';
     
     echo $html;
-}
-
-// Função para exportar todos os relatórios
-function exportarTodosRelatorios() {
-    echo json_encode([
-        'success' => true,
-        'message' => 'Funcionalidade de exportação completa em desenvolvimento'
-    ]);
 }
 
 // Fechar conexão
