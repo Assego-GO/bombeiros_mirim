@@ -672,6 +672,10 @@ function configurarEnvioFormulario() {
         formData.append('complemento', obterValor('complemento'));
         formData.append('bairro', obterValor('bairro'));
         formData.append('cidade', obterValor('cidade'));
+
+        formData.append('tamanho-camisa', obterValor('tamanho-camisa'));
+        formData.append('tamanho-calca', obterValor('tamanho-calca'));
+        formData.append('tamanho-calcado', obterValor('tamanho-calcado'));
         
         formData.append('consent', document.getElementById('consent').checked ? '1' : '0');
         
