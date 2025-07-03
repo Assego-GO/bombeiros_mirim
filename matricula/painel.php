@@ -2958,7 +2958,7 @@ function agora() {
             </button>
             <button class="tab-ranking" data-tab="estatisticas">
                 <i class="fas fa-chart-bar"></i> Estatísticas
-            </button>
+            </button> 
             
         </div>
 
@@ -3694,9 +3694,9 @@ function agora() {
               <button class="tab-uniformes ativo" data-tab="listagem">
                   <i class="fas fa-list"></i> Listagem de Uniformes
               </button>
-              <button class="tab-uniformes" data-tab="estatisticas">
+             <!-- <button class="tab-uniformes" data-tab="estatisticas">
                   <i class="fas fa-chart-pie"></i> Estatísticas
-              </button>
+              </button> -->
           </div>
 
           <div class="modal-body">
