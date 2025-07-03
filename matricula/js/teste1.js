@@ -386,18 +386,129 @@ function formatarStatus(status) {
   return `<span class="status-badge ${classe}">${status}</span>`;
 }
 
-// Função para formatar a data
+// ===== FUNÇÃO DE FORMATAÇÃO DE DATA CORRIGIDA E ROBUSTA =====
 function formatarData(dataString) {
-  if (!dataString) return '-';
+  // Log para debug - REMOVA após corrigir o problema
+  console.log('🐛 DEBUG formatarData - Input:', dataString, 'Tipo:', typeof dataString);
+  
+  // Verificações mais robustas para valores nulos/indefinidos
+  if (!dataString || 
+      dataString === null || 
+      dataString === undefined || 
+      dataString === 'null' || 
+      dataString === 'undefined' || 
+      dataString === '' ||
+      String(dataString).trim() === '') {
+    console.log('🐛 DEBUG formatarData - Valor inválido, retornando: Data não informada');
+    return 'Data não informada';
+  }
 
   try {
-    const data = new Date(dataString);
-    if (isNaN(data.getTime())) return dataString;
+    // Converter para string e remover espaços extras
+    const dataStr = String(dataString).trim();
+    
+    // Se já está no formato brasileiro (dd/mm/yyyy ou dd/mm/yyyy hh:mm), retornar apenas a data
+    const formatoBR = dataStr.match(/^(\d{2})\/(\d{2})\/(\d{4})(\s\d{2}:\d{2}(:\d{2})?)?$/);
+    if (formatoBR) {
+      const resultado = `${formatoBR[1]}/${formatoBR[2]}/${formatoBR[3]}`;
+      console.log('🐛 DEBUG formatarData - Formato BR detectado, retornando:', resultado);
+      return resultado;
+    }
 
-    return data.toLocaleDateString('pt-BR');
+    // Se está no formato ISO (yyyy-mm-dd), converter para dd/mm/yyyy
+    const formatoISO = dataStr.match(/^(\d{4})-(\d{2})-(\d{2})(\s\d{2}:\d{2}(:\d{2})?)?$/);
+    if (formatoISO) {
+      const resultado = `${formatoISO[3]}/${formatoISO[2]}/${formatoISO[1]}`;
+      console.log('🐛 DEBUG formatarData - Formato ISO detectado, convertendo para:', resultado);
+      return resultado;
+    }
+
+    // Tentar converter usando Date (último recurso)
+    const data = new Date(dataStr);
+    if (!isNaN(data.getTime()) && data.getFullYear() > 1900) {
+      const resultado = data.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'America/Sao_Paulo'
+      });
+      console.log('🐛 DEBUG formatarData - Conversão por Date, resultado:', resultado);
+      return resultado;
+    }
+
+    // Se chegou até aqui, retorna a string original como fallback seguro
+    console.log('🐛 DEBUG formatarData - Não conseguiu converter, retornando original:', dataStr);
+    return dataStr;
+    
   } catch (e) {
-    console.error('Erro ao formatar data:', e);
-    return dataString; // Retorna a string original se houver erro
+    console.error('🐛 DEBUG formatarData - Erro capturado:', e, 'Input era:', dataString);
+    // Retorna string segura em caso de erro
+    return String(dataString || 'Data não informada');
+  }
+}
+
+// ===== FUNÇÃO AUXILIAR PARA PROCESSAR DADOS DE MATRÍCULA COM SEGURANÇA =====
+function processarDadosMatricula(m, index) {
+  try {
+    console.log(`🐛 DEBUG processarDadosMatricula - Processando item ${index}:`, m);
+    
+    // ===== TRATAMENTO SEGURO DOS CAMPOS =====
+    const alunoId = m.aluno_id || m.matricula_id || index;
+    const alunoNome = m.aluno_nome || 'Nome não informado';
+    const responsaveis = m.responsaveis || 'Responsável não informado';
+    const unidade = m.unidade || 'Unidade não definida';
+    const turma = m.turma || 'Turma não definida';
+    const status = m.status || 'Pendente';
+    
+    // ===== TRATAMENTO ESPECIAL E SEGURO DA DATA =====
+    let dataFormatada;
+    
+    // Prioridade 1: data_matricula_formatada (se já vem formatada do backend)
+    if (m.data_matricula_formatada && m.data_matricula_formatada !== 'null' && m.data_matricula_formatada !== '') {
+      console.log(`🐛 DEBUG - Usando data_matricula_formatada: ${m.data_matricula_formatada}`);
+      dataFormatada = String(m.data_matricula_formatada);
+    }
+    // Prioridade 2: data_matricula (precisa ser formatada)
+    else if (m.data_matricula && m.data_matricula !== 'null' && m.data_matricula !== '') {
+      console.log(`🐛 DEBUG - Formatando data_matricula: ${m.data_matricula}`);
+      dataFormatada = formatarData(m.data_matricula);
+    }
+    // Prioridade 3: data_original (backup)
+    else if (m.data_original && m.data_original !== 'null' && m.data_original !== '') {
+      console.log(`🐛 DEBUG - Formatando data_original: ${m.data_original}`);
+      dataFormatada = formatarData(m.data_original);
+    }
+    // Fallback: mensagem padrão
+    else {
+      console.log(`🐛 DEBUG - Nenhuma data encontrada para item ${index}`);
+      dataFormatada = 'Data não informada';
+    }
+    
+    console.log(`🐛 DEBUG - Data final para item ${index}: ${dataFormatada}`);
+    
+    return {
+      alunoId,
+      alunoNome,
+      responsaveis,
+      unidade,
+      turma,
+      status,
+      dataFormatada
+    };
+    
+  } catch (e) {
+    console.error(`🐛 DEBUG processarDadosMatricula - Erro no item ${index}:`, e, m);
+    
+    // Retorna dados seguros em caso de erro
+    return {
+      alunoId: index,
+      alunoNome: 'Erro ao processar nome',
+      responsaveis: 'Erro ao processar responsáveis',
+      unidade: 'Erro ao processar unidade',
+      turma: 'Erro ao processar turma',
+      status: 'Erro ao processar status',
+      dataFormatada: 'Erro ao processar data'
+    };
   }
 }
 
@@ -1224,7 +1335,7 @@ function inicializarFiltros() {
     });
 }
 
-// Aplicar filtros
+// ===== FUNÇÃO DE APLICAR FILTROS CORRIGIDA =====
 function aplicarFiltros() {
   showLoading();
   const form = document.getElementById("filter-form");
@@ -1237,35 +1348,82 @@ function aplicarFiltros() {
     }
   });
 
+  console.log('🔍 Aplicando filtros:', params.toString());
+
   fetch(`api/filtrar_matriculas.php?${params.toString()}`)
-    .then(res => res.json())
-    .then(matriculas => {
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log('📊 Dados filtrados recebidos:', data);
+      
+      // ===== VERIFICAR ESTRUTURA DA RESPOSTA =====
+      let matriculas = [];
+      
+      if (data.success === false) {
+        throw new Error(data.message || data.error || 'Erro no servidor');
+      } else if (data.matriculas && Array.isArray(data.matriculas)) {
+        // Nova estrutura: { success: true, matriculas: [...] }
+        matriculas = data.matriculas;
+      } else if (Array.isArray(data)) {
+        // Estrutura antiga: array direto
+        matriculas = data;
+      } else {
+        throw new Error('Formato de resposta inválido');
+      }
+
       const tbody = document.getElementById("matriculas-body");
       tbody.innerHTML = "";
 
       // Atualizar contador de resultados
       document.getElementById("total-results").textContent = matriculas.length;
 
-      matriculas.forEach(m => {
+      // ===== VERIFICAR SE HÁ DADOS =====
+      if (matriculas.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="sem-dados">
+              <div class="mensagem-sem-dados">
+                <i class="fas fa-filter"></i>
+                <h3>Nenhum resultado encontrado</h3>
+                <p>Não foram encontradas matrículas com os filtros aplicados.</p>
+                <button class="btn btn-sm btn-outline" onclick="limparFiltrosERecarregar()">
+                  <i class="fas fa-eraser"></i> Limpar Filtros
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+        hideLoading();
+        return;
+      }
+
+      matriculas.forEach((m, index) => {
+        // ===== USAR FUNÇÃO SEGURA PARA PROCESSAR DADOS =====
+        const dados = processarDadosMatricula(m, index);
+
         const tr = document.createElement("tr");
         tr.innerHTML = `
-          <td><input type="checkbox" value="${m.aluno_id}"></td>
-          <td>${m.aluno_nome}</td>
-          <td>${m.responsaveis || '-'}</td>
-          <td></td>
-          <td>${m.unidade}</td>
-          <td>${m.turma}</td>
-          <td>${formatarData(m.data_matricula)}</td>
-          <td></td>
-          <td>${formatarStatus(m.status)}</td>
+          <td><input type="checkbox" value="${dados.alunoId}"></td>
+          <td title="${dados.alunoNome}">${dados.alunoNome.length > 30 ? dados.alunoNome.substring(0, 30) + '...' : dados.alunoNome}</td>
+          <td title="${dados.responsaveis}">${dados.responsaveis.length > 50 ? dados.responsaveis.substring(0, 50) + '...' : dados.responsaveis}</td>
+          <td>-</td>
+          <td title="${dados.unidade}">${dados.unidade.length > 30 ? dados.unidade.substring(0, 30) + '...' : dados.unidade}</td>
+          <td title="${dados.turma}">${dados.turma}</td>
+          <td>${dados.dataFormatada}</td>
+          <td>-</td>
+          <td>${formatarStatus(dados.status)}</td>
           <td>
-              <button class="action-btn editar-btn" title="Editar" data-id="${m.aluno_id}">
+              <button class="action-btn editar-btn" title="Editar" data-id="${dados.alunoId}">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="action-btn visualizar-btn" title="Visualizar" data-id="${m.aluno_id}">
+              <button class="action-btn visualizar-btn" title="Visualizar" data-id="${dados.alunoId}">
                 <i class="fas fa-eye"></i>
               </button>
-              <button class="action-btn excluir-btn" title="Excluir" data-id="${m.aluno_id}">
+              <button class="action-btn excluir-btn" title="Excluir" data-id="${dados.alunoId}">
                 <i class="fas fa-trash-alt"></i>
               </button>
           </td>
@@ -1274,13 +1432,25 @@ function aplicarFiltros() {
       });
 
       adicionarEventosAosBotoes();
+      configurarCheckboxSelecionarTodos();
+      
+      console.log(`✅ Filtros aplicados: ${matriculas.length} resultados`);
       hideLoading();
     })
     .catch(err => {
       hideLoading();
-      console.error("Erro ao filtrar matrículas:", err);
-      alert("Erro ao aplicar filtros.");
+      console.error("❌ Erro ao filtrar matrículas:", err);
+      alert("Erro ao aplicar filtros: " + err.message);
     });
+}
+
+// ===== FUNÇÃO AUXILIAR PARA LIMPAR FILTROS =====
+function limparFiltrosERecarregar() {
+  const form = document.getElementById("filter-form");
+  if (form) {
+    form.reset();
+  }
+  carregarMatriculas();
 }
 
 // Gerar relatório em PDF
@@ -1417,56 +1587,191 @@ function carregarProfessores() {
     });
 }
 
-// Carregar matrículas
+// ===== FUNÇÃO CARREGAR MATRÍCULAS COMPLETAMENTE CORRIGIDA =====
 function carregarMatriculas() {
+  console.log('🔄 Iniciando carregamento de matrículas...');
+  
   showLoading();
+  
   fetch("api/listar_matriculas.php")
-    .then(res => res.json())
-    .then(matriculas => {
+    .then(res => {
+      console.log('📡 Status da resposta:', res.status);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      console.log('📊 Dados recebidos:', data);
+      
+      // ===== VERIFICAR ESTRUTURA DA RESPOSTA =====
+      let matriculas = [];
+      
+      if (data.success === false) {
+        // Se há erro no PHP
+        throw new Error(data.message || data.error || 'Erro no servidor');
+      } else if (data.matriculas && Array.isArray(data.matriculas)) {
+        // Nova estrutura: { success: true, matriculas: [...] }
+        matriculas = data.matriculas;
+      } else if (Array.isArray(data)) {
+        // Estrutura antiga: array direto
+        matriculas = data;
+      } else {
+        throw new Error('Formato de resposta inválido');
+      }
+      
       const tbody = document.getElementById("matriculas-body");
+      
+      if (!tbody) {
+        throw new Error('Elemento matriculas-body não encontrado');
+      }
+      
       tbody.innerHTML = "";
 
-      // Atualizar contador de resultados caso exista
+      // Atualizar contador de resultados
       const totalResults = document.getElementById("total-results");
       if (totalResults) {
         totalResults.textContent = matriculas.length;
       }
 
-      matriculas.forEach(m => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><input type="checkbox" value="${m.aluno_id}"></td>
-          <td>${m.aluno_nome}</td>
-          <td>${m.responsaveis || '-'}</td>
-          <td></td>
-          <td>${m.unidade}</td>
-          <td>${m.turma}</td>
-          <td>${formatarData(m.data_matricula)}</td>
-          <td></td>
-          <td>${formatarStatus(m.status)}</td>
-          <td>
-              <button class="action-btn editar-btn" title="Editar" data-id="${m.aluno_id}">
+      console.log(`✅ Processando ${matriculas.length} matrículas...`);
+
+      // ===== VERIFICAR SE HÁ DADOS =====
+      if (matriculas.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="sem-dados">
+              <div class="mensagem-sem-dados">
+                <i class="fas fa-inbox"></i>
+                <h3>Nenhuma matrícula encontrada</h3>
+                <p>Não há matrículas cadastradas no sistema.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        hideLoading();
+        return;
+      }
+
+      // ===== PROCESSAR CADA MATRÍCULA DE FORMA SEGURA =====
+      matriculas.forEach((m, index) => {
+        try {
+          console.log(`🔄 Processando matrícula ${index + 1}/${matriculas.length}`);
+          
+          // ===== USAR FUNÇÃO SEGURA PARA PROCESSAR DADOS =====
+          const dados = processarDadosMatricula(m, index);
+          
+          // ===== CRIAR LINHA DA TABELA =====
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>
+              <input type="checkbox" value="${dados.alunoId}" data-aluno-id="${dados.alunoId}">
+            </td>
+            <td class="aluno-nome" title="${dados.alunoNome}">
+              ${dados.alunoNome.length > 30 ? dados.alunoNome.substring(0, 30) + '...' : dados.alunoNome}
+            </td>
+            <td class="responsaveis" title="${dados.responsaveis}">
+              ${dados.responsaveis.length > 50 ? dados.responsaveis.substring(0, 50) + '...' : dados.responsaveis}
+            </td>
+            <td>-</td>
+            <td class="unidade" title="${dados.unidade}">
+              ${dados.unidade.length > 30 ? dados.unidade.substring(0, 30) + '...' : dados.unidade}
+            </td>
+            <td class="turma" title="${dados.turma}">
+              ${dados.turma}
+            </td>
+            <td class="data-matricula" title="${dados.dataFormatada}">
+              ${dados.dataFormatada}
+            </td>
+            <td>-</td>
+            <td class="status">
+              ${formatarStatus(dados.status)}
+            </td>
+            <td class="acoes">
+              <button class="action-btn editar-btn" title="Editar" data-id="${dados.alunoId}">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="action-btn visualizar-btn" title="Visualizar" data-id="${m.aluno_id}">
+              <button class="action-btn visualizar-btn" title="Visualizar" data-id="${dados.alunoId}">
                 <i class="fas fa-eye"></i>
               </button>
-              <button class="action-btn excluir-btn" title="Excluir" data-id="${m.aluno_id}">
+              <button class="action-btn excluir-btn" title="Excluir" data-id="${dados.alunoId}">
                 <i class="fas fa-trash-alt"></i>
               </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
+            </td>
+          `;
+          
+          tbody.appendChild(tr);
+          
+        } catch (e) {
+          console.error(`❌ Erro ao processar matrícula ${index}:`, e, m);
+        }
       });
 
+      // Adicionar eventos aos botões
       adicionarEventosAosBotoes();
+      
+      // Configurar checkbox "Selecionar todos"
+      configurarCheckboxSelecionarTodos();
+      
+      console.log('✅ Matrículas carregadas com sucesso!');
+      console.log('🕐 Timezone:', data.timezone || 'não informado');
+      console.log('⏰ Timestamp:', data.timestamp || 'não informado');
+      
       hideLoading();
     })
     .catch(err => {
+      console.error("❌ Erro ao carregar matrículas:", err);
+      
+      const tbody = document.getElementById("matriculas-body");
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="erro-carregamento">
+              <div class="mensagem-erro">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>Erro ao carregar matrículas:</strong><br>
+                ${err.message}
+                <br><br>
+                <button class="btn btn-sm btn-primary" onclick="carregarMatriculas()">
+                  <i class="fas fa-sync-alt"></i> Tentar Novamente
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      
+      // Atualizar contador
+      const totalResults = document.getElementById("total-results");
+      if (totalResults) {
+        totalResults.textContent = "0";
+      }
+      
+      // Mostrar alerta para o usuário
+      alert("Erro ao carregar matrículas: " + err.message);
+      
       hideLoading();
-      console.error("Erro ao carregar matrículas:", err);
-      alert("Erro ao carregar matrículas.");
     });
+}
+
+// ===== FUNÇÃO AUXILIAR PARA CHECKBOX "SELECIONAR TODOS" =====
+function configurarCheckboxSelecionarTodos() {
+  const selectAll = document.getElementById('select-all');
+  if (selectAll) {
+    // Remover listeners anteriores
+    selectAll.removeEventListener('change', selectAllHandler);
+    
+    // Adicionar novo listener
+    selectAll.addEventListener('change', selectAllHandler);
+  }
+}
+
+function selectAllHandler() {
+  const checkboxes = document.querySelectorAll('#matriculas-body input[type="checkbox"]');
+  checkboxes.forEach(checkbox => {
+    checkbox.checked = this.checked;
+  });
 }
 
 // ==== FUNÇÕES PARA MANIPULAÇÃO DE DADOS ====
@@ -1783,11 +2088,27 @@ function editarMatricula(aluno_id) {
           statusProgramaField.value = data.status_programa || 'novato';
       }
 
-      let dataMatricula = data.data_matricula || '';
-      if (dataMatricula.includes(' ')) {
-        dataMatricula = dataMatricula.split(' ')[0];
+      // ===== TRATAMENTO SEGURO DA DATA PARA EDIÇÃO =====
+      let dataMatricula = '';
+      if (data.data_matricula) {
+        // Se vier formatada, usar direto
+        if (data.data_matricula.includes('/')) {
+          dataMatricula = data.data_matricula.split(' ')[0]; // Remove hora se houver
+        }
+        // Se vier no formato ISO, converter para input date (yyyy-mm-dd)
+        else if (data.data_matricula.includes('-')) {
+          const partes = data.data_matricula.split(' ')[0].split('-'); // Remove hora e pega só data
+          if (partes.length === 3) {
+            dataMatricula = `${partes[0]}-${partes[1]}-${partes[2]}`; // yyyy-mm-dd para input date
+          }
+        }
       }
-      document.querySelector("[name='data_matricula']").value = dataMatricula;
+      
+      const inputData = document.querySelector("[name='data_matricula']");
+      if (inputData) {
+        inputData.value = dataMatricula;
+        console.log('🐛 DEBUG editarMatricula - Data definida no input:', dataMatricula);
+      }
 
       const container = document.getElementById("responsaveis-editar");
       container.innerHTML = "";
@@ -1836,6 +2157,8 @@ function visualizarMatricula(id) {
       else unidadeNome = `Unidade ID: ${data.unidade_id || data.unidade || 'Não definida'}`;
 
       let statusFormatado = formatarStatus(data.status);
+      
+      // ===== USAR FUNÇÃO SEGURA PARA FORMATAÇÃO DA DATA =====
       let dataFormatada = formatarData(data.data_matricula);
 
       let html = `
@@ -2059,6 +2382,7 @@ function salvarEdicaoProfessor(dados, modal) {
       alert("Erro ao salvar alterações: " + err.message);
     });
 }
+
 function excluirProfessor(id) {
   if (!id) {
     alert("ID do professor não fornecido!");
