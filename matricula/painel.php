@@ -2111,9 +2111,9 @@ function agora() {
       <button class="btn btn-primary" id="ver-relatorio-btn" onclick="window.location.href='dashboard.php'">
     <i class="fas fa-chart-bar"></i> Ver Relatório
     </button>
-      <button class="btn btn-primary" id="gerar-carterinha-btn">
+      <!-- <button class="btn btn-primary" id="gerar-carterinha-btn">
       <i class="fas fa-id-card"></i> Gerar Carteirinha
-    </button>
+    </button> -->
       <button class="btn btn-success" id="gerar-pdf">
         <i class="fas fa-file-pdf"></i> Gerar PDF de Matrículas
       </button>
