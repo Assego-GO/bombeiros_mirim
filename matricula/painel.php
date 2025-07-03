@@ -2114,9 +2114,14 @@ function agora() {
       <!-- <button class="btn btn-primary" id="gerar-carterinha-btn">
       <i class="fas fa-id-card"></i> Gerar Carteirinha
     </button> -->
+    </button>
+ <button class="btn btn-primary" id="ocorrencias-btn" onclick="abrirModalOcorrencias()">
+    <i class="fas fa-file-pdf"></i> Ocorrências
+</button>
       <button class="btn btn-success" id="gerar-pdf">
         <i class="fas fa-file-pdf"></i> Gerar PDF de Matrículas
       </button>
+
     </div>
 
     <div class="table-container">
@@ -2774,6 +2779,127 @@ function agora() {
       </div>
   </div>
 
+
+
+  <!-- Modal Principal de Ocorrências - Admin -->
+<div id="modalOcorrenciasAdmin" class="modal-backdrop" style="display: none;">
+    <div class="modal modal-extra-large">
+        <div class="modal-header">
+            <span><i class="fas fa-exclamation-triangle"></i> Gerenciar Ocorrências</span>
+            <button id="closeOcorrenciasAdminModal">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <!-- Filtros -->
+            <div class="filtros-section">
+                <h3><i class="fas fa-filter"></i> Filtros</h3>
+                <form id="filtros-ocorrencias">
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label>Professor</label>
+                            <select id="filtro-professor" name="professor_id">
+                                <option value="">Todos os professores</option>
+                                <!-- Populado via JavaScript -->
+                            </select>
+                        </div>
+                        
+                
+  
+    
+                        
+                        <div class="filter-item">
+                            <label>Status Feedback</label>
+                            <select id="filtro-status-feedback" name="status_feedback">
+                                <option value="">Todos</option>
+                                <option value="sem_feedback">Pendentes</option>
+                                <option value="com_feedback">Com Feedback</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="filter-row">
+                        <div class="filter-item">
+                            <label>Data Início</label>
+                            <input type="date" id="filtro-data-inicio" name="data_inicio">
+                        </div>
+                        
+                        <div class="filter-item">
+                            <label>Data Fim</label>
+                            <input type="date" id="filtro-data-fim" name="data_fim">
+                        </div>
+                        
+                        <div class="filter-item filter-actions">
+                            <button type="button" id="btn-aplicar-filtros" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Aplicar Filtros
+                            </button>
+                            <button type="button" id="btn-limpar-filtros" class="btn btn-outline">
+                                <i class="fas fa-eraser"></i> Limpar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Lista de Ocorrências -->
+            <div id="lista-ocorrencias-admin">
+                <p>Carregando ocorrências...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes da Ocorrência - Admin -->
+<div id="detalhesOcorrenciaAdminModal" class="modal-backdrop" style="display: none;">
+    <div class="modal modal-large">
+        <div class="modal-header">
+            <span><i class="fas fa-info-circle"></i> Detalhes da Ocorrência</span>
+            <button id="closeDetalhesOcorrenciaAdminModal">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="detalhes-ocorrencia-admin">
+                <p>Carregando detalhes...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Feedback -->
+<div id="feedbackModal" class="modal-backdrop" style="display: none;">
+    <div class="modal modal-medium">
+        <div class="modal-header">
+            <span><i class="fas fa-comment-dots"></i> <span id="modal-feedback-title">Feedback da Administração</span></span>
+            <button id="closeFeedbackModal">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <div id="mensagem-feedback"></div>
+            
+            <form id="form-feedback">
+                <input type="hidden" id="feedback-action" name="action" value="adicionar_feedback">
+                <input type="hidden" id="feedback-ocorrencia-id" name="ocorrencia_id" value="">
+                
+                <div class="form-group">
+                    <label for="feedback-texto" class="form-label">
+                        Feedback da Administração <span style="color: red;">*</span>
+                    </label>
+                    <textarea id="feedback-texto" name="feedback_admin" class="form-control" rows="6" required
+                              placeholder="Digite o feedback sobre esta ocorrência..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Salvar Feedback
+                    </button>
+                    <button type="button" id="btn-cancelar-feedback" class="btn btn-outline">
+                        <i class="fas fa-times"></i> Cancelar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
   <!-- Modal Monitoramento de Atividades -->
   <div id="modal-monitoramento" class="modal-backdrop" style="display: none;">
       <div class="modal modal-large">
@@ -3026,6 +3152,7 @@ function agora() {
       </div>
   </div>
 
+
   <footer class="main-footer">
     <div class="container">
       <div class="footer-content">
@@ -3075,12 +3202,15 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
   });
 </script>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
 <script src="./js/galeria.js"></script>
 <script src="./js/financeiro.js"></script>
 <script src="./js/controle.js"></script>
 <script src="./js/comunicado.js"></script>
+<script src="./js/admin_ocorrencias.js"></script>
 <script src="./js/atividades.js"></script>
 <script src="./js/monitoramento.js"></script>
 <script src="./js/ranking.js"></script>
