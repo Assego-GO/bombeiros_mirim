@@ -2614,6 +2614,10 @@ function agora() {
       <button class="btn btn-primary" id="novo-professor-btn">
         <i class="fas fa-user-tie"></i> Novo Professor(a)
       </button>
+      <button class="btn btn-primary" id="ver-aluno-btn">
+    <i class="fas fa-user-graduate"></i> Ver Alunos(a)
+    </button>
+
       <button class="btn btn-primary" id="galeria-fotos-btn">
     <i class="fas fa-camera"></i> Galeria de Fotos
   </button>
@@ -4060,5 +4064,6 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
 <script src="./js/monitoramento.js"></script>
 <script src="./js/ranking.js"></script>
 <script src="./js/uniformes.js"></script>
+<script src="./js/alunos.js"></script>
 </body>
 </html>
