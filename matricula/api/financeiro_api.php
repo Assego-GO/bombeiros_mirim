@@ -1,7 +1,15 @@
 <?php
-// financeiro_api.php - VERSÃO CORRIGIDA COM JOINS PARA ALUNOS E TURMAS
+// financeiro_api.php - VERSÃO CORRIGIDA COM JOINS PARA ALUNOS E TURMAS + UTF-8 + FUSO HORÁRIO BRASILEIRO
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
+
+// 🇧🇷 CONFIGURAR TIMEZONE BRASILEIRO LOGO NO INÍCIO
+date_default_timezone_set('America/Sao_Paulo');
+
+// Configurar encoding UTF-8 logo no início
+mb_internal_encoding('UTF-8');
+mb_http_output('UTF-8');
+mb_regex_encoding('UTF-8');
 
 // Headers PRIMEIRO - antes de qualquer output
 header('Content-Type: application/json; charset=utf-8');
@@ -9,7 +17,31 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Função para resposta JSON limpa
+// 🇧🇷 FUNÇÃO PARA OBTER DATA/HORA ATUAL DO BRASIL
+function getDataHoraBrasil() {
+    return new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+}
+
+// 🇧🇷 FUNÇÃO PARA FORMATAR DATA/HORA PARA SQL (NO TIMEZONE BRASILEIRO)
+function getDataHoraBrasilSQL() {
+    return getDataHoraBrasil()->format('Y-m-d H:i:s');
+}
+
+// 🇧🇷 FUNÇÃO PARA CONVERTER UTC PARA BRASIL (se necessário)
+function converterUTCParaBrasil($utcDateTime) {
+    if (!$utcDateTime) return null;
+    
+    try {
+        $utc = new DateTime($utcDateTime, new DateTimeZone('UTC'));
+        $utc->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        return $utc->format('Y-m-d H:i:s');
+    } catch (Exception $e) {
+        error_log("Erro ao converter UTC para Brasil: " . $e->getMessage());
+        return $utcDateTime;
+    }
+}
+
+// Função para resposta JSON limpa com encoding UTF-8
 function jsonResponse($success, $data = null, $message = null, $code = 200) {
     http_response_code($code);
     $response = ['success' => $success];
@@ -26,8 +58,49 @@ function jsonResponse($success, $data = null, $message = null, $code = 200) {
         $response['error'] = $data;
     }
     
-    echo json_encode($response, JSON_UNESCAPED_UNICODE);
+    // Adicionar timestamp brasileiro na resposta
+    $response['timestamp_brasil'] = getDataHoraBrasilSQL();
+    $response['timezone'] = 'America/Sao_Paulo (GMT-3)';
+    
+    // Garantir encoding UTF-8 na resposta JSON
+    echo json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     exit;
+}
+
+// Função para sanitizar strings UTF-8
+function sanitizeUtf8($string) {
+    if (!is_string($string)) {
+        return $string;
+    }
+    
+    // Remover caracteres de controle, mas manter acentos
+    $string = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $string);
+    
+    // Garantir que a string seja válida UTF-8
+    if (!mb_check_encoding($string, 'UTF-8')) {
+        $string = mb_convert_encoding($string, 'UTF-8', 'UTF-8');
+    }
+    
+    return trim($string);
+}
+
+// Função para sanitizar arrays recursivamente
+function sanitizeArrayUtf8($array) {
+    if (!is_array($array)) {
+        return sanitizeUtf8($array);
+    }
+    
+    $sanitized = [];
+    foreach ($array as $key => $value) {
+        $cleanKey = sanitizeUtf8($key);
+        if (is_array($value)) {
+            $sanitized[$cleanKey] = sanitizeArrayUtf8($value);
+        } else {
+            $sanitized[$cleanKey] = sanitizeUtf8($value);
+        }
+    }
+    
+    return $sanitized;
 }
 
 // Tratar requisições OPTIONS (CORS preflight)
@@ -104,23 +177,34 @@ try {
         jsonResponse(false, 'Erro na configuração do banco de dados');
     }
 
-    // Conectar ao banco
+    // Conectar ao banco com configurações UTF-8 otimizadas
     try {
         $dsn = "mysql:host={$db_config['host']};dbname={$db_config['name']};charset=utf8mb4";
         $pdo = new PDO($dsn, $db_config['user'], $db_config['pass'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
         ]);
+        
+        // Garantir UTF-8 na conexão
+        $pdo->exec("SET CHARACTER SET utf8mb4");
+        $pdo->exec("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
+        
+        // 🇧🇷 CONFIGURAR TIMEZONE DO MYSQL PARA BRASIL
+        $pdo->exec("SET time_zone = '-03:00'");
+        
+        error_log("🇧🇷 Timezone configurado para Brasil: " . getDataHoraBrasilSQL());
+        
     } catch (PDOException $e) {
         jsonResponse(false, 'Erro de conexão: ' . $e->getMessage());
     }
 
     // Roteamento
     $method = $_SERVER['REQUEST_METHOD'];
-    $action = $_GET['action'] ?? '';
+    $action = sanitizeUtf8($_GET['action'] ?? '');
 
-    error_log("API Financeiro - Método: $method, Ação: $action");
+    error_log("API Financeiro - Método: $method, Ação: $action, Horário: " . getDataHoraBrasilSQL());
 
     switch ($method) {
         case 'GET':
@@ -164,11 +248,22 @@ function handleGet($pdo, $action) {
 }
 
 function handlePost($pdo, $action) {
-    $input = json_decode(file_get_contents('php://input'), true);
+    // Ler input e garantir UTF-8
+    $input_raw = file_get_contents('php://input');
+    
+    // Verificar se o input é válido UTF-8
+    if (!mb_check_encoding($input_raw, 'UTF-8')) {
+        $input_raw = mb_convert_encoding($input_raw, 'UTF-8', 'auto');
+    }
+    
+    $input = json_decode($input_raw, true);
     
     if (json_last_error() !== JSON_ERROR_NONE) {
         jsonResponse(false, 'JSON inválido: ' . json_last_error_msg(), null, 400);
     }
+    
+    // Sanitizar dados de entrada
+    $input = sanitizeArrayUtf8($input);
     
     switch ($action) {
         case 'entrada':
@@ -188,6 +283,14 @@ function testConnection($pdo) {
         $stmt = $pdo->query("SELECT 1 as test");
         $result = $stmt->fetch();
         
+        // Teste de encoding UTF-8
+        $stmt = $pdo->query("SELECT 'Teste áéíóú çñü' as utf8_test");
+        $utf8_result = $stmt->fetch();
+        
+        // 🇧🇷 TESTE DE TIMEZONE
+        $stmt = $pdo->query("SELECT NOW() as mysql_time, @@session.time_zone as mysql_timezone");
+        $timezone_result = $stmt->fetch();
+        
         // Verificar se as tabelas existem
         $tables = [];
         $checkTables = ['estoque_materiais', 'historico_materiais', 'alunos', 'usuarios', 'turma', 'matriculas'];
@@ -205,8 +308,17 @@ function testConnection($pdo) {
         jsonResponse(true, [
             'status' => 'Conexão estabelecida com sucesso',
             'database' => 'Conectado',
-            'timestamp' => date('Y-m-d H:i:s'),
+            'timestamp_php' => getDataHoraBrasilSQL(),
+            'timestamp_mysql' => $timezone_result['mysql_time'],
+            'timezone_php' => date_default_timezone_get(),
+            'timezone_mysql' => $timezone_result['mysql_timezone'],
             'test_query' => $result['test'] == 1 ? 'OK' : 'ERRO',
+            'utf8_test' => $utf8_result['utf8_test'],
+            'encoding' => [
+                'internal' => mb_internal_encoding(),
+                'http_output' => mb_http_output(),
+                'regex' => mb_regex_encoding()
+            ],
             'tables' => $tables,
             'session' => [
                 'usuario_id' => $_SESSION['usuario_id'] ?? null,
@@ -245,7 +357,7 @@ function getEstoque($pdo) {
                 ],
                 [
                     'id' => 3,
-                    'tipo_material' => 'material_didatico',
+                    'tipo_material' => 'material_didático',
                     'item' => 'caderno',
                     'tamanho' => null,
                     'quantidade' => 0,
@@ -275,6 +387,9 @@ function getEstoque($pdo) {
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $estoque = $stmt->fetchAll();
+        
+        // Sanitizar dados UTF-8
+        $estoque = sanitizeArrayUtf8($estoque);
         
         jsonResponse(true, $estoque);
     } catch (Exception $e) {
@@ -324,27 +439,32 @@ function getAlunos($pdo) {
                 LEFT JOIN turma t ON m.turma = t.id
                 LEFT JOIN unidade u ON t.id_unidade = u.id
                 WHERE a.status = 'ativo'
-                ORDER BY a.nome";
+                ORDER BY a.nome COLLATE utf8mb4_unicode_ci";
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $alunos = $stmt->fetchAll();
         
+        // Sanitizar dados UTF-8
+        $alunos = sanitizeArrayUtf8($alunos);
+        
         jsonResponse(true, $alunos);
     } catch (Exception $e) {
         // Se der erro, tentar query mais simples
         try {
-            $sql = "SELECT id, nome, cpf FROM alunos WHERE status = 'ativo' ORDER BY nome";
+            $sql = "SELECT id, nome, cpf FROM alunos WHERE status = 'ativo' ORDER BY nome COLLATE utf8mb4_unicode_ci";
             $stmt = $pdo->prepare($sql);
             $stmt->execute();
             $alunos = $stmt->fetchAll();
             
-            // Adicionar campos padrão
+            // Adicionar campos padrão e sanitizar
             foreach ($alunos as &$aluno) {
                 $aluno['turma_id'] = 0;
                 $aluno['turma_nome'] = 'Sem turma';
                 $aluno['unidade_nome'] = 'Sem unidade';
             }
+            
+            $alunos = sanitizeArrayUtf8($alunos);
             
             jsonResponse(true, $alunos, 'Dados simples (sem JOINs)');
         } catch (Exception $e2) {
@@ -369,12 +489,12 @@ function getHistoricoCompleto($pdo) {
                     'valor_unitario' => 45.00,
                     'aluno_id' => 1,
                     'turma_id' => 1,
-                    'aluno_nome' => 'LUIS FILIPE E SILVA',
+                    'aluno_nome' => 'LUÍS FILIPE E SILVA',
                     'turma_nome' => 'Turma A - Matutino',
                     'motivo' => 'Entrega uniforme',
                     'usuario_nome' => 'Administrador',
                     'observacoes' => null,
-                    'created_at' => date('Y-m-d H:i:s')
+                    'created_at' => getDataHoraBrasilSQL()
                 ]
             ];
             
@@ -414,6 +534,9 @@ function getHistoricoCompleto($pdo) {
             $stmt->execute();
             $historico = $stmt->fetchAll();
             
+            // Sanitizar dados UTF-8
+            $historico = sanitizeArrayUtf8($historico);
+            
             jsonResponse(true, $historico);
         } catch (Exception $e) {
             // Se der erro com JOINs, tentar query mais simples
@@ -432,6 +555,9 @@ function getHistoricoCompleto($pdo) {
             
             // Tentar enriquecer os dados manualmente
             $historico = enriquecerHistorico($pdo, $historico);
+            
+            // Sanitizar dados UTF-8
+            $historico = sanitizeArrayUtf8($historico);
             
             jsonResponse(true, $historico, 'Dados com query simplificada');
         }
@@ -497,11 +623,14 @@ function getTurmas($pdo) {
                 FROM turma t
                 LEFT JOIN unidade u ON t.id_unidade = u.id
                 WHERE t.status IN ('ativo', 'Em Andamento')
-                ORDER BY u.nome, t.nome_turma";
+                ORDER BY u.nome COLLATE utf8mb4_unicode_ci, t.nome_turma COLLATE utf8mb4_unicode_ci";
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $turmas = $stmt->fetchAll();
+        
+        // Sanitizar dados UTF-8
+        $turmas = sanitizeArrayUtf8($turmas);
         
         jsonResponse(true, $turmas);
     } catch (Exception $e) {
@@ -536,52 +665,60 @@ function registrarEntrada($pdo, $data) {
             jsonResponse(false, 'Tabela de estoque não encontrada - execute o script SQL primeiro');
         }
         
+        // 🇧🇷 OBTER DATA/HORA ATUAL DO BRASIL
+        $dataHoraBrasil = getDataHoraBrasilSQL();
+        error_log("🇧🇷 Registrando entrada no horário brasileiro: $dataHoraBrasil");
+        
         $pdo->beginTransaction();
         
         // Verificar se item existe
         $sql = "SELECT id, quantidade_atual FROM estoque_materiais 
                 WHERE tipo_material = ? AND item = ? AND (tamanho = ? OR (tamanho IS NULL AND ? IS NULL)) AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$data['tipo_material'], $data['item'], $data['tamanho'], $data['tamanho']]);
+        $stmt->execute([$data['tipo_material'], $data['item'], $data['tamanho'] ?? null, $data['tamanho'] ?? null]);
         $item_existente = $stmt->fetch();
         
         if ($item_existente) {
-            // Atualizar
+            // Atualizar com timestamp brasileiro
             $nova_quantidade = $item_existente['quantidade_atual'] + $data['quantidade'];
-            $sql = "UPDATE estoque_materiais SET quantidade_atual = ?, valor_unitario = ? WHERE id = ?";
+            $sql = "UPDATE estoque_materiais SET quantidade_atual = ?, valor_unitario = ?, updated_at = ? WHERE id = ?";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$nova_quantidade, $data['valor_unitario'], $item_existente['id']]);
+            $stmt->execute([$nova_quantidade, $data['valor_unitario'], $dataHoraBrasil, $item_existente['id']]);
         } else {
-            // Inserir novo
-            $sql = "INSERT INTO estoque_materiais (tipo_material, item, tamanho, quantidade_atual, valor_unitario, quantidade_minima, status) 
-                    VALUES (?, ?, ?, ?, ?, 5, 'ativo')";
+            // Inserir novo com timestamp brasileiro
+            $sql = "INSERT INTO estoque_materiais (tipo_material, item, tamanho, quantidade_atual, valor_unitario, quantidade_minima, status, created_at, updated_at) 
+                    VALUES (?, ?, ?, ?, ?, 5, 'ativo', ?, ?)";
             $stmt = $pdo->prepare($sql);
-            $stmt->execute([$data['tipo_material'], $data['item'], $data['tamanho'], $data['quantidade'], $data['valor_unitario']]);
+            $stmt->execute([$data['tipo_material'], $data['item'], $data['tamanho'] ?? null, $data['quantidade'], $data['valor_unitario'], $dataHoraBrasil, $dataHoraBrasil]);
         }
         
         // Registrar histórico se a tabela existir
         $stmt = $pdo->query("SHOW TABLES LIKE 'historico_materiais'");
         if ($stmt->fetch()) {
-            $sql = "INSERT INTO historico_materiais (tipo_operacao, tipo_material, item, tamanho, quantidade, valor_unitario, usuario_id, fornecedor, observacoes) 
-                    VALUES ('entrada', ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO historico_materiais (tipo_operacao, tipo_material, item, tamanho, quantidade, valor_unitario, usuario_id, fornecedor, observacoes, created_at) 
+                    VALUES ('entrada', ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $data['tipo_material'], 
                 $data['item'], 
-                $data['tamanho'], 
+                $data['tamanho'] ?? null, 
                 $data['quantidade'], 
                 $data['valor_unitario'],
                 $_SESSION['usuario_id'] ?? $_SESSION['user_id'] ?? 1,
                 $data['fornecedor'] ?? null,
-                $data['observacoes'] ?? null
+                $data['observacoes'] ?? null,
+                $dataHoraBrasil
             ]);
         }
         
         $pdo->commit();
-        jsonResponse(true, [], 'Entrada registrada com sucesso');
+        
+        error_log("🇧🇷 Entrada registrada com sucesso no horário: $dataHoraBrasil");
+        jsonResponse(true, ['data_hora_brasil' => $dataHoraBrasil], 'Entrada registrada com sucesso');
         
     } catch (Exception $e) {
         $pdo->rollBack();
+        error_log("❌ Erro ao registrar entrada: " . $e->getMessage());
         jsonResponse(false, 'Erro ao registrar entrada: ' . $e->getMessage());
     }
 }
@@ -601,10 +738,14 @@ function registrarSaida($pdo, $data) {
             jsonResponse(false, 'Tabela de estoque não encontrada');
         }
         
+        // 🇧🇷 OBTER DATA/HORA ATUAL DO BRASIL
+        $dataHoraBrasil = getDataHoraBrasilSQL();
+        error_log("🇧🇷 Registrando saída no horário brasileiro: $dataHoraBrasil");
+        
         $pdo->beginTransaction();
         
         // Verificar estoque
-        $sql = "SELECT id, quantidade_atual FROM estoque_materiais 
+        $sql = "SELECT id, quantidade_atual, valor_unitario FROM estoque_materiais 
                 WHERE tipo_material = ? AND item = ? AND (tamanho = ? OR (tamanho IS NULL AND ? IS NULL)) AND status = 'ativo'";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$data['tipo_material'], $data['item'], $data['tamanho'] ?? null, $data['tamanho'] ?? null]);
@@ -618,36 +759,41 @@ function registrarSaida($pdo, $data) {
             jsonResponse(false, 'Quantidade insuficiente no estoque');
         }
         
-        // Atualizar estoque
+        // Atualizar estoque com timestamp brasileiro
         $nova_quantidade = $item_estoque['quantidade_atual'] - $data['quantidade'];
-        $sql = "UPDATE estoque_materiais SET quantidade_atual = ? WHERE id = ?";
+        $sql = "UPDATE estoque_materiais SET quantidade_atual = ?, updated_at = ? WHERE id = ?";
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([$nova_quantidade, $item_estoque['id']]);
+        $stmt->execute([$nova_quantidade, $dataHoraBrasil, $item_estoque['id']]);
         
-        // Registrar histórico
+        // Registrar histórico com timestamp brasileiro
         $stmt = $pdo->query("SHOW TABLES LIKE 'historico_materiais'");
         if ($stmt->fetch()) {
-            $sql = "INSERT INTO historico_materiais (tipo_operacao, tipo_material, item, tamanho, quantidade, usuario_id, aluno_id, turma_id, motivo, observacoes) 
-                    VALUES ('saida', ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO historico_materiais (tipo_operacao, tipo_material, item, tamanho, quantidade, valor_unitario, usuario_id, aluno_id, turma_id, motivo, observacoes, created_at) 
+                    VALUES ('saida', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 $data['tipo_material'], 
                 $data['item'], 
                 $data['tamanho'] ?? null, 
                 $data['quantidade'],
+                $item_estoque['valor_unitario'],
                 $_SESSION['usuario_id'] ?? $_SESSION['user_id'] ?? 1,
                 $data['aluno_id'],
                 $data['turma_id'] ?? null,
                 $data['motivo'] ?? 'Entrega de material',
-                $data['observacoes'] ?? null
+                $data['observacoes'] ?? null,
+                $dataHoraBrasil
             ]);
         }
         
         $pdo->commit();
-        jsonResponse(true, [], 'Saída registrada com sucesso');
+        
+        error_log("🇧🇷 Saída registrada com sucesso no horário: $dataHoraBrasil");
+        jsonResponse(true, ['data_hora_brasil' => $dataHoraBrasil], 'Saída registrada com sucesso');
         
     } catch (Exception $e) {
         $pdo->rollBack();
+        error_log("❌ Erro ao registrar saída: " . $e->getMessage());
         jsonResponse(false, 'Erro ao registrar saída: ' . $e->getMessage());
     }
 }

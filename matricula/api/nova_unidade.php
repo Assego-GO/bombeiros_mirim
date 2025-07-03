@@ -30,16 +30,18 @@ try {
     // Preparar valores opcionais
     $telefone = $data['telefone'] ?? null;
     $coordenador = $data['coordenador'] ?? null;
-    $cidade = $data['cidade'] ?? null; // Corrigido: definir a variável $cidade
+    $cidade = $data['cidade'] ?? null;
+    $unidade_crbm = $data['unidade-crbm'] ?? null; // Novo campo adicionado
 
-    // Consulta SQL para tabela 'unidade' - Corrigido: adicionar o quinto placeholder
+    // Consulta SQL para tabela 'unidade' - Agora com 6 campos
     $sql = "INSERT INTO unidade (
         nome, 
+        unidade_crbm,
         endereco, 
         telefone, 
         coordenador,
         cidade
-    ) VALUES (?, ?, ?, ?, ?)"; // Corrigido: 5 placeholders
+    ) VALUES (?, ?, ?, ?, ?, ?)"; // 6 placeholders
 
     $stmt = $conn->prepare($sql);
     
@@ -48,14 +50,15 @@ try {
         exit;
     }
 
-    // Vincula os parâmetros - Corrigido: 5 strings e 5 variáveis
+    // Vincula os parâmetros - 6 strings e 6 variáveis
     $stmt->bind_param(
-        "sssss",              // Corrigido: 5 strings
-        $data['nome'],        // string: nome da unidade
-        $data['endereco'],    // string: endereço
-        $telefone,            // string: telefone (pode ser null)
-        $coordenador,         // string: coordenador (pode ser null)
-        $cidade               // string: cidade (pode ser null)
+        "ssssss",              // 6 strings
+        $data['nome'],         // string: nome da unidade
+        $unidade_crbm,         // string: unidade CRBM
+        $data['endereco'],     // string: endereço
+        $telefone,             // string: telefone (pode ser null)
+        $coordenador,          // string: coordenador (pode ser null)
+        $cidade                // string: cidade (pode ser null)
     );
 
     $result = $stmt->execute();
@@ -66,10 +69,11 @@ try {
         // AUDITORIA: Registra a criação da unidade
         $audit_params = [
             'nome' => $data['nome'],
+            'unidade_crbm' => $unidade_crbm,
             'endereco' => $data['endereco'],
             'telefone' => $telefone,
             'coordenador' => $coordenador,
-            'cidade' => $cidade // Corrigido: usar a variável $cidade
+            'cidade' => $cidade
         ];
         $audit->log('CRIAR_UNIDADE', 'unidade', $unidade_id, $audit_params);
         

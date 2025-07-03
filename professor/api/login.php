@@ -4,36 +4,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Registrar erros em um arquivo de log
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/php_login_debug.log');
-
-// Função de log personalizada
-function loginDebugLog($message) {
-    error_log('[LOGIN_DEBUG] ' . $message);
-    // Opcional: adicionar saída para o navegador durante debug
-    echo $message . "<br>";
-}
-
 // Iniciar sessão
 session_start();
 
-// Função para retornar respostas em JSON ou formato de debug
-function jsonResponse($status, $message, $data = null, $debugMode = false) {
-    loginDebugLog("Status: $status, Mensagem: $message");
-    
-    if ($debugMode) {
-        // Modo de debug mostra informações detalhadas
-        echo "<pre>";
-        echo "Status: $status\n";
-        echo "Mensagem: $message\n";
-        if ($data !== null) {
-            print_r($data);
-        }
-        echo "</pre>";
-        exit;
-    }
-    
+// Função para retornar respostas em JSON
+function jsonResponse($status, $message, $data = null) {
     header('Content-Type: application/json');
     $response = [
         'status' => $status,
@@ -50,12 +25,9 @@ function jsonResponse($status, $message, $data = null, $debugMode = false) {
 
 // Verificar se o formulário foi enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Debug: Log dos dados de entrada
-    loginDebugLog("Dados de entrada - Email: " . ($_POST["email"] ?? 'NÃO DEFINIDO'));
-    
     // Verificar campos obrigatórios
     if (!isset($_POST["email"]) || !isset($_POST["senha"]) || empty($_POST["email"]) || empty($_POST["senha"])) {
-        jsonResponse('error', 'Por favor, preencha todos os campos.', null, true);
+        jsonResponse('error', 'Por favor, preencha todos os campos.');
     }
     
     // Obter os dados de login
@@ -73,17 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Conectar ao banco de dados
         $conn = new mysqli($db_host, $db_user, $db_pass, $db_name);
         if ($conn->connect_error) {
-            loginDebugLog("Erro de conexão: " . $conn->connect_error);
             throw new Exception("Falha na conexão: " . $conn->connect_error);
         }
         $conn->set_charset("utf8");
-        
-        // Debug: Verificar todos os professores
-        $debugProfessores = $conn->query("SELECT id, nome, email FROM professor");
-        loginDebugLog("Professores cadastrados:");
-        while ($prof = $debugProfessores->fetch_assoc()) {
-            loginDebugLog("ID: {$prof['id']}, Nome: {$prof['nome']}, Email: {$prof['email']}");
-        }
         
         // Primeiro verificar na tabela "professor"
         $stmt = $conn->prepare("
@@ -93,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ");
         
         if (!$stmt) {
-            loginDebugLog("Erro na preparação da consulta: " . $conn->error);
             throw new Exception("Erro na preparação da consulta: " . $conn->error);
         }
         
@@ -101,21 +64,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $result = $stmt->get_result();
         
-        // Debug: Log do resultado da consulta
-        loginDebugLog("Número de linhas encontradas na tabela professor: " . $result->num_rows);
-        
         // Se encontrou o professor
         if ($result->num_rows > 0) {
             $professor = $result->fetch_assoc();
             
-            // Debug: Log dos detalhes do professor
-            loginDebugLog("Professor encontrado - ID: {$professor['id']}, Nome: {$professor['nome']}, Email: {$professor['email']}");
-            loginDebugLog("Senha armazenada: {$professor['senha']}");
-            
             // Verificar a senha
             $senhaCorreta = password_verify($senha, $professor['senha']);
-            
-            loginDebugLog("Verificação de senha: " . ($senhaCorreta ? 'CORRETA' : 'INCORRETA'));
             
             if (
                 // Bypass específico para Dorival
@@ -131,20 +85,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["tipo"] = "professor";
                 $_SESSION["logado"] = true;
                 
-                loginDebugLog("Login de professor bem-sucedido");
-                
                 jsonResponse('success', 'Login realizado com sucesso! Redirecionando...', [
                     'redirect' => 'professor/index.php'
-                ], true);
+                ]);
             } else {
                 // Senha incorreta
-                loginDebugLog("Senha incorreta para professor");
-                jsonResponse('error', 'Senha incorreta. Por favor, tente novamente.', null, true);
+                jsonResponse('error', 'Senha incorreta. Por favor, tente novamente.');
             }
         } else {
             // Não encontrou professor, verificar na tabela "usuarios"
-            loginDebugLog("Nenhum professor encontrado, verificando tabela de usuários");
-            
             $stmt = $conn->prepare("
                 SELECT id, nome, email, senha, tipo, foto
                 FROM usuarios 
@@ -152,7 +101,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ");
             
             if (!$stmt) {
-                loginDebugLog("Erro na preparação da consulta de usuários: " . $conn->error);
                 throw new Exception("Erro na preparação da consulta: " . $conn->error);
             }
             
@@ -160,15 +108,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->execute();
             $result = $stmt->get_result();
             
-            // Debug: Log do resultado da consulta de usuários
-            loginDebugLog("Número de linhas encontradas na tabela usuarios: " . $result->num_rows);
-            
             // Se encontrou o usuário na tabela "usuarios"
             if ($result->num_rows > 0) {
                 $usuario = $result->fetch_assoc();
-                
-                // Debug: Log dos detalhes do usuário
-                loginDebugLog("Usuário encontrado - ID: {$usuario['id']}, Nome: {$usuario['nome']}, Email: {$usuario['email']}, Tipo: {$usuario['tipo']}");
                 
                 // Verificar a senha
                 if (password_verify($senha, $usuario['senha'])) {
@@ -183,29 +125,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Redirecionar com base no tipo de usuário
                     $redirect = ($usuario["tipo"] === "professor") ? 'professor/index.php' : 'admin/painel.php';
                     
-                    loginDebugLog("Login de usuário bem-sucedido, redirecionando para: $redirect");
-                    
                     jsonResponse('success', 'Login realizado com sucesso! Redirecionando...', [
                         'redirect' => $redirect
-                    ], true);
+                    ]);
                 } else {
                     // Senha incorreta
-                    loginDebugLog("Senha incorreta para usuário");
-                    jsonResponse('error', 'Senha incorreta. Por favor, tente novamente.', null, true);
+                    jsonResponse('error', 'Senha incorreta. Por favor, tente novamente.');
                 }
             } else {
                 // Não encontrou o usuário em nenhuma tabela
-                loginDebugLog("Email não encontrado em nenhuma tabela");
-                jsonResponse('error', 'E-mail não encontrado. Verifique o endereço de e-mail ou entre em contato com a secretaria.', null, true);
+                jsonResponse('error', 'E-mail não encontrado. Verifique o endereço de e-mail ou entre em contato com a secretaria.');
             }
         }
     } catch (Exception $e) {
-        // Registrar o erro no log
-        loginDebugLog('Erro no login: ' . $e->getMessage());
-        jsonResponse('error', 'Ocorreu um erro durante o login. Por favor, tente novamente mais tarde.', null, true);
+        // Registrar o erro
+        jsonResponse('error', 'Ocorreu um erro durante o login. Por favor, tente novamente mais tarde.');
     }
 } else {
     // Método não permitido
-    loginDebugLog('Método de requisição não permitido');
-    jsonResponse('error', 'Método não permitido', null, true);
+    jsonResponse('error', 'Método não permitido');
 }
