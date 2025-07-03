@@ -1219,6 +1219,757 @@ function agora() {
         width: 100% !important;
     }
 }
+
+/* ===== ESTILOS DO MODAL DE RANKING ===== */
+
+/* Modal de Ranking Principal */
+#modal-ranking.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#modal-ranking .modal-large {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    width: 95%;
+    max-width: 1400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 0;
+    transform: none;
+    animation: modalAppear 0.3s ease;
+}
+
+/* Abas do Modal de Ranking */
+.tab-ranking {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-ranking:hover {
+    color: var(--primary);
+    background: #f9f9f9;
+}
+
+.tab-ranking.ativo {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: white;
+}
+
+/* Conteúdo das Abas */
+.tab-content-ranking {
+    padding: 20px 0;
+}
+
+/* Controles do Ranking */
+.ranking-controles {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.filtros-ranking {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filtro-item label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.filtro-item select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    background: white;
+}
+
+/* Header do Ranking */
+.ranking-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.ranking-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.ranking-stats {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Container do Ranking */
+.ranking-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.ranking-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ranking-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.ranking-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+/* Turma Container */
+.turma-ranking {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.turma-header {
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.turma-header h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.turma-stats {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* Lista de Alunos */
+.alunos-ranking {
+    padding: 0;
+}
+
+/* Item do Aluno no Ranking */
+.aluno-ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.aluno-ranking-item:hover {
+    background: #f8f9fa;
+}
+
+.aluno-ranking-item:last-child {
+    border-bottom: none;
+}
+
+/* Posição no Ranking */
+.posicao-ranking {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 18px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.posicao-ranking.primeiro {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #b8860b;
+    border: 3px solid #ffd700;
+}
+
+.posicao-ranking.segundo {
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+    color: #696969;
+    border: 3px solid #c0c0c0;
+}
+
+.posicao-ranking.terceiro {
+    background: linear-gradient(135deg, #cd7f32, #daa520);
+    color: #8b4513;
+    border: 3px solid #cd7f32;
+}
+
+.posicao-ranking.normal {
+    background: #f8f9fa;
+    color: #495057;
+    border: 2px solid #e9ecef;
+}
+
+/* Informações do Aluno */
+.aluno-info {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.aluno-nome {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.aluno-detalhes {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    gap: 20px;
+}
+
+/* Nota Final */
+.nota-final {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.nota-valor {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.nota-label {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+}
+
+/* Badge de Prêmio */
+.premio-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.premio-badge.ouro {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #b8860b;
+}
+
+.premio-badge.prata {
+    background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+    color: #696969;
+}
+
+.premio-badge.bronze {
+    background: linear-gradient(135deg, #cd7f32, #daa520);
+    color: #8b4513;
+}
+
+.premio-badge.participante {
+    background: #e9ecef;
+    color: #6c757d;
+}
+
+/* Container de Premiados */
+.ranking-container.premiados .aluno-ranking-item {
+    padding: 20px;
+    margin-bottom: 15px;
+    background: white;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ranking-container.premiados .aluno-ranking-item.primeiro {
+    border-color: #ffd700;
+    background: linear-gradient(135deg, #fff9c4, #ffffff);
+}
+
+.ranking-container.premiados .aluno-ranking-item.segundo {
+    border-color: #c0c0c0;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+}
+
+.ranking-container.premiados .aluno-ranking-item.terceiro {
+    border-color: #cd7f32;
+    background: linear-gradient(135deg, #ffeaa7, #ffffff);
+}
+
+/* Estatísticas Container */
+.estatisticas-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.estatistica-turma {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.estatistica-turma h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.estatistica-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.estatistica-item:last-child {
+    border-bottom: none;
+}
+
+.estatistica-label {
+    color: #666;
+    font-size: 14px;
+}
+
+.estatistica-valor {
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Relatórios Específicos */
+.relatorios-especificos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.relatorio-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.relatorio-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.relatorio-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.relatorio-info h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.relatorio-info p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Modal de Detalhes do Aluno */
+#modal-detalhes-aluno-ranking .modal-medium {
+    width: 90%;
+    max-width: 700px;
+}
+
+.aluno-ranking-detalhes {
+    padding: 20px 0;
+}
+
+.aluno-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.aluno-foto {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.aluno-info {
+    flex: 1;
+}
+
+.aluno-info h2 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.aluno-info p {
+    margin: 4px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.aluno-premio {
+    display: flex;
+    align-items: center;
+}
+
+/* Notas Detalhadas */
+.notas-detalhadas {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.notas-detalhadas h4 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.nota-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 15px;
+}
+
+.nota-item:last-child {
+    margin-bottom: 0;
+}
+
+.nota-label {
+    min-width: 200px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.nota-barra {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.barra-progresso {
+    flex: 1;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progresso {
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+    position: relative;
+}
+
+.progresso::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.nota-valor {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Nota Final Especial */
+.nota-final {
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 15px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.media-final-badge {
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* Histórico do Aluno */
+.historico-aluno {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.historico-aluno h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item strong {
+    color: #495057;
+    font-size: 14px;
+}
+
+.info-item span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Estados Vazios */
+.sem-ranking {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.sem-ranking i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.sem-ranking h3 {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.sem-ranking p {
+    margin: 0;
+    color: #888;
+}
+
+/* Loading States */
+.ranking-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #666;
+}
+
+.ranking-loading i {
+    margin-right: 10px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #modal-ranking .modal-large {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .filtros-ranking {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .aluno-ranking-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .posicao-ranking {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        margin-right: 0;
+    }
+    
+    .aluno-detalhes {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .nota-final {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .aluno-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .nota-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+    
+    .nota-label {
+        min-width: auto;
+    }
+    
+    .relatorios-especificos {
+        grid-template-columns: 1fr;
+    }
+    
+    .estatisticas-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Animações */
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.aluno-ranking-item {
+    animation: slideInLeft 0.3s ease;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
   </style>
 </head>
 <body>
@@ -1341,6 +2092,9 @@ function agora() {
       <button class="btn btn-primary" id="galeria-fotos-btn">
     <i class="fas fa-camera"></i> Galeria de Fotos
   </button>
+  <button class="btn btn-primary" id="ranking-btn">
+  <i class="fas fa-trophy"></i> Ranking dos Alunos
+</button>
   <button class="btn btn-primary" id="modulo-financeiro-btn">
     <i class="fas fa-dollar-sign"></i> Módulo Financeiro
   </button>
@@ -1651,6 +2405,277 @@ function agora() {
       </div>
     </div>
   </div>
+
+<!-- Modal de Ranking dos Alunos -->
+<div id="modal-ranking" class="modal-backdrop" style="display: none;">
+    <div class="modal modal-large">
+        <div class="modal-header">
+            <span><i class="fas fa-trophy"></i> Ranking dos Alunos por Turma</span>
+            <button class="fechar-modal-ranking">×</button>
+        </div>
+        
+        <!-- Abas do Modal -->
+        <div class="modal-tabs">
+            <button class="tab-ranking ativo" data-tab="geral">
+                <i class="fas fa-list-ol"></i> Ranking Geral
+            </button>
+            <button class="tab-ranking" data-tab="premiados">
+                <i class="fas fa-medal"></i> Premiados (Top 3)
+            </button>
+            <button class="tab-ranking" data-tab="estatisticas">
+                <i class="fas fa-chart-bar"></i> Estatísticas
+            </button>
+            
+        </div>
+
+        <div class="modal-body">
+            <!-- Controles de Filtro -->
+            <div class="ranking-controles">
+                <div class="filtros-ranking">
+                    <div class="filtro-item">
+                        <label>Turma</label>
+                        <select id="filtro-turma-ranking">
+                            <option value="">Todas as Turmas</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filtro-item">
+                        <label>Período</label>
+                        <select id="filtro-periodo-ranking">
+                            <option value="atual">Período Atual</option>
+                            <option value="2025-S1">2025 - 1º Semestre</option>
+                            <option value="2025-S2">2025 - 2º Semestre</option>
+                            <option value="2024-S2">2024 - 2º Semestre</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-sm" onclick="atualizarRanking()">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    
+                    <button class="btn btn-success btn-sm" onclick="calcularNovoRanking()">
+                        <i class="fas fa-calculator"></i> Calcular Ranking
+                    </button>
+                </div>
+            </div>
+
+            <!-- Aba Ranking Geral -->
+            <div id="tab-geral" class="tab-content-ranking">
+                <div class="ranking-header">
+                    <h3>Ranking Completo por Turma</h3>
+                    <div class="ranking-stats">
+                        <span id="total-alunos-ranking">0 alunos avaliados</span>
+                    </div>
+                </div>
+                
+                <div id="ranking-geral-container" class="ranking-container">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Aba Premiados (Top 3) -->
+            <div id="tab-premiados" class="tab-content-ranking" style="display: none;">
+                <div class="ranking-header">
+                    <h3>🏆 Alunos Premiados - Top 3 por Turma</h3>
+                    <div class="ranking-stats">
+                        <span id="total-premiados">0 alunos premiados</span>
+                    </div>
+                </div>
+                
+                <div id="ranking-premiados-container" class="ranking-container premiados">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Aba Estatísticas -->
+            <div id="tab-estatisticas" class="tab-content-ranking" style="display: none;">
+                <div class="ranking-header">
+                    <h3>📊 Estatísticas por Turma</h3>
+                </div>
+                
+                <div id="estatisticas-container" class="estatisticas-container">
+                    <!-- Cards de estatísticas -->
+                </div>
+            </div>
+
+            <!-- Aba Relatórios Específicos -->
+            <div id="tab-relatorios" class="tab-content-ranking" style="display: none;">
+                <div class="ranking-header">
+                    <h3>📋 Relatórios Específicos</h3>
+                </div>
+                
+                <div class="relatorios-especificos">
+                    <div class="relatorio-card" onclick="gerarRelatorioFisico()">
+                        <div class="relatorio-icon">
+                            <i class="fas fa-running"></i>
+                        </div>
+                        <div class="relatorio-info">
+                            <h4>Melhor Desempenho Físico</h4>
+                            <p>Ranking baseado em velocidade, resistência, coordenação, agilidade e força</p>
+                        </div>
+                    </div>
+                    
+                    <div class="relatorio-card" onclick="gerarRelatorioComportamento()">
+                        <div class="relatorio-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="relatorio-info">
+                            <h4>Melhor Comportamento</h4>
+                            <p>Ranking baseado em participação, trabalho em equipe e disciplina</p>
+                        </div>
+                    </div>
+                    
+                    <div class="relatorio-card" onclick="gerarRelatorioPresenca()">
+                        <div class="relatorio-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="relatorio-info">
+                            <h4>Melhor Presença</h4>
+                            <p>Ranking baseado na taxa de presença em atividades</p>
+                        </div>
+                    </div>
+                    
+                    <div class="relatorio-card" onclick="gerarRelatorioCompleto()">
+                        <div class="relatorio-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="relatorio-info">
+                            <h4>Relatório Completo</h4>
+                            <p>Relatório detalhado com todas as métricas e notas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-outline fechar-modal-ranking">
+                <i class="fas fa-times"></i> Fechar
+            </button>
+            <button class="btn btn-success" onclick="exportarRankingPDF()">
+                <i class="fas fa-file-pdf"></i> Exportar PDF
+            </button>
+            <!-- <button class="btn btn-primary" onclick="gerarCertificados()">
+                <i class="fas fa-certificate"></i> Gerar Certificados
+            </button> -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalhes do Aluno no Ranking -->
+<div id="modal-detalhes-aluno-ranking" class="modal-backdrop" style="display: none;">
+    <div class="modal modal-medium">
+        <div class="modal-header">
+            <span><i class="fas fa-user-graduate"></i> Detalhes do Aluno</span>
+            <button class="fechar-modal-detalhes-aluno">×</button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="aluno-ranking-detalhes">
+                <div class="aluno-header">
+                    <div class="aluno-foto">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="aluno-info">
+                        <h2 id="detalhe-nome-aluno"></h2>
+                        <p><strong>Turma:</strong> <span id="detalhe-turma-aluno"></span></p>
+                        <p><strong>Posição:</strong> <span id="detalhe-posicao-aluno"></span></p>
+                    </div>
+                    <div class="aluno-premio">
+                        <span id="detalhe-premio-aluno" class="premio-badge"></span>
+                    </div>
+                </div>
+                
+                <div class="notas-detalhadas">
+                    <h4>📊 Notas Detalhadas</h4>
+                    
+                    <div class="nota-item">
+                        <span class="nota-label">💪 Desempenho Físico:</span>
+                        <div class="nota-barra">
+                            <div class="barra-progresso">
+                                <div id="barra-fisica" class="progresso"></div>
+                            </div>
+                            <span id="nota-fisica-valor" class="nota-valor">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nota-item">
+                        <span class="nota-label">🤝 Comportamento (Avaliações):</span>
+                        <div class="nota-barra">
+                            <div class="barra-progresso">
+                                <div id="barra-comportamento-aval" class="progresso"></div>
+                            </div>
+                            <span id="nota-comportamento-aval-valor" class="nota-valor">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nota-item">
+                        <span class="nota-label">📚 Desempenho em Atividades:</span>
+                        <div class="nota-barra">
+                            <div class="barra-progresso">
+                                <div id="barra-atividades" class="progresso"></div>
+                            </div>
+                            <span id="nota-atividades-valor" class="nota-valor">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nota-item">
+                        <span class="nota-label">😊 Comportamento (Atividades):</span>
+                        <div class="nota-barra">
+                            <div class="barra-progresso">
+                                <div id="barra-comportamento-ativ" class="progresso"></div>
+                            </div>
+                            <span id="nota-comportamento-ativ-valor" class="nota-valor">0.0</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nota-item">
+                        <span class="nota-label">📅 Taxa de Presença:</span>
+                        <div class="nota-barra">
+                            <div class="barra-progresso">
+                                <div id="barra-presenca" class="progresso"></div>
+                            </div>
+                            <span id="nota-presenca-valor" class="nota-valor">0%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="nota-final">
+                        <span class="nota-label">🏆 MÉDIA FINAL:</span>
+                        <span id="media-final-valor" class="media-final-badge">0.0</span>
+                    </div>
+                </div>
+                
+                <div class="historico-aluno">
+                    <h4>📈 Informações Adicionais</h4>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <strong>Total de Avaliações:</strong>
+                            <span id="total-avaliacoes-aluno">0</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Total de Atividades:</strong>
+                            <span id="total-atividades-aluno">0</span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Data do Cálculo:</strong>
+                            <span id="data-calculo-aluno">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-outline fechar-modal-detalhes-aluno">
+                <i class="fas fa-times"></i> Fechar
+            </button>
+            <!-- <button class="btn btn-primary" onclick="gerarCertificadoIndividual()">
+                <i class="fas fa-certificate"></i> Gerar Certificado
+            </button> -->
+        </div>
+    </div>
+</div>
+
 
   <!-- Modal Principal de Comunicados -->
   <div id="modal-comunicados" class="modal-backdrop" style="display: none;">
@@ -2058,5 +3083,6 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
 <script src="./js/comunicado.js"></script>
 <script src="./js/atividades.js"></script>
 <script src="./js/monitoramento.js"></script>
+<script src="./js/ranking.js"></script>
 </body>
 </html>
