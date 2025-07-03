@@ -81,6 +81,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $amplaConcorrencia = strtolower(limparDados($_POST['concorrencia'] ?? ''));
         $vagaMilitar = strtolower(limparDados($_POST['vaga-militar'] ?? ''));
 
+        // Campos do uniforme
+        $tamanhoCamisa = strtolower(limparDados($_POST['tamanho-camisa'] ?? ''));
+        $tamanhoCalca = strtolower(limparDados($_POST['tamanho-calca'] ?? ''));
+        $tamanhoCalcado = limparDados($_POST['tamanho-calcado'] ?? '');
+
         
         $nomeResponsavel = limparDados($_POST['nome-responsavel'] ?? '');
         $parentesco = limparDados($_POST['parentesco'] ?? '');
@@ -111,7 +116,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'email' => $email,
             'consentimento' => $consentimento,
             'tipoSangue' => $tipoSangue,
-            'criancaAtipica' => $criancaAtipica
+            'criancaAtipica' => $criancaAtipica,
+            'tamanhoCamisa' => $tamanhoCamisa,
+            'tamanhoCalca' => $tamanhoCalca,
+            'tamanhoCalcado' => $tamanhoCalcado
         ];
         
         $resposta['debug']['processed_data'] = $dadosProcessados;
@@ -150,6 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($enderecoEscola)) $camposVazios[] = 'endereco-escola';
         if (empty($amplaConcorrencia)) $camposVazios[] = 'concorrencia';
         if (empty($vagaMilitar)) $camposVazios[] = 'vaga-militar';
+        if (empty($tamanhoCamisa)) $camposVazios[] = 'tamanho-camisa';
+        if (empty($tamanhoCalca)) $camposVazios[] = 'tamanho-calca';
+        if (empty($tamanhoCalcado)) $camposVazios[] = 'tamanho-calcado';
         
         if (!empty($camposVazios)) {
             $resposta['debug']['empty_fields'] = $camposVazios;
@@ -197,6 +208,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!in_array($vagaMilitar, ['sim', 'nao'])) {
             throw new Exception('Campo "Vaga militar" deve ser "sim" ou "nao"');
+        }
+
+        // VALIDAÇÕES DOS CAMPOS DO UNIFORME
+        $tamanhosCamisa = ['pp', 'p', 'm', 'g', 'gg', '6', '8', '10', '12', '14', '16'];
+        if (!in_array($tamanhoCamisa, $tamanhosCamisa)) {
+            throw new Exception('Tamanho da camisa deve ser válido');
+        }
+
+        $tamanhosCalca = ['pp', 'p', 'm', 'g', 'gg', '6', '8', '10', '12', '14', '16'];
+        if (!in_array($tamanhoCalca, $tamanhosCalca)) {
+            throw new Exception('Tamanho da calça deve ser válido');
+        }
+
+        $tamanhosCalcado = ['20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39', '40'];
+        if (!in_array($tamanhoCalcado, $tamanhosCalcado)) {
+            throw new Exception('Tamanho do calçado deve ser válido');
         }
         
         // Processa o upload da foto do aluno
@@ -331,14 +358,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             tipo_sanguineo, crianca_atipica, atipica_com_laudo, arquivo_laudo, tem_alergias_condicoes, 
             detalhes_alergias_condicoes, medicacao_continua, detalhes_medicacao, 
             numero_cadastro_unico, tipo_escola, endereco_escola, atestado_medico,
-            ampla_concorrencia, vaga_militar
+            ampla_concorrencia, vaga_militar, tamanho_camisa, tamanho_calca, tamanho_calcado
         ) VALUES (
             :nome, :data_nascimento, :genero, :cadastro_unico, :rg, :cpf, :escola, :serie, :info_saude, 
             :numero_matricula, :data_matricula, :foto, :telefone_escola, :diretor_escola,
             :tipo_sanguineo, :crianca_atipica, :atipica_com_laudo, :arquivo_laudo, :tem_alergias_condicoes, 
             :detalhes_alergias_condicoes, :medicacao_continua, :detalhes_medicacao, 
             :numero_cadastro_unico, :tipo_escola, :endereco_escola, :atestado_medico,
-            :ampla_concorrencia, :vaga_militar
+            :ampla_concorrencia, :vaga_militar, :tamanho_camisa, :tamanho_calca, :tamanho_calcado
         )";
         
         $stmtAluno = $conexao->prepare($sqlAluno);
@@ -372,6 +399,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmtAluno->bindParam(':atestado_medico', $caminhoAtestadoMedico);
         $stmtAluno->bindParam(':ampla_concorrencia', $amplaConcorrencia);
         $stmtAluno->bindParam(':vaga_militar', $vagaMilitar);
+        $stmtAluno->bindParam(':tamanho_camisa', $tamanhoCamisa);
+        $stmtAluno->bindParam(':tamanho_calca', $tamanhoCalca);
+        $stmtAluno->bindParam(':tamanho_calcado', $tamanhoCalcado);
         
         $stmtAluno->execute();
         

@@ -1,0 +1,156 @@
+
+        /* CSS para o carrossel */
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 480px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            background-color: var(--primary);
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-slide.active {
+            opacity: 1;
+        }
+
+        .carousel-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+            z-index: 1;
+        }
+
+        .carousel-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .carousel-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .carousel-content p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        
+
+        .carousel-button:hover {
+            background-color: rgba(0,0,0,0.6);
+        }
+
+        .carousel-button.prev {
+            left: 20px;
+        }
+
+        .carousel-button.next {
+            right: 20px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 3;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .indicator.active {
+            background-color: var(--secondary);
+        }
+
+        .ftlink{
+            color: var(--secondary);
+            text-decoration: none;
+        }
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .hero-carousel {
+                height: 350px;
+            }
+            
+            .carousel-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .carousel-content p {
+                font-size: 1rem;
+            }
+            
+            .carousel-button {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
+            }
+        }
+        .tab1 {
+                padding: 1rem 1.8rem;
+                cursor: pointer;
+                background-color: #e8d424;
+                border: 1px solid #dee2e6;
+                border-bottom: none;
+                border-radius: 8px 8px 8px ;
+                margin-right: 6px;
+                transition: all 0.3s ease;
+                font-weight: 600;
+                white-space: nowrap;
+                color: var(--primary);
+                text-decoration: none;
+                align-items: center;
+                display: flex;
+                justify-content: center;
+                text-align: center;
+            }
+            
+            .turma-lotada {
+                color: #ff0000;
+                font-weight: bold;
+            }
+
+            select option:disabled {
+                color: #ff0000;
+                background-color: #ffeeee;
+            }
+  

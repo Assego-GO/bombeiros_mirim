@@ -15,162 +15,8 @@
         }
     </style>
     <link rel="stylesheet" href="./css/style.css">
-    <style>
-        /* CSS para o carrossel */
-        .hero-carousel {
-            position: relative;
-            width: 100%;
-            height: 480px;
-            overflow: hidden;
-            margin-bottom: 2rem;
-            background-color: var(--primary);
-        }
-
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-slide.active {
-            opacity: 1;
-        }
-
-        .carousel-slide img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-            z-index: 1;
-        }
-
-        .carousel-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            padding: 2rem;
-            max-width: 800px;
-            color: white;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .carousel-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: white;
-        }
-
-        .carousel-content p {
-            font-size: 1.2rem;
-            line-height: 1.5;
-        }
-
-        
-
-        .carousel-button:hover {
-            background-color: rgba(0,0,0,0.6);
-        }
-
-        .carousel-button.prev {
-            left: 20px;
-        }
-
-        .carousel-button.next {
-            right: 20px;
-        }
-
-        .carousel-indicators {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-            z-index: 3;
-        }
-
-        .indicator {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background-color: rgba(255,255,255,0.5);
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .indicator.active {
-            background-color: var(--secondary);
-        }
-
-        .ftlink{
-            color: var(--secondary);
-            text-decoration: none;
-        }
-        /* Responsividade para telas menores */
-        @media (max-width: 768px) {
-            .hero-carousel {
-                height: 350px;
-            }
-            
-            .carousel-content h1 {
-                font-size: 1.8rem;
-            }
-            
-            .carousel-content p {
-                font-size: 1rem;
-            }
-            
-            .carousel-button {
-                width: 30px;
-                height: 30px;
-                font-size: 1.2rem;
-            }
-        }
-        .tab1 {
-                padding: 1rem 1.8rem;
-                cursor: pointer;
-                background-color: #e8d424;
-                border: 1px solid #dee2e6;
-                border-bottom: none;
-                border-radius: 8px 8px 8px ;
-                margin-right: 6px;
-                transition: all 0.3s ease;
-                font-weight: 600;
-                white-space: nowrap;
-                color: var(--primary);
-                text-decoration: none;
-                align-items: center;
-                display: flex;
-                justify-content: center;
-                text-align: center;
-            }
-            
-            .turma-lotada {
-                color: #ff0000;
-                font-weight: bold;
-            }
-
-            select option:disabled {
-                color: #ff0000;
-                background-color: #ffeeee;
-            }
-    </style>
+    <link rel="stylesheet" href="./css/carrosel.css">
+    
 </head>
 <body>
     <header>
@@ -419,7 +265,57 @@
 
                     <div class="form-group">
                         <label for="serie">Série/Ano:</label>
-                        <input type="text" id="serie" required>
+                        
+                        <select name="serie" id="serie" class="form-control">
+                            <option value="">Selecione a série</option>
+                            
+                            <optgroup label="Educação Infantil">
+                                <option value="Infantil 1">Infantil 1</option>
+                                <option value="Infantil 2">Infantil 2</option>
+                                <option value="Infantil 3">Infantil 3</option>
+                                <option value="Infantil 4">Infantil 4</option>
+                                <option value="Infantil 5">Infantil 5</option>
+                            </optgroup>
+
+                            <optgroup label="Ensino Fundamental – Anos Iniciais">
+                                <option value="1º ano">1º ano</option>
+                                <option value="2º ano">2º ano</option>
+                                <option value="3º ano">3º ano</option>
+                                <option value="4º ano">4º ano</option>
+                                <option value="5º ano">5º ano</option>
+                            </optgroup>
+
+                            <optgroup label="Ensino Fundamental – Anos Finais">
+                                <option value="6º ano">6º ano</option>
+                                <option value="7º ano">7º ano</option>
+                                <option value="8º ano">8º ano</option>
+                                <option value="9º ano">9º ano</option>
+                            </optgroup>
+
+                            <optgroup label="Ensino Médio">
+                                <option value="1º ano EM">1º ano EM</option>
+                                <option value="2º ano EM">2º ano EM</option>
+                                <option value="3º ano EM">3º ano EM</option>
+                            </optgroup>
+                            </select>
+                    </div>
+
+                    
+                    <div class="form-group"> 
+                        
+                        <label for="reside">Mora com:</label>
+                        <select id="reside" required>
+                            <option value="">Selecione</option>
+                            <option value="mae-pai">Mãe e Pai</option>
+                            <option value="mae">Mãe</option>
+                            <option value="pai">Pai</option>
+                            <option value="avó">Avó</option>
+                            <option value="avô">Avô</option>
+                            <option value="tio">Tio</option>
+                            <option value="tia">Tia</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                        
                     </div>
 
                     <div class="form-group">
@@ -456,27 +352,84 @@
                         </div>
                     </div>
 
-                    <div class="form-group"> 
-                        
-                        <label for="reside">Mora com:</label>
-                        <select id="reside" required>
-                            <option value="">Selecione</option>
-                            <option value="mae-pai">Mãe e Pai</option>
-                            <option value="mae">Mãe</option>
-                            <option value="pai">Pai</option>
-                            <option value="avó">Avó</option>
-                            <option value="avô">Avô</option>
-                            <option value="tio">Tio</option>
-                            <option value="tia">Tia</option>
-                            <option value="outro">Outro</option>
+                   
+
+
+                              <div class="form-group full">
+                        <h3>Dados do Uniforme</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tamanho-camisa">Tamanho da Camisa:</label>
+                        <select id="tamanho-camisa" required>
+                            <option value="">Selecione o tamanho</option>
+                            <option value="pp">PP</option>
+                            <option value="p">P</option>
+                            <option value="m">M</option>
+                            <option value="g">G</option>
+                            <option value="gg">GG</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
                         </select>
-                        
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tamanho-calca">Tamanho da Calça:</label>
+                        <select id="tamanho-calca" required>
+                            <option value="">Selecione o tamanho</option>
+                            <option value="pp">PP</option>
+                            <option value="p">P</option>
+                            <option value="m">M</option>
+                            <option value="g">G</option>
+                            <option value="gg">GG</option>
+                            <option value="6">6</option>
+                            <option value="8">8</option>
+                            <option value="10">10</option>
+                            <option value="12">12</option>
+                            <option value="14">14</option>
+                            <option value="16">16</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tamanho-calcado">Tamanho do Calçado:</label>
+                        <select id="tamanho-calcado" required>
+                            <option value="">Selecione o tamanho</option>
+                            <option value="20">20</option>
+                            <option value="21">21</option>
+                            <option value="22">22</option>
+                            <option value="23">23</option>
+                            <option value="24">24</option>
+                            <option value="25">25</option>
+                            <option value="26">26</option>
+                            <option value="27">27</option>
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30">30</option>
+                            <option value="31">31</option>
+                            <option value="32">32</option>
+                            <option value="33">33</option>
+                            <option value="34">34</option>
+                            <option value="35">35</option>
+                            <option value="36">36</option>
+                            <option value="37">37</option>
+                            <option value="38">38</option>
+                            <option value="39">39</option>
+                            <option value="40">40</option>
+                        </select>
                     </div>
                     
+
+                     
                         
                     <div class="form-group full">
                         <h3>Dados do Responsável</h3>
                     </div>
+
                     
                     <div class="form-group">
                         <label for="nome-responsavel">Nome Completo:</label>
