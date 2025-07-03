@@ -1970,6 +1970,531 @@ function agora() {
         transform: translateX(0);
     }
 }
+
+/* ===== ESTILOS DO MODAL DE UNIFORMES ===== */
+
+/* Modal Principal */
+#modal-uniformes .modal-large {
+    max-width: 1400px;
+    width: 95%;
+}
+
+/* Abas */
+.tab-uniformes {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-uniformes:hover {
+    color: var(--primary);
+    background: #f9f9f9;
+}
+
+.tab-uniformes.ativo {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: white;
+}
+
+.tab-content-uniformes {
+    padding: 20px 0;
+}
+
+/* Filtros */
+.uniformes-filtros {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.filtros-row {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filtro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 150px;
+}
+
+.filtro-item label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.filtro-item input,
+.filtro-item select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filtro-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Contador */
+.uniformes-contador {
+    background: #e9ecef;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Lista de Uniformes */
+.uniformes-lista {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.uniformes-header {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
+    gap: 15px;
+    background: var(--primary);
+    color: white;
+    padding: 15px 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.header-col {
+    display: flex;
+    align-items: center;
+}
+
+.uniforme-item {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr 1fr 1.5fr;
+    gap: 15px;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.3s ease;
+}
+
+.uniforme-item:hover {
+    background: #f8f9fa;
+}
+
+.uniforme-item:last-child {
+    border-bottom: none;
+}
+
+.aluno-info-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.aluno-nome {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.aluno-matricula {
+    font-size: 12px;
+    color: #666;
+}
+
+.turma-info {
+    color: #495057;
+    font-weight: 500;
+}
+
+.tamanho-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+    min-width: 30px;
+}
+
+.tamanho-badge.definido {
+    background: #d4edda;
+    color: #155724;
+}
+
+.tamanho-badge.indefinido {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-uniforme {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-uniforme.completo {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-uniforme.incompleto {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-uniforme.pendente {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.acoes-uniforme {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-editar-uniforme {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-editar-uniforme:hover {
+    background: #0056b3;
+}
+
+/* Modal de Edição */
+#modal-editar-uniforme .modal-medium {
+    max-width: 500px;
+}
+
+.aluno-info-edit {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.aluno-avatar {
+    width: 60px;
+    height: 60px;
+    background: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.aluno-dados h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.aluno-dados p {
+    margin: 2px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.uniformes-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.uniformes-inputs .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.uniformes-inputs label {
+    font-weight: 600;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.uniformes-inputs select {
+    padding: 12px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.uniformes-inputs select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+}
+
+/* Relatórios */
+.relatorios-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.relatorios-header h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.relatorios-header p {
+    margin: 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.relatorios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.relatorio-card {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.relatorio-card:hover {
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.relatorio-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.relatorio-info h4 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.relatorio-info p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+/* Estatísticas */
+.estatisticas-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.estatisticas-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+}
+
+.estatisticas-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.card-estatistica {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+}
+
+.card-estatistica:hover {
+    transform: translateY(-2px);
+}
+
+.card-estatistica .card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    background: linear-gradient(135deg, var(--primary), #0056b3);
+}
+
+.card-estatistica .card-info h3 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+}
+
+.card-estatistica .card-info p {
+    margin: 5px 0 0 0;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Gráficos */
+.graficos-tamanhos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.grafico-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.grafico-container h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.grafico {
+    min-height: 200px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Estados Vazios */
+.sem-uniformes {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.sem-uniformes i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.sem-uniformes h3 {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.sem-uniformes p {
+    margin: 0;
+    color: #888;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #modal-uniformes .modal-large {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtro-item {
+        min-width: auto;
+    }
+    
+    .uniformes-header,
+    .uniforme-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .uniformes-header {
+        display: none;
+    }
+    
+    .uniforme-item {
+        display: block;
+        padding: 15px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .aluno-info-edit {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .relatorios-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .estatisticas-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .graficos-tamanhos {
+        grid-template-columns: 1fr;
+    }
+}
   </style>
 </head>
 <body>
@@ -2101,6 +2626,10 @@ function agora() {
   <button class="btn btn-primary" id="saida-btn">
   <i class="fas fa-sign-out-alt"></i> Controle de Materiais
 </button>
+<button class="btn btn-primary" id="uniformes-btn">
+  <i class="fas fa-tshirt"></i> Uniformes
+</button>
+
 <button class="btn btn-primary" id="monitoramento-btn">
   <i class="fas fa-chart-line"></i> Monitoramento de Atividades
 </button>
@@ -2429,7 +2958,7 @@ function agora() {
             </button>
             <button class="tab-ranking" data-tab="estatisticas">
                 <i class="fas fa-chart-bar"></i> Estatísticas
-            </button>
+            </button> 
             
         </div>
 
@@ -3152,6 +3681,323 @@ function agora() {
       </div>
   </div>
 
+  <!-- Modal Principal de Uniformes -->
+  <div id="modal-uniformes" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-large">
+          <div class="modal-header">
+              <span><i class="fas fa-tshirt"></i> Gerenciar Uniformes</span>
+              <button class="fechar-modal-uniformes">×</button>
+          </div>
+          
+          <!-- Abas do Modal -->
+          <div class="modal-tabs">
+              <button class="tab-uniformes ativo" data-tab="listagem">
+                  <i class="fas fa-list"></i> Listagem de Uniformes
+              </button>
+             <!-- <button class="tab-uniformes" data-tab="estatisticas">
+                  <i class="fas fa-chart-pie"></i> Estatísticas
+              </button> -->
+          </div>
+
+          <div class="modal-body">
+              <!-- Aba Listagem -->
+              <div id="tab-listagem" class="tab-content-uniformes">
+                  <!-- Filtros -->
+                  <div class="uniformes-filtros">
+                      <div class="filtros-row">
+                          <div class="filtro-item">
+                              <label>Buscar Aluno</label>
+                              <input type="text" id="filtro-nome-aluno" placeholder="Nome do aluno">
+                          </div>
+                          
+                          <div class="filtro-item">
+                              <label>Turma</label>
+                              <select id="filtro-turma-uniformes">
+                                  <option value="">Todas as turmas</option>
+                              </select>
+                          </div>
+                          
+                          <div class="filtro-item">
+                              <label>Unidade</label>
+                              <select id="filtro-unidade-uniformes">
+                                  <option value="">Todas as unidades</option>
+                              </select>
+                          </div>
+                          
+                          <div class="filtro-item">
+                              <label>Status</label>
+                              <select id="filtro-status-uniformes">
+                                  <option value="">Todos</option>
+                                  <option value="completo">Completo</option>
+                                  <option value="incompleto">Incompleto</option>
+                                  <option value="pendente">Pendente</option>
+                              </select>
+                          </div>
+                          
+                          <div class="filtro-actions">
+                              <button class="btn btn-primary btn-sm" onclick="filtrarUniformes()">
+                                  <i class="fas fa-search"></i> Filtrar
+                              </button>
+                              <button class="btn btn-outline btn-sm" onclick="limparFiltrosUniformes()">
+                                  <i class="fas fa-eraser"></i> Limpar
+                              </button>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Contador de Resultados -->
+                  <div class="uniformes-contador">
+                      <span id="total-uniformes">0</span> alunos encontrados
+                  </div>
+
+                  <!-- Lista de Uniformes -->
+                  <div id="lista-uniformes" class="uniformes-lista">
+                      <div class="uniformes-header">
+                          <div class="header-col">Aluno</div>
+                          <div class="header-col">Turma</div>
+                          <div class="header-col">Camisa</div>
+                          <div class="header-col">Calça</div>
+                          <div class="header-col">Calçado</div>
+                          <div class="header-col">Status</div>
+                          <div class="header-col">Ações</div>
+                      </div>
+                      
+                      <div id="uniformes-content">
+                          <!-- Será preenchido dinamicamente -->
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Aba Relatórios -->
+              <div id="tab-relatorios" class="tab-content-uniformes" style="display: none;">
+                  <div class="relatorios-header">
+                      <h3>📊 Relatórios de Uniformes</h3>
+                      <p>Gere relatórios detalhados sobre os uniformes dos alunos</p>
+                  </div>
+                  
+                  <div class="relatorios-grid">
+                      <div class="relatorio-card" onclick="gerarRelatorioGeralUniformes()">
+                          <div class="relatorio-icon">
+                              <i class="fas fa-file-alt"></i>
+                          </div>
+                          <div class="relatorio-info">
+                              <h4>Relatório Geral</h4>
+                              <p>Lista completa de todos os alunos e seus uniformes</p>
+                          </div>
+                      </div>
+                      
+                      <div class="relatorio-card" onclick="gerarRelatorioPorTurma()">
+                          <div class="relatorio-icon">
+                              <i class="fas fa-users"></i>
+                          </div>
+                          <div class="relatorio-info">
+                              <h4>Relatório por Turma</h4>
+                              <p>Relatório organizado por turmas</p>
+                          </div>
+                      </div>
+                      
+                      <div class="relatorio-card" onclick="gerarRelatorioTamanhos()">
+                          <div class="relatorio-icon">
+                              <i class="fas fa-ruler"></i>
+                          </div>
+                          <div class="relatorio-info">
+                              <h4>Relatório de Tamanhos</h4>
+                              <p>Quantidades por tamanho para compras</p>
+                          </div>
+                      </div>
+                      
+                      <div class="relatorio-card" onclick="gerarRelatorioIncompletos()">
+                          <div class="relatorio-icon">
+                              <i class="fas fa-exclamation-triangle"></i>
+                          </div>
+                          <div class="relatorio-info">
+                              <h4>Pendentes</h4>
+                              <p>Alunos com dados incompletos</p>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Aba Estatísticas -->
+              <div id="tab-estatisticas" class="tab-content-uniformes" style="display: none;">
+                  <div class="estatisticas-header">
+                      <h3>📈 Estatísticas de Uniformes</h3>
+                  </div>
+                  
+                  <div class="estatisticas-cards">
+                      <div class="card-estatistica">
+                          <div class="card-icon">
+                              <i class="fas fa-tshirt"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-camisas">0</h3>
+                              <p>Total de Camisas</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-estatistica">
+                          <div class="card-icon">
+                              <i class="fas fa-user-friends"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-calcas">0</h3>
+                              <p>Total de Calças</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-estatistica">
+                          <div class="card-icon">
+                              <i class="fas fa-shoe-prints"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="total-calcados">0</h3>
+                              <p>Total de Calçados</p>
+                          </div>
+                      </div>
+                      
+                      <div class="card-estatistica">
+                          <div class="card-icon">
+                              <i class="fas fa-check-circle"></i>
+                          </div>
+                          <div class="card-info">
+                              <h3 id="uniformes-completos">0</h3>
+                              <p>Uniformes Completos</p>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <!-- Gráficos de Tamanhos -->
+                  <div class="graficos-tamanhos">
+                      <div class="grafico-container">
+                          <h4>📊 Distribuição de Tamanhos - Camisas</h4>
+                          <div id="grafico-camisas" class="grafico">Carregando estatísticas...</div>
+                      </div>
+                      
+                      <div class="grafico-container">
+                          <h4>📊 Distribuição de Tamanhos - Calças</h4>
+                          <div id="grafico-calcas" class="grafico">Carregando estatísticas...</div>
+                      </div>
+                      
+                      <div class="grafico-container">
+                          <h4>📊 Distribuição de Tamanhos - Calçados</h4>
+                          <div id="grafico-calcados" class="grafico">Carregando estatísticas...</div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-uniformes">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+              <button class="btn btn-success" onclick="exportarTodosRelatorios()">
+                  <i class="fas fa-download"></i> Exportar Todos
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Modal de Edição de Uniforme -->
+  <div id="modal-editar-uniforme" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-medium">
+          <div class="modal-header">
+              <span><i class="fas fa-edit"></i> Editar Uniforme</span>
+              <button class="fechar-modal-editar-uniforme">×</button>
+          </div>
+          
+          <div class="modal-body">
+              <form id="form-editar-uniforme">
+                  <input type="hidden" id="edit-aluno-id" name="aluno_id">
+                  
+                  <div class="aluno-info-edit">
+                      <div class="aluno-avatar">
+                          <i class="fas fa-user-circle"></i>
+                      </div>
+                      <div class="aluno-dados">
+                          <h3 id="edit-aluno-nome"></h3>
+                          <p id="edit-aluno-turma"></p>
+                          <p id="edit-aluno-matricula"></p>
+                      </div>
+                  </div>
+                  
+                  <div class="uniformes-inputs">
+                      <div class="form-group">
+                          <label for="edit-tamanho-camisa">
+                              <i class="fas fa-tshirt"></i> Tamanho da Camisa
+                          </label>
+                          <select id="edit-tamanho-camisa" name="tamanho_camisa" required>
+                              <option value="">Selecione o tamanho</option>
+                              <option value="pp">PP</option>
+                              <option value="p">P</option>
+                              <option value="m">M</option>
+                              <option value="g">G</option>
+                              <option value="gg">GG</option>
+                              <option value="xgg">XGG</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="edit-tamanho-calca">
+                              <i class="fas fa-user-friends"></i> Tamanho da Calça
+                          </label>
+                          <select id="edit-tamanho-calca" name="tamanho_calca" required>
+                              <option value="">Selecione o tamanho</option>
+                              <option value="pp">PP</option>
+                              <option value="p">P</option>
+                              <option value="m">M</option>
+                              <option value="g">G</option>
+                              <option value="gg">GG</option>
+                              <option value="xgg">XGG</option>
+                              <option value="4">4</option>
+                              <option value="6">6</option>
+                              <option value="8">8</option>
+                              <option value="10">10</option>
+                              <option value="12">12</option>
+                              <option value="14">14</option>
+                              <option value="16">16</option>
+                          </select>
+                      </div>
+                      
+                      <div class="form-group">
+                          <label for="edit-tamanho-calcado">
+                              <i class="fas fa-shoe-prints"></i> Tamanho do Calçado
+                          </label>
+                          <select id="edit-tamanho-calcado" name="tamanho_calcado" required>
+                              <option value="">Selecione o tamanho</option>
+                              <option value="28">28</option>
+                              <option value="29">29</option>
+                              <option value="30">30</option>
+                              <option value="31">31</option>
+                              <option value="32">32</option>
+                              <option value="33">33</option>
+                              <option value="34">34</option>
+                              <option value="35">35</option>
+                              <option value="36">36</option>
+                              <option value="37">37</option>
+                              <option value="38">38</option>
+                              <option value="39">39</option>
+                              <option value="40">40</option>
+                              <option value="41">41</option>
+                              <option value="42">42</option>
+                              <option value="43">43</option>
+                              <option value="44">44</option>
+                              <option value="45">45</option>
+                          </select>
+                      </div>
+                  </div>
+                  
+                  <div class="form-actions">
+                      <button type="button" class="btn btn-outline fechar-modal-editar-uniforme">
+                          <i class="fas fa-times"></i> Cancelar
+                      </button>
+                      <button type="submit" class="btn btn-primary">
+                          <i class="fas fa-save"></i> Salvar Alterações
+                      </button>
+                  </div>
+              </form>
+          </div>
+      </div>
+  </div>
 
   <footer class="main-footer">
     <div class="container">
@@ -3202,7 +4048,6 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
   });
 </script>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 <script src="./js/teste1.js"></script>
@@ -3214,5 +4059,6 @@ console.log('👤 Usuário:', window.usuarioNome, 'ID:', window.usuarioId);
 <script src="./js/atividades.js"></script>
 <script src="./js/monitoramento.js"></script>
 <script src="./js/ranking.js"></script>
+<script src="./js/uniformes.js"></script>
 </body>
 </html>
