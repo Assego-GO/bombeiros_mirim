@@ -88,28 +88,12 @@
     [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
 )
 
-2025-07-04 12:51:21 - Buscando aluno ID: 142
-2025-07-04 12:51:21 - Dados encontrados: Array
+
 (
     [aluno_id] => 142
     [aluno_nome] => Cristiano Ronaldo
     [matricula_id] => 114
     [data_matricula] => 2025-06-09 16:28:49
-    [status] => pendente
-    [status_programa] => novato
-    [turma_id] => 20
-    [unidade_id] => 9
-    [turma_nome] => turma teste
-    [unidade_nome] => BATALHÃO DE POLÍCIA MILITAR DE TERMINAL - BPMTERMINAL (01ºCRPM)
-)
-
-2025-07-04 12:51:59 - Buscando aluno ID: 162
-2025-07-04 12:51:59 - Dados encontrados: Array
-(
-    [aluno_id] => 162
-    [aluno_nome] => João da Silva Teste
-    [matricula_id] => 126
-    [data_matricula] => 2025-07-03 16:36:24
     [status] => pendente
     [status_programa] => novato
     [turma_id] => 20
