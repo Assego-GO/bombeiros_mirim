@@ -74,7 +74,7 @@ try {
             'unidade_nome' => $row['unidade_nome'] ?: '-',
             'professor_nome' => $row['professor_nome'] ?: '-',
             'data_inicio' => $row['data_inicio'] ?: '-',
-            'data_fim' => $row['data_fim'] ?: '-'
+            'data_fim' => $row['data_fim'] ?: '-'   
         ];
     }
     
