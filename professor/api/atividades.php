@@ -1,5 +1,5 @@
 <?php
-// api/atividades.php - Versão corrigida com caminho correto
+// api/atividades.php - Versão corrigida com suporte a voluntário e status
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -202,6 +202,7 @@ function listarAtividades($pdo, $professor_id) {
     try {
         logDebug("Executando listarAtividades", ['professor_id' => $professor_id]);
         
+        // Incluir campos de voluntário na consulta
         $sql = "SELECT a.*, t.nome_turma, u.nome as unidade_nome 
                 FROM atividades a 
                 LEFT JOIN turma t ON a.turma_id = t.id 
@@ -226,6 +227,12 @@ function listarAtividades($pdo, $professor_id) {
                 logDebug("Aviso: Erro ao contar participações", ['atividade_id' => $atividade['id']]);
                 $atividade['total_participacoes'] = 0;
             }
+            
+            // Garantir que campos de voluntário sejam retornados corretamente
+            $atividade['eh_voluntario'] = $atividade['eh_voluntario'] ?? 0;
+            $atividade['nome_voluntario'] = $atividade['nome_voluntario'] ?? null;
+            $atividade['telefone_voluntario'] = $atividade['telefone_voluntario'] ?? null;
+            $atividade['especialidade_voluntario'] = $atividade['especialidade_voluntario'] ?? null;
         }
         
         echo json_encode([
@@ -273,6 +280,7 @@ function listarTurmasProfessor($pdo, $professor_id) {
 
 function detalhesAtividade($pdo, $atividade_id, $professor_id) {
     try {
+        // Incluir todos os campos na consulta de detalhes
         $sql = "SELECT a.*, t.nome_turma, u.nome as unidade_nome 
                 FROM atividades a 
                 LEFT JOIN turma t ON a.turma_id = t.id 
@@ -288,6 +296,12 @@ function detalhesAtividade($pdo, $atividade_id, $professor_id) {
             return;
         }
         
+        // Garantir que campos de voluntário sejam retornados
+        $atividade['eh_voluntario'] = $atividade['eh_voluntario'] ?? 0;
+        $atividade['nome_voluntario'] = $atividade['nome_voluntario'] ?? null;
+        $atividade['telefone_voluntario'] = $atividade['telefone_voluntario'] ?? null;
+        $atividade['especialidade_voluntario'] = $atividade['especialidade_voluntario'] ?? null;
+        
         // Buscar participações
         $sql_participacoes = "SELECT ap.*, al.nome as aluno_nome 
                               FROM atividade_participacao ap 
@@ -300,6 +314,13 @@ function detalhesAtividade($pdo, $atividade_id, $professor_id) {
         
         $atividade['participacoes'] = $participacoes;
         
+        logDebug("Detalhes da atividade carregados", [
+            'atividade_id' => $atividade_id,
+            'eh_voluntario' => $atividade['eh_voluntario'],
+            'nome_voluntario' => $atividade['nome_voluntario'],
+            'status' => $atividade['status']
+        ]);
+        
         echo json_encode(['success' => true, 'atividade' => $atividade]);
         
     } catch (PDOException $e) {
@@ -309,7 +330,13 @@ function detalhesAtividade($pdo, $atividade_id, $professor_id) {
 
 function cadastrarAtividade($pdo, $dados, $professor_id) {
     try {
-        // Validar campos obrigatórios
+        logDebug("Iniciando cadastro de atividade", [
+            'professor_id' => $professor_id,
+            'eh_voluntario' => $dados['eh_voluntario'] ?? 0,
+            'nome_voluntario' => $dados['nome_voluntario'] ?? null
+        ]);
+        
+        // Validar campos obrigatórios básicos
         $campos_obrigatorios = [
             'nome_atividade', 'turma_id', 'data_atividade', 
             'hora_inicio', 'hora_termino', 'local_atividade', 
@@ -323,14 +350,24 @@ function cadastrarAtividade($pdo, $dados, $professor_id) {
             }
         }
         
+        // Validação: Se é voluntário, nome do voluntário é obrigatório
+        $eh_voluntario = isset($dados['eh_voluntario']) && $dados['eh_voluntario'] == '1' ? 1 : 0;
+        
+        if ($eh_voluntario && empty($dados['nome_voluntario'])) {
+            echo json_encode(['success' => false, 'message' => 'Nome do voluntário é obrigatório quando a atividade é ministrada por voluntário']);
+            return;
+        }
+        
+        // SQL com campos de voluntário - nova atividade sempre começa como 'planejada'
         $sql = "INSERT INTO atividades (
                     nome_atividade, turma_id, professor_id, data_atividade, 
                     hora_inicio, hora_termino, local_atividade, instrutor_responsavel, 
-                    objetivo_atividade, conteudo_abordado, status
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'planejada')";
+                    objetivo_atividade, conteudo_abordado, eh_voluntario, nome_voluntario, 
+                    telefone_voluntario, especialidade_voluntario, status
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'planejada')";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        $resultado = $stmt->execute([
             $dados['nome_atividade'],
             $dados['turma_id'],
             $professor_id,
@@ -340,18 +377,35 @@ function cadastrarAtividade($pdo, $dados, $professor_id) {
             $dados['local_atividade'],
             $dados['instrutor_responsavel'],
             $dados['objetivo_atividade'],
-            $dados['conteudo_abordado']
+            $dados['conteudo_abordado'],
+            $eh_voluntario,
+            $eh_voluntario ? ($dados['nome_voluntario'] ?? null) : null,
+            $eh_voluntario ? ($dados['telefone_voluntario'] ?? null) : null,
+            $eh_voluntario ? ($dados['especialidade_voluntario'] ?? null) : null
         ]);
         
-        $atividade_id = $pdo->lastInsertId();
-        
-        echo json_encode([
-            'success' => true, 
-            'message' => 'Atividade cadastrada com sucesso!',
-            'atividade_id' => $atividade_id
-        ]);
+        if ($resultado) {
+            $atividade_id = $pdo->lastInsertId();
+            
+            logDebug("Atividade cadastrada com sucesso", [
+                'atividade_id' => $atividade_id,
+                'eh_voluntario' => $eh_voluntario,
+                'nome_voluntario' => $eh_voluntario ? $dados['nome_voluntario'] : null
+            ]);
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => $eh_voluntario ? 
+                    'Atividade com voluntário cadastrada com sucesso!' : 
+                    'Atividade cadastrada com sucesso!',
+                'atividade_id' => $atividade_id
+            ]);
+        } else {
+            throw new Exception('Falha ao inserir atividade no banco de dados');
+        }
         
     } catch (PDOException $e) {
+        logDebug("ERRO SQL cadastrarAtividade", ['error' => $e->getMessage()]);
         echo json_encode(['success' => false, 'message' => 'Erro ao cadastrar: ' . $e->getMessage()]);
     }
 }
@@ -363,14 +417,41 @@ function editarAtividade($pdo, $dados, $professor_id) {
             return;
         }
         
+        logDebug("Iniciando edição de atividade", [
+            'atividade_id' => $dados['atividade_id'],
+            'professor_id' => $professor_id,
+            'eh_voluntario' => $dados['eh_voluntario'] ?? 0,
+            'status' => $dados['status'] ?? 'planejada'
+        ]);
+        
+        // Validação: Se é voluntário, nome do voluntário é obrigatório
+        $eh_voluntario = isset($dados['eh_voluntario']) && $dados['eh_voluntario'] == '1' ? 1 : 0;
+        
+        if ($eh_voluntario && empty($dados['nome_voluntario'])) {
+            echo json_encode(['success' => false, 'message' => 'Nome do voluntário é obrigatório quando a atividade é ministrada por voluntário']);
+            return;
+        }
+        
+        // Validar status
+        $status_validos = ['planejada', 'em_andamento', 'concluida', 'cancelada'];
+        $status = $dados['status'] ?? 'planejada';
+        
+        if (!in_array($status, $status_validos)) {
+            echo json_encode(['success' => false, 'message' => 'Status inválido']);
+            return;
+        }
+        
+        // ATUALIZADO: SQL com campos de voluntário E status
         $sql = "UPDATE atividades SET 
                     nome_atividade = ?, data_atividade = ?, hora_inicio = ?, 
                     hora_termino = ?, local_atividade = ?, instrutor_responsavel = ?, 
-                    objetivo_atividade = ?, conteudo_abordado = ?
+                    objetivo_atividade = ?, conteudo_abordado = ?, eh_voluntario = ?, 
+                    nome_voluntario = ?, telefone_voluntario = ?, especialidade_voluntario = ?,
+                    status = ?
                 WHERE id = ? AND professor_id = ?";
         
         $stmt = $pdo->prepare($sql);
-        $stmt->execute([
+        $resultado = $stmt->execute([
             $dados['nome_atividade'],
             $dados['data_atividade'],
             $dados['hora_inicio'],
@@ -379,25 +460,69 @@ function editarAtividade($pdo, $dados, $professor_id) {
             $dados['instrutor_responsavel'],
             $dados['objetivo_atividade'],
             $dados['conteudo_abordado'],
+            $eh_voluntario,
+            $eh_voluntario ? ($dados['nome_voluntario'] ?? null) : null,
+            $eh_voluntario ? ($dados['telefone_voluntario'] ?? null) : null,
+            $eh_voluntario ? ($dados['especialidade_voluntario'] ?? null) : null,
+            $status,
             $dados['atividade_id'],
             $professor_id
         ]);
         
         if ($stmt->rowCount() > 0) {
-            echo json_encode(['success' => true, 'message' => 'Atividade atualizada com sucesso!']);
+            logDebug("Atividade editada com sucesso", [
+                'atividade_id' => $dados['atividade_id'],
+                'eh_voluntario' => $eh_voluntario,
+                'status' => $status
+            ]);
+            
+            $message = 'Atividade atualizada com sucesso!';
+            if ($eh_voluntario) {
+                $message = 'Atividade com voluntário atualizada com sucesso!';
+            }
+            if ($status === 'concluida') {
+                $message .= ' Status alterado para CONCLUÍDA.';
+            } elseif ($status === 'cancelada') {
+                $message .= ' Status alterado para CANCELADA.';
+            }
+            
+            echo json_encode([
+                'success' => true, 
+                'message' => $message
+            ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Atividade não encontrada ou sem alterações']);
         }
         
     } catch (PDOException $e) {
+        logDebug("ERRO SQL editarAtividade", ['error' => $e->getMessage()]);
         echo json_encode(['success' => false, 'message' => 'Erro ao editar: ' . $e->getMessage()]);
     }
 }
 
 function deletarAtividade($pdo, $atividade_id, $professor_id) {
     try {
-        // Deletar participações primeiro
-        $pdo->prepare("DELETE FROM atividade_participacao WHERE atividade_id = ?")->execute([$atividade_id]);
+        logDebug("Iniciando exclusão de atividade", [
+            'atividade_id' => $atividade_id,
+            'professor_id' => $professor_id
+        ]);
+        
+        // Verificar se a atividade existe e pertence ao professor
+        $stmt_check = $pdo->prepare("SELECT eh_voluntario, nome_voluntario, status FROM atividades WHERE id = ? AND professor_id = ?");
+        $stmt_check->execute([$atividade_id, $professor_id]);
+        $atividade = $stmt_check->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$atividade) {
+            echo json_encode(['success' => false, 'message' => 'Atividade não encontrada']);
+            return;
+        }
+        
+        // Deletar participações primeiro (se existir a tabela)
+        try {
+            $pdo->prepare("DELETE FROM atividade_participacao WHERE atividade_id = ?")->execute([$atividade_id]);
+        } catch (PDOException $e) {
+            logDebug("Aviso: Erro ao deletar participações (tabela pode não existir)", ['error' => $e->getMessage()]);
+        }
         
         // Deletar atividade
         $sql = "DELETE FROM atividades WHERE id = ? AND professor_id = ?";
@@ -405,12 +530,24 @@ function deletarAtividade($pdo, $atividade_id, $professor_id) {
         $stmt->execute([$atividade_id, $professor_id]);
         
         if ($stmt->rowCount() > 0) {
-            echo json_encode(['success' => true, 'message' => 'Atividade excluída com sucesso!']);
+            logDebug("Atividade excluída com sucesso", [
+                'atividade_id' => $atividade_id,
+                'era_voluntario' => $atividade['eh_voluntario'],
+                'status_anterior' => $atividade['status']
+            ]);
+            
+            $message = 'Atividade excluída com sucesso!';
+            if ($atividade['eh_voluntario']) {
+                $message = 'Atividade com voluntário excluída com sucesso!';
+            }
+                
+            echo json_encode(['success' => true, 'message' => $message]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Atividade não encontrada']);
         }
         
     } catch (PDOException $e) {
+        logDebug("ERRO SQL deletarAtividade", ['error' => $e->getMessage()]);
         echo json_encode(['success' => false, 'message' => 'Erro ao excluir: ' . $e->getMessage()]);
     }
 }
