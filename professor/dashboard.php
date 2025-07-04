@@ -105,7 +105,112 @@ if (!empty($professor['foto'])) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="./css/style.css"/>
     <link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
-   
+    
+    <style>
+        /* CSS adicional para os novos elementos de voluntário */
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-group:has(input:checked) {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: #555;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: #dc3545;
+            cursor: pointer;
+        }
+
+        .voluntario-fields {
+            background-color: #fff5f5;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .voluntario-fields.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            border-left: 4px solid;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            border-color: #17a2b8;
+            color: #0c5460;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        /* Destacar quando é responsável por supervisão */
+        .supervisor-highlight {
+            border-color: #dc3545 !important;
+            background-color: #fff5f5 !important;
+        }
+
+        .supervisor-highlight .form-label {
+            color: #dc3545 !important;
+            font-weight: bold !important;
+        }
+
+        .voluntario-icon {
+            color: #dc3545;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
@@ -352,10 +457,65 @@ if (!empty($professor['foto'])) {
                 </div>
             </div>
             
+            <!-- NOVA SEÇÃO: Checkbox para Voluntário -->
             <div class="form-group">
-                <label for="instrutor_responsavel" class="form-label">Instrutor Responsável <span style="color: red;">*</span></label>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="eh_voluntario" name="eh_voluntario" value="1">
+                        <i class="fas fa-hands-helping voluntario-icon"></i>
+                        A atividade será ministrada por um voluntário?
+                    </label>
+                </div>
+                
+                <!-- Campos que aparecem quando é voluntário -->
+                <div id="voluntario-fields" class="voluntario-fields">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Preencha as informações do voluntário que irá ministrar esta atividade.
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="nome_voluntario" class="form-label">
+                                    <i class="fas fa-user voluntario-icon"></i>
+                                    Nome do Voluntário <span style="color: red;">*</span>
+                                </label>
+                                <input type="text" id="nome_voluntario" name="nome_voluntario" class="form-control"
+                                       placeholder="Digite o nome completo do voluntário">
+                            </div>
+                        </div>
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="telefone_voluntario" class="form-label">
+                                    <i class="fas fa-phone voluntario-icon"></i>
+                                    Telefone do Voluntário
+                                </label>
+                                <input type="text" id="telefone_voluntario" name="telefone_voluntario" class="form-control"
+                                       placeholder="(XX) XXXXX-XXXX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="especialidade_voluntario" class="form-label">
+                            <i class="fas fa-certificate voluntario-icon"></i>
+                            Especialidade/Formação
+                        </label>
+                        <input type="text" id="especialidade_voluntario" name="especialidade_voluntario" class="form-control"
+                               placeholder="Ex: Educador Físico, Bombeiro, Enfermeiro, Professor...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Campo Instrutor Responsável - modificado -->
+            <div class="form-group">
+                <label for="instrutor_responsavel" class="form-label">
+                    <span id="label-instrutor">Instrutor Responsável</span> <span style="color: red;">*</span>
+                </label>
                 <input type="text" id="instrutor_responsavel" name="instrutor_responsavel" class="form-control" required
-                       placeholder="Nome do instrutor que conduzirá a atividade">
+                       placeholder="Nome do instrutor que conduzirá a atividade" 
+                       value="<?php echo htmlspecialchars($usuario_nome); ?>">
             </div>
             
             <div class="form-group">
@@ -702,5 +862,78 @@ if (!empty($professor['foto'])) {
     <script src="js/dashboard.js"></script>
     <script src="js/galeria.js"></script>
     <script src="js/ocorrencias.js"></script>
+
+    <script>
+        // JavaScript para o toggle do checkbox de voluntário
+        function toggleVoluntarioFields() {
+            const checkbox = document.getElementById('eh_voluntario');
+            const voluntarioFields = document.getElementById('voluntario-fields');
+            const nomeVoluntarioInput = document.getElementById('nome_voluntario');
+            const labelInstrutor = document.getElementById('label-instrutor');
+            const instrutorInput = document.getElementById('instrutor_responsavel');
+            const instrutorGroup = instrutorInput.closest('.form-group');
+            
+            if (checkbox.checked) {
+                // Mostra os campos do voluntário
+                voluntarioFields.style.display = 'block';
+                voluntarioFields.classList.add('show');
+                nomeVoluntarioInput.required = true;
+                
+                // Muda o label e comportamento do instrutor responsável
+                labelInstrutor.textContent = 'Professor Responsável (Supervisão)';
+                instrutorInput.placeholder = 'Professor que supervisionará a atividade';
+                instrutorGroup.classList.add('supervisor-highlight');
+                
+                // Adiciona um aviso visual
+                if (!document.getElementById('supervisor-alert')) {
+                    const alert = document.createElement('div');
+                    alert.id = 'supervisor-alert';
+                    alert.className = 'alert alert-info';
+                    alert.innerHTML = '<i class="fas fa-info-circle"></i> Como a atividade será ministrada por um voluntário, você ficará responsável pela supervisão.';
+                    instrutorGroup.appendChild(alert);
+                }
+                
+            } else {
+                // Esconde os campos do voluntário
+                voluntarioFields.style.display = 'none';
+                voluntarioFields.classList.remove('show');
+                nomeVoluntarioInput.required = false;
+                nomeVoluntarioInput.value = '';
+                document.getElementById('telefone_voluntario').value = '';
+                document.getElementById('especialidade_voluntario').value = '';
+                
+                // Volta o label e comportamento original
+                labelInstrutor.textContent = 'Instrutor Responsável';
+                instrutorInput.placeholder = 'Nome do instrutor que conduzirá a atividade';
+                instrutorGroup.classList.remove('supervisor-highlight');
+                
+                // Remove o aviso
+                const alert = document.getElementById('supervisor-alert');
+                if (alert) {
+                    alert.remove();
+                }
+            }
+        }
+
+        // Inicializar quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', function() {
+            const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
+            if (ehVoluntarioCheckbox) {
+                ehVoluntarioCheckbox.addEventListener('change', toggleVoluntarioFields);
+                
+                // Aplicar máscara de telefone ao campo do voluntário
+                const telefoneVoluntario = document.getElementById('telefone_voluntario');
+                if (telefoneVoluntario && typeof $ !== 'undefined') {
+                    $(telefoneVoluntario).mask('(00) 00000-0000');
+                }
+                
+                // Definir data mínima como hoje
+                const dataAtividade = document.getElementById('data_atividade');
+                if (dataAtividade) {
+                    dataAtividade.min = new Date().toISOString().split('T')[0];
+                }
+            }
+        });
+    </script>
 </body>
-</html>
+</html

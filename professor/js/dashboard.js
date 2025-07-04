@@ -46,6 +46,94 @@ document.addEventListener('DOMContentLoaded', function() {
         cardAtividades: !!cardAtividades
     });
     
+    // =============================================
+    // NOVA FUNÇÃO: Toggle dos campos de voluntário
+    // =============================================
+    function toggleVoluntarioFields() {
+        const checkbox = document.getElementById('eh_voluntario');
+        const voluntarioFields = document.getElementById('voluntario-fields');
+        const nomeVoluntarioInput = document.getElementById('nome_voluntario');
+        const labelInstrutor = document.getElementById('label-instrutor');
+        const instrutorInput = document.getElementById('instrutor_responsavel');
+        const instrutorGroup = instrutorInput ? instrutorInput.closest('.form-group') : null;
+        
+        if (!checkbox || !voluntarioFields || !nomeVoluntarioInput || !labelInstrutor || !instrutorInput) {
+            console.warn('Alguns elementos do voluntário não foram encontrados');
+            return;
+        }
+        
+        if (checkbox.checked) {
+            console.log('Ativando campos de voluntário');
+            
+            // Mostra os campos do voluntário
+            voluntarioFields.style.display = 'block';
+            voluntarioFields.classList.add('show');
+            nomeVoluntarioInput.required = true;
+            
+            // Muda o label e comportamento do instrutor responsável
+            labelInstrutor.textContent = 'Professor Responsável (Supervisão)';
+            instrutorInput.placeholder = 'Professor que supervisionará a atividade';
+            if (instrutorGroup) {
+                instrutorGroup.classList.add('supervisor-highlight');
+            }
+            
+            // Adiciona um aviso visual
+            if (!document.getElementById('supervisor-alert') && instrutorGroup) {
+                const alert = document.createElement('div');
+                alert.id = 'supervisor-alert';
+                alert.className = 'alert alert-info';
+                alert.innerHTML = '<i class="fas fa-info-circle"></i> Como a atividade será ministrada por um voluntário, você ficará responsável pela supervisão.';
+                instrutorGroup.appendChild(alert);
+            }
+            
+        } else {
+            console.log('Desativando campos de voluntário');
+            
+            // Esconde os campos do voluntário
+            voluntarioFields.style.display = 'none';
+            voluntarioFields.classList.remove('show');
+            nomeVoluntarioInput.required = false;
+            nomeVoluntarioInput.value = '';
+            
+            // Limpa outros campos do voluntário
+            const telefoneVoluntario = document.getElementById('telefone_voluntario');
+            const especialidadeVoluntario = document.getElementById('especialidade_voluntario');
+            if (telefoneVoluntario) telefoneVoluntario.value = '';
+            if (especialidadeVoluntario) especialidadeVoluntario.value = '';
+            
+            // Volta o label e comportamento original
+            labelInstrutor.textContent = 'Instrutor Responsável';
+            instrutorInput.placeholder = 'Nome do instrutor que conduzirá a atividade';
+            if (instrutorGroup) {
+                instrutorGroup.classList.remove('supervisor-highlight');
+            }
+            
+            // Remove o aviso
+            const alert = document.getElementById('supervisor-alert');
+            if (alert) {
+                alert.remove();
+            }
+        }
+    }
+    
+    // =============================================
+    // NOVA FUNÇÃO: Validação dos campos de voluntário
+    // =============================================
+    function validarCamposVoluntario() {
+        const ehVoluntario = document.getElementById('eh_voluntario');
+        const nomeVoluntario = document.getElementById('nome_voluntario');
+        
+        if (!ehVoluntario || !nomeVoluntario) return true;
+        
+        if (ehVoluntario.checked && !nomeVoluntario.value.trim()) {
+            showMessage('mensagem-atividade', 'Por favor, preencha o nome do voluntário.', 'danger');
+            nomeVoluntario.focus();
+            return false;
+        }
+        
+        return true;
+    }
+    
     // Utility function to calculate age from birthdate
     function calcularIdade(dataNascimento) {
         const hoje = new Date();
@@ -99,8 +187,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.atividades && data.atividades.length > 0) {
                         let html = '';
                         data.atividades.forEach(atividade => {
+                            // NOVO: Mostrar informações de voluntário se existir
+                            let instrutorInfo = atividade.instrutor_responsavel || 'N/A';
+                            if (atividade.eh_voluntario == 1 && atividade.nome_voluntario) {
+                                instrutorInfo = `<span class="voluntario-badge"><i class="fas fa-hands-helping"></i> ${atividade.nome_voluntario}</span><br><small>Supervisionado por: ${atividade.instrutor_responsavel}</small>`;
+                            }
+                            
                             html += `
-                                <div class="atividade-item">
+                                <div class="atividade-item ${atividade.eh_voluntario == 1 ? 'atividade-voluntario' : ''}">
                                     <h3>${atividade.nome_atividade || 'Atividade sem nome'}</h3>
                                     
                                     <div class="atividade-info">
@@ -121,8 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <span>${atividade.local_atividade || 'N/A'}</span>
                                         </div>
                                         <div class="atividade-field">
-                                            <label>Instrutor:</label>
-                                            <span>${atividade.instrutor_responsavel || 'N/A'}</span>
+                                            <label>${atividade.eh_voluntario == 1 ? 'Voluntário/Supervisor:' : 'Instrutor:'}</label>
+                                            <span>${instrutorInfo}</span>
                                         </div>
                                         <div class="atividade-field">
                                             <label>Status:</label>
@@ -266,6 +360,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     elemento.value = campos[campo];
                 }
             });
+            
+            // NOVO: Preencher campos de voluntário se existir
+            const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
+            const nomeVoluntarioInput = document.getElementById('nome_voluntario');
+            const telefoneVoluntarioInput = document.getElementById('telefone_voluntario');
+            const especialidadeVoluntarioInput = document.getElementById('especialidade_voluntario');
+            
+            if (ehVoluntarioCheckbox && atividade.eh_voluntario == 1) {
+                ehVoluntarioCheckbox.checked = true;
+                
+                if (nomeVoluntarioInput && atividade.nome_voluntario) {
+                    nomeVoluntarioInput.value = atividade.nome_voluntario;
+                }
+                if (telefoneVoluntarioInput && atividade.telefone_voluntario) {
+                    telefoneVoluntarioInput.value = atividade.telefone_voluntario;
+                }
+                if (especialidadeVoluntarioInput && atividade.especialidade_voluntario) {
+                    especialidadeVoluntarioInput.value = atividade.especialidade_voluntario;
+                }
+                
+                // Ativar os campos de voluntário
+                toggleVoluntarioFields();
+            } else if (ehVoluntarioCheckbox) {
+                ehVoluntarioCheckbox.checked = false;
+                toggleVoluntarioFields();
+            }
         } else {
             // Nova atividade
             if (title) title.textContent = 'Nova Atividade';
@@ -276,6 +396,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (atividadeIdInput) atividadeIdInput.value = '';
             if (actionInput) actionInput.value = 'cadastrar';
+            
+            // Resetar campos de voluntário
+            const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
+            if (ehVoluntarioCheckbox) {
+                ehVoluntarioCheckbox.checked = false;
+                toggleVoluntarioFields();
+            }
         }
         
         // Carregar turmas e popular select de atividades
@@ -305,6 +432,38 @@ document.addEventListener('DOMContentLoaded', function() {
             title.textContent = `Detalhes: ${atividade.nome_atividade || 'Atividade'}`;
         }
         
+        // NOVO: Informações de voluntário nos detalhes
+        let instrutorSection = '';
+        if (atividade.eh_voluntario == 1 && atividade.nome_voluntario) {
+            instrutorSection = `
+                <div class="atividade-field">
+                    <label>Voluntário:</label>
+                    <span><i class="fas fa-hands-helping" style="color: #dc3545;"></i> ${atividade.nome_voluntario}</span>
+                </div>
+                ${atividade.telefone_voluntario ? `
+                <div class="atividade-field">
+                    <label>Telefone do Voluntário:</label>
+                    <span>${atividade.telefone_voluntario}</span>
+                </div>` : ''}
+                ${atividade.especialidade_voluntario ? `
+                <div class="atividade-field">
+                    <label>Especialidade:</label>
+                    <span>${atividade.especialidade_voluntario}</span>
+                </div>` : ''}
+                <div class="atividade-field">
+                    <label>Professor Supervisor:</label>
+                    <span>${atividade.instrutor_responsavel || 'N/A'}</span>
+                </div>
+            `;
+        } else {
+            instrutorSection = `
+                <div class="atividade-field">
+                    <label>Instrutor:</label>
+                    <span>${atividade.instrutor_responsavel || 'N/A'}</span>
+                </div>
+            `;
+        }
+        
         let html = `
             <div class="detalhes-atividade">
                 <h4>Informações da Atividade</h4>
@@ -329,10 +488,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <label>Local:</label>
                         <span>${atividade.local_atividade || 'N/A'}</span>
                     </div>
-                    <div class="atividade-field">
-                        <label>Instrutor:</label>
-                        <span>${atividade.instrutor_responsavel || 'N/A'}</span>
-                    </div>
+                    ${instrutorSection}
                     <div class="atividade-field">
                         <label>Status:</label>
                         <span class="status-${atividade.status || 'planejada'}">${formatarStatus(atividade.status)}</span>
@@ -526,6 +682,11 @@ document.addEventListener('DOMContentLoaded', function() {
         formAtividade.addEventListener('submit', function(e) {
             e.preventDefault();
             
+            // NOVA VALIDAÇÃO: Verificar campos de voluntário
+            if (!validarCamposVoluntario()) {
+                return;
+            }
+            
             const formData = new FormData(this);
             
             // Validação adicional para horários
@@ -565,6 +726,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 showMessage('mensagem-atividade', 'Erro de conexão. Tente novamente.', 'danger');
             });
         });
+    }
+    
+    // =============================================
+    // NOVO: Event listener para checkbox de voluntário
+    // =============================================
+    const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
+    if (ehVoluntarioCheckbox) {
+        ehVoluntarioCheckbox.addEventListener('change', toggleVoluntarioFields);
+        console.log('Event listener do voluntário adicionado');
+    }
+    
+    // =============================================
+    // NOVO: Aplicar máscara ao telefone do voluntário
+    // =============================================
+    const telefoneVoluntario = document.getElementById('telefone_voluntario');
+    if (telefoneVoluntario && typeof $ !== 'undefined') {
+        $(telefoneVoluntario).mask('(00) 00000-0000');
+        console.log('Máscara de telefone aplicada ao voluntário');
+    }
+    
+    // =============================================
+    // NOVO: Definir data mínima como hoje
+    // =============================================
+    const dataAtividade = document.getElementById('data_atividade');
+    if (dataAtividade) {
+        dataAtividade.min = new Date().toISOString().split('T')[0];
+        console.log('Data mínima definida');
     }
     
     // Toggle modals - com verificações
@@ -806,5 +994,5 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Rest of the profile and other functionality... (keeping the existing code)
     
-    console.log("Dashboard JS initialized successfully!");
+    console.log("Dashboard JS initialized successfully with volunteer functionality!");
 });
