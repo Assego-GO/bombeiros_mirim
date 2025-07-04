@@ -1,4 +1,4 @@
-// ===== SISTEMA DE MONITORAMENTO DE ATIVIDADES =====
+// ===== SISTEMA DE MONITORAMENTO DE ATIVIDADES ATUALIZADO =====
 // Arquivo: monitoramento.js
 // 
 // Este sistema busca dados EXCLUSIVAMENTE do banco de dados através da API:
@@ -233,7 +233,8 @@ async function carregarAtividades() {
         const response = await fetch('./api/get_atividades.php', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
             }
         });
         
@@ -244,28 +245,13 @@ async function carregarAtividades() {
         const data = await response.json();
         
         if (data.success) {
-            // Mapear dados do banco para o formato esperado
-            atividadesData = data.atividades.map(atividade => ({
-                id: atividade.id,
-                nome_atividade: atividade.nome_atividade,
-                tipo_atividade: atividade.nome_atividade, // Campo enum do banco
-                data_atividade: atividade.data_atividade,
-                hora_inicio: atividade.hora_inicio,
-                hora_fim: atividade.hora_termino, // Mapear hora_termino para hora_fim
-                local: atividade.local_atividade,
-                instrutor: atividade.instrutor_responsavel,
-                turma: atividade.turma_nome || `Turma ${atividade.turma_id}`,
-                objetivo: atividade.objetivo_atividade,
-                conteudo_abordado: atividade.conteudo_abordado,
-                status: atividade.status,
-                unidade_nome: atividade.unidade_nome,
-                professor_nome: atividade.professor_nome,
-                criado_em: atividade.criado_em,
-                atualizado_em: atividade.atualizado_em
-            }));
+            // Dados já vêm formatados da API
+            atividadesData = data.atividades;
             
             console.log('✅ Atividades carregadas do banco:', atividadesData.length);
             console.log('📊 Estatísticas:', data.stats);
+            
+            // Atualizar interface
             atualizarDashboard();
             
             showNotification(`${atividadesData.length} atividades carregadas do banco!`, 'success');
@@ -285,8 +271,6 @@ async function carregarAtividades() {
         showLoading(false);
     }
 }
-
-
 
 // ===== DASHBOARD =====
 function atualizarDashboard() {
@@ -375,6 +359,11 @@ function criarItemAtividade(atividade) {
     const statusClass = atividade.status.replace('_', '-');
     const statusTexto = formatarStatus(atividade.status);
     
+    // Usar os novos campos da API
+    const instrutor = atividade.instrutor_responsavel || 'Não informado';
+    const local = atividade.local_atividade || 'Não informado';
+    const turma = atividade.turma_nome || 'Não informado';
+    
     return `
         <div class="atividade-item" onclick="abrirDetalhesAtividade(${atividade.id})">
             <div class="atividade-header">
@@ -388,24 +377,36 @@ function criarItemAtividade(atividade) {
                 </div>
                 <div class="detalhe-item">
                     <i class="fas fa-clock"></i>
-                    <span>${atividade.hora_inicio} - ${atividade.hora_fim}</span>
+                    <span>${atividade.hora_inicio} - ${atividade.hora_termino}</span>
                 </div>
                 <div class="detalhe-item">
                     <i class="fas fa-map-marker-alt"></i>
-                    <span>${atividade.local}</span>
+                    <span>${local}</span>
                 </div>
                 <div class="detalhe-item">
                     <i class="fas fa-chalkboard-teacher"></i>
-                    <span>${atividade.instrutor}</span>
+                    <span>${instrutor}</span>
                 </div>
                 <div class="detalhe-item">
                     <i class="fas fa-users"></i>
-                    <span>${atividade.turma}</span>
+                    <span>${turma}</span>
                 </div>
                 <div class="detalhe-item">
                     <i class="fas fa-tag"></i>
-                    <span>${atividade.tipo_atividade}</span>
+                    <span>${atividade.nome_atividade}</span>
                 </div>
+                ${atividade.duracao_estimada ? `
+                <div class="detalhe-item">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>${atividade.duracao_estimada}</span>
+                </div>
+                ` : ''}
+                ${atividade.eh_voluntario ? `
+                <div class="detalhe-item">
+                    <i class="fas fa-hand-holding-heart"></i>
+                    <span>Atividade com Voluntário</span>
+                </div>
+                ` : ''}
             </div>
         </div>
     `;
@@ -431,7 +432,7 @@ function aplicarFiltrosAtividades() {
     }
     
     if (tipo) {
-        atividadesFiltradas = atividadesFiltradas.filter(a => a.tipo_atividade === tipo);
+        atividadesFiltradas = atividadesFiltradas.filter(a => a.nome_atividade === tipo);
     }
     
     if (data) {
@@ -515,7 +516,7 @@ function gerarCalendario() {
             const atividadeDiv = document.createElement('div');
             atividadeDiv.className = `atividade-calendario ${atividade.status}`;
             atividadeDiv.textContent = atividade.nome_atividade;
-            atividadeDiv.title = `${atividade.nome_atividade} - ${atividade.hora_inicio}`;
+            atividadeDiv.title = `${atividade.nome_atividade} - ${atividade.hora_inicio} (${atividade.instrutor_responsavel})`;
             atividadeDiv.onclick = (e) => {
                 e.stopPropagation();
                 abrirDetalhesAtividade(atividade.id);
@@ -552,18 +553,18 @@ function abrirDetalhesAtividade(id) {
 function preencherDetalhesAtividade(atividade) {
     const elementos = {
         'detalhe-nome-atividade': atividade.nome_atividade,
-        'detalhe-data-horario': `${formatarData(atividade.data_atividade)} das ${atividade.hora_inicio} às ${atividade.hora_fim}`,
-        'detalhe-local': atividade.local,
-        'detalhe-instrutor': atividade.instrutor,
-        'detalhe-turma': atividade.turma,
-        'detalhe-objetivo': atividade.objetivo,
+        'detalhe-data-horario': `${formatarData(atividade.data_atividade)} das ${atividade.hora_inicio} às ${atividade.hora_termino}`,
+        'detalhe-local': atividade.local_atividade,
+        'detalhe-instrutor': atividade.instrutor_responsavel,
+        'detalhe-turma': atividade.turma_nome,
+        'detalhe-objetivo': atividade.objetivo_atividade,
         'detalhe-conteudo': atividade.conteudo_abordado
     };
     
     Object.entries(elementos).forEach(([id, valor]) => {
         const elemento = document.getElementById(id);
         if (elemento) {
-            elemento.textContent = valor;
+            elemento.textContent = valor || 'Não informado';
         }
     });
     
@@ -573,6 +574,24 @@ function preencherDetalhesAtividade(atividade) {
         const statusClass = atividade.status.replace('_', '-');
         statusBadge.className = `status-badge ${statusClass}`;
         statusBadge.textContent = formatarStatus(atividade.status);
+    }
+    
+    // Informações adicionais sobre voluntário se aplicável
+    if (atividade.eh_voluntario) {
+        const infoVoluntario = document.createElement('div');
+        infoVoluntario.className = 'info-grupo';
+        infoVoluntario.innerHTML = `
+            <h4><i class="fas fa-hand-holding-heart"></i> Voluntário</h4>
+            <p><strong>Nome:</strong> ${atividade.nome_voluntario}</p>
+            <p><strong>Especialidade:</strong> ${atividade.especialidade_voluntario}</p>
+            <p><strong>Telefone:</strong> ${atividade.telefone_voluntario}</p>
+        `;
+        
+        // Adicionar após o conteúdo
+        const atividadeInfo = document.querySelector('.atividade-info');
+        if (atividadeInfo) {
+            atividadeInfo.appendChild(infoVoluntario);
+        }
     }
 }
 
