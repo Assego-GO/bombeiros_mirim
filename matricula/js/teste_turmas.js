@@ -881,11 +881,12 @@ document.addEventListener("DOMContentLoaded", () => {
                             <table style="min-width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th style="width: 20%;">Nome da Turma</th>
+                                        <th style="width: 20%;">Nome da TurmAAa</th>
                                         <th style="width: 20%;">Unidade</th>
                                         <th style="width: 20%;">Professor</th>
                                         <th style="width: 10%;">Capacidade</th>
                                         <th style="width: 10%;">Horário</th>
+                                        <th style="width: 10%;">Status</th>
                                         <th style="width: 10%;">Status</th>
                                         <th style="width: 10%; text-align: center;">Ações</th>
                                     </tr>

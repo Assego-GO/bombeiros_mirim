@@ -21,6 +21,8 @@ try {
                 t.horario_fim,
                 t.data_criacao,
                 t.ultima_atualizacao,
+                t.data_inicio,
+                t.data_fim,
                 u.nome AS unidade_nome,
                 p.nome AS professor_nome
             FROM 
@@ -70,7 +72,9 @@ try {
             'data_criacao' => $dataCriacao,
             'ultima_atualizacao' => $ultimaAtualizacao,
             'unidade_nome' => $row['unidade_nome'] ?: '-',
-            'professor_nome' => $row['professor_nome'] ?: '-'
+            'professor_nome' => $row['professor_nome'] ?: '-',
+            'data_inicio' => $row['data_inicio'] ?: '-',
+            'data_fim' => $row['data_fim'] ?: '-'
         ];
     }
     

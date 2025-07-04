@@ -1054,7 +1054,7 @@ function listarTurmas() {
       modal.style.display = 'flex';
 
       let html = `
-              <div class="modal" style="max-width: 80%; width: 900px;">
+              <div class="modal" style="max-width: 90%; width: 1000px;">
                   <div class="modal-header">
                       <span><i class="fas fa-chalkboard"></i> Lista de Turmas</span>
                       <button onclick="this.closest('.modal-backdrop').remove()">×</button>
@@ -1069,6 +1069,8 @@ function listarTurmas() {
                                       <th style="width: 20%;">Professor</th>
                                       <th style="width: 10%;">Capacidade</th>
                                       <th style="width: 10%;">Horário</th>
+                                      <th style="width: 10%;">Data Início</th>
+                                      <th style="width: 10%;">Data Fim</th>
                                       <th style="width: 10%;">Status</th>
                                       <th style="width: 10%; text-align: center;">Ações</th>
                                   </tr>
@@ -1091,6 +1093,8 @@ function listarTurmas() {
                           <td>${turma.professor_nome || '-'}</td>
                           <td>${turma.capacidade || '0'} / ${turma.matriculados || '0'}</td>
                           <td>${turma.horario_inicio || '-'} - ${turma.horario_fim || '-'}</td>
+                          <td>${turma.data_inicio || '-'}</td>  
+                          <td>${turma.data_fim || '-'}</td>
                           <td>${formatarStatus(turma.status || 'ATIVO')}</td>
                           <td style="text-align: center; white-space: nowrap;">
                               <button class="action-btn editar-btn" title="Editar" onclick="editarTurma(${turma.id})">
