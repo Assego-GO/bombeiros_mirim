@@ -1,38 +1,357 @@
 <?php
-error_reporting(E_ALL);
+// Configurações de sessão para produção
+ini_set('session.cookie_httponly', 1);
+ini_set('session.cookie_secure', 1); // Exige HTTPS em produção
+ini_set('session.use_strict_mode', 1);
+ini_set('session.cookie_samesite', 'Strict');
+
+// Configurar domínio do cookie para o site específico
+$domain = $_SERVER['HTTP_HOST'] ?? '';
+if (strpos($domain, 'assego.com.br') !== false) {
+    ini_set('session.cookie_domain', '.assego.com.br'); // Permite subdomínios
+}
+
+// Headers de segurança para produção
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+
+// HSTS só se tiver SSL (recomendado para produção)
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
+}
 
 session_start();
+error_reporting(E_ALL);
 
-// Verifica se há uma mensagem de erro na sessão
-$erro_mensagem = isset($_SESSION['erro_login']) ? $_SESSION['erro_login'] : '';
-// Limpa a mensagem de erro da sessão após recuperá-la
-unset($_SESSION['erro_login']);
+// Carregar configurações do .env
+function loadEnv($file) {
+    if (!file_exists($file)) return;
+    
+    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
+            list($key, $value) = explode('=', $line, 2);
+            $_ENV[trim($key)] = trim($value);
+        }
+    }
+}
+
+loadEnv('.env');
+
+// Função para obter IP real
+function getRealUserIP() {
+    $ipHeaders = ['HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'];
+    
+    foreach ($ipHeaders as $header) {
+        if (!empty($_SERVER[$header])) {
+            $ip = $_SERVER[$header];
+            if ($header === 'HTTP_X_FORWARDED_FOR') {
+                $ips = explode(',', $ip);
+                $ip = trim($ips[0]);
+            }
+            if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                return $ip;
+            }
+        }
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+}
+
+// Criar diretório de segurança
+function createSecurityDir() {
+    $dir = 'security';
+    if (!file_exists($dir)) {
+        @mkdir($dir, 0750, true);
+        @file_put_contents($dir . '/.htaccess', "Deny from all\n");
+    }
+    return $dir;
+}
+
+// Verificar tentativas de login
+function checkLoginAttempts($ip) {
+    $securityDir = createSecurityDir();
+    $file = $securityDir . '/attempts_' . md5($ip) . '.json';
+    
+    if (!file_exists($file)) {
+        return ['blocked' => false, 'attempts' => 0];
+    }
+    
+    $content = @file_get_contents($file);
+    if (!$content) {
+        return ['blocked' => false, 'attempts' => 0];
+    }
+    
+    $data = json_decode($content, true);
+    if (!$data) {
+        return ['blocked' => false, 'attempts' => 0];
+    }
+    
+    $timePassed = time() - ($data['last_attempt'] ?? 0);
+    
+    // Limpar após 15 minutos
+    if ($timePassed > 900) {
+        @unlink($file);
+        return ['blocked' => false, 'attempts' => 0];
+    }
+    
+    // Verificar se está bloqueado
+    if (($data['attempts'] ?? 0) >= 5) {
+        $remainingTime = 900 - $timePassed;
+        return [
+            'blocked' => true, 
+            'attempts' => $data['attempts'], 
+            'remaining_time' => $remainingTime
+        ];
+    }
+    
+    return ['blocked' => false, 'attempts' => $data['attempts'] ?? 0];
+}
+
+// Registrar tentativa falhada
+function recordFailedAttempt($ip) {
+    $securityDir = createSecurityDir();
+    $file = $securityDir . '/attempts_' . md5($ip) . '.json';
+    
+    $data = ['attempts' => 0, 'first_attempt' => time()];
+    
+    if (file_exists($file)) {
+        $content = @file_get_contents($file);
+        if ($content) {
+            $existing = json_decode($content, true);
+            if ($existing) {
+                $data = $existing;
+            }
+        }
+    }
+    
+    $data['attempts'] = ($data['attempts'] ?? 0) + 1;
+    $data['last_attempt'] = time();
+    
+    @file_put_contents($file, json_encode($data));
+    
+    return $data['attempts'];
+}
+
+// Detectar bot via honeypot
+function detectBot() {
+    $honeypotFields = ['website', 'email_address', 'phone'];
+    
+    foreach ($honeypotFields as $field) {
+        if (!empty($_POST[$field])) {
+            // Log do bot detectado
+            $ip = getRealUserIP();
+            $securityDir = createSecurityDir();
+            $logFile = $securityDir . '/security.log';
+            $logEntry = date('Y-m-d H:i:s') . " - BOT_DETECTED - IP: $ip - Field: $field - Value: " . $_POST[$field] . "\n";
+            @file_put_contents($logFile, $logEntry, FILE_APPEND);
+            return true;
+        }
+    }
+    return false;
+}
+
+// Verificar Turnstile no servidor
+function verifyTurnstile($token) {
+    if (empty($token)) {
+        return false;
+    }
+    
+    $secret = $_ENV['TURNSTILE_SECRET_KEY'] ?? '1x0000000000000000000000000000000AA';
+    $ip = getRealUserIP();
+    
+    $data = [
+        'secret' => $secret,
+        'response' => $token,
+        'remoteip' => $ip
+    ];
+    
+    $options = [
+        'http' => [
+            'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method' => 'POST',
+            'content' => http_build_query($data),
+            'timeout' => 10
+        ]
+    ];
+    
+    $context = stream_context_create($options);
+    $result = @file_get_contents('https://challenges.cloudflare.com/turnstile/v0/siteverify', false, $context);
+    
+    if ($result === false) {
+        // Se falhar a verificação (rede, etc), logs mas permite (para não quebrar o sistema)
+        error_log("Turnstile verification failed - network error");
+        return true; // Permite em caso de falha técnica
+    }
+    
+    $response = json_decode($result, true);
+    
+    // Com chaves de teste (1x000...), sempre retorna success
+    // Com chaves reais, faz verificação real
+    return isset($response['success']) && $response['success'] === true;
+}
+function checkLocation($ip) {
+    // Cache simples
+    $securityDir = createSecurityDir();
+    $cacheFile = $securityDir . '/geo_' . md5($ip) . '.json';
+    
+    // Verificar cache (válido por 24h)
+    if (file_exists($cacheFile) && time() - filemtime($cacheFile) < 86400) {
+        $cached = @file_get_contents($cacheFile);
+        if ($cached) {
+            $data = json_decode($cached, true);
+            return $data;
+        }
+    }
+    
+    // IPs locais sempre permitidos
+    if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+        return ['allowed' => true, 'city' => 'LOCAL', 'region' => 'LOCAL'];
+    }
+    
+    // Tentar API de geolocalização
+    $apiUrl = "http://ip-api.com/json/{$ip}?fields=status,country,countryCode,region,regionName,city";
+    $context = stream_context_create([
+        'http' => ['timeout' => 3, 'user_agent' => 'BombeiroMirim-Sistema/1.0 (bombeiromirim.assego.com.br)']
+    ]);
+    
+    $response = @file_get_contents($apiUrl, false, $context);
+    
+    if ($response) {
+        $data = json_decode($response, true);
+        if ($data && $data['status'] === 'success') {
+            $city = $data['city'] ?? 'UNKNOWN';
+            $region = $data['region'] ?? 'UNKNOWN';
+            $country = $data['countryCode'] ?? 'UN';
+            
+            // Verificar se é de Goiânia/GO/Brasil
+            $allowedCities = [
+                'Goiânia', 'Goiania', 'Aparecida de Goiânia', 'Aparecida de Goiania',
+                'Senador Canedo', 'Trindade', 'Goianira', 'Hidrolândia', 'Hidrolandia'
+            ];
+            
+            $isAllowed = ($country === 'BR' && $region === 'GO' && 
+                         in_array($city, $allowedCities)) || 
+                         in_array($city, ['LOCAL', 'UNKNOWN']);
+            
+            $result = [
+                'allowed' => $isAllowed,
+                'city' => $city,
+                'region' => $region,
+                'country' => $country
+            ];
+            
+            // Salvar no cache
+            @file_put_contents($cacheFile, json_encode($result));
+            return $result;
+        }
+    }
+    
+    // Se falhou, permitir (não bloquear por falha técnica)
+    $result = ['allowed' => true, 'city' => 'UNKNOWN', 'region' => 'UNKNOWN'];
+    @file_put_contents($cacheFile, json_encode($result));
+    return $result;
+}
+
+// Gerar CSRF token
+function generateCSRFToken() {
+    if (!isset($_SESSION['csrf_token'])) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf_token'];
+}
+
+// ========================================
+// PROCESSAMENTO PRINCIPAL
+// ========================================
+
+$ip = getRealUserIP();
 
 // Verificação de sessão existente
 if (isset($_SESSION['usuario_id'])) {
-    // Se for admin, redireciona para o painel administrativo
-    if ($_SESSION['usuario_tipo'] == 'admin') {
-        header('Location: painel.php');
-        exit;
-    } 
-    // Se for professor, redireciona para o dashboard do professor
-    elseif ($_SESSION['usuario_tipo'] == 'professor') {
-        header('Location: ../professor/dashboard.php');
+    $session_timeout = 3600;
+    if (isset($_SESSION['last_activity']) && 
+        (time() - $_SESSION['last_activity']) > $session_timeout) {
+        session_destroy();
+        session_start();
+        $_SESSION['erro_login'] = "Sua sessão expirou. Faça login novamente.";
+    } else {
+        $_SESSION['last_activity'] = time();
+        
+        if ($_SESSION['usuario_tipo'] == 'admin') {
+            header('Location: painel.php');
+            exit;
+        } elseif ($_SESSION['usuario_tipo'] == 'professor') {
+            header('Location: ../professor/dashboard.php');
+            exit;
+        } elseif ($_SESSION['usuario_tipo'] == 'aluno') {
+            header('Location: ../aluno/dashboard.php');
+            exit;
+        }
+    }
+}
+
+// Verificações de segurança
+$login_status = checkLoginAttempts($ip);
+$location_check = checkLocation($ip);
+$location_blocked = !$location_check['allowed'];
+
+// Verificar honeypot no POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (detectBot()) {
+        $_SESSION['erro_login'] = "Verificação de segurança falhou. Tente novamente.";
+        header('Location: index.php');
         exit;
     }
-    elseif ($_SESSION['usuario_tipo'] == 'aluno') {
-        header('Location: ../aluno/dashboard.php');
+    
+    if ($location_blocked) {
+        $_SESSION['erro_login'] = "Acesso restrito a usuários de Goiânia e região.";
+        header('Location: index.php');
+        exit;
+    }
+    
+    // VERIFICAR TURNSTILE NO SERVIDOR
+    $turnstile_token = $_POST['cf-turnstile-response'] ?? '';
+    if (!verifyTurnstile($turnstile_token)) {
+        $_SESSION['erro_login'] = "Verificação de segurança Turnstile falhou. Tente novamente.";
+        header('Location: index.php');
         exit;
     }
 }
+
+// Recuperar e processar mensagem de erro
+$erro_mensagem = isset($_SESSION['erro_login']) ? $_SESSION['erro_login'] : '';
+
+// Registrar tentativa se houve erro
+if (!empty($erro_mensagem)) {
+    $attempts = recordFailedAttempt($ip);
+    
+    // Atualizar status após registrar
+    $login_status = checkLoginAttempts($ip);
+}
+
+// Limpar mensagem de erro
+unset($_SESSION['erro_login']);
+
+// Obter chaves do Turnstile
+$turnstile_site_key = $_ENV['TURNSTILE_SITE_KEY'] ?? '1x00000000000000000000AA';
+$turnstile_secret_key = $_ENV['TURNSTILE_SECRET_KEY'] ?? '1x0000000000000000000000000000000AA';
+
+// Log das chaves para debug (só primeiros caracteres por segurança)
+$domain = $_SERVER['HTTP_HOST'] ?? 'localhost';
+error_log("Turnstile keys loaded for domain: $domain - Site: " . substr($turnstile_site_key, 0, 8) . "... Secret: " . substr($turnstile_secret_key, 0, 8) . "...");
+
+// Sistema pronto para produção
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Superação</title>
+    <title>Login - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
         
@@ -346,6 +665,49 @@ if (isset($_SESSION['usuario_id'])) {
             transform: scale(1.2) rotate(10deg);
         }
         
+        /* CAMPOS HONEYPOT - INVISÍVEIS */
+        .honeypot {
+            position: absolute !important;
+            left: -9999px !important;
+            width: 1px !important;
+            height: 1px !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            tabindex: -1 !important;
+        }
+        
+        .security-wrapper {
+            margin: 25px 0;
+            padding: 15px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 2px solid rgba(46, 204, 113, 0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .security-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            color: #27ae60;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .security-info i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+        
+        .turnstile-wrapper {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+        }
+        
         .btn-login {
             width: 100%;
             background: linear-gradient(45deg, var(--secondary), var(--accent));
@@ -367,6 +729,12 @@ if (isset($_SESSION['usuario_id'])) {
             text-transform: uppercase;
             font-size: 15px;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
         }
         
         .btn-login::before {
@@ -399,26 +767,44 @@ if (isset($_SESSION['usuario_id'])) {
         .btn-login span {
             position: relative;
             z-index: 3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .btn-login:hover {
+        .btn-login:hover:not(:disabled) {
             transform: translateY(-4px);
             box-shadow: 
                 0 15px 40px rgba(243, 156, 18, 0.4),
                 0 8px 25px rgba(232, 212, 36, 0.3);
         }
         
-        .btn-login:hover::before {
+        .btn-login:hover:not(:disabled)::before {
             opacity: 1;
         }
         
-        .btn-login:hover::after {
+        .btn-login:hover:not(:disabled)::after {
             width: 300px;
             height: 300px;
         }
         
-        .btn-login:active {
+        .btn-login:active:not(:disabled) {
             transform: translateY(-1px);
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         .error-message {
@@ -454,6 +840,62 @@ if (isset($_SESSION['usuario_id'])) {
         @keyframes errorPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.2); }
+        }
+        
+        .blocked-message {
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 193, 7, 0.05));
+            color: #f57c00;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border: 2px solid rgba(255, 152, 0, 0.2);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.1);
+        }
+
+        .blocked-message i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .location-blocked-message {
+            background: linear-gradient(135deg, rgba(233, 6, 19, 0.1), rgba(170, 43, 28, 0.05));
+            color: var(--primary);
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            border: 2px solid rgba(233, 6, 19, 0.3);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(233, 6, 19, 0.2);
+        }
+
+        .location-blocked-message i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .attempts-warning {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #f57c00;
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            text-align: center;
+            font-weight: 500;
         }
         
         .login-footer {
@@ -522,7 +964,6 @@ if (isset($_SESSION['usuario_id'])) {
     </style>
 </head>
 <body>
- 
     <div class="background-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
@@ -535,11 +976,30 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="login-header">
             <div class="logo-wrapper">
                 <div class="logo-glow"></div>
-                <img src="./img/logobo.png" alt="Logo SuperAção" class="logo-img">
+                <img src="./img/logobo.png" alt="Logo Bombeiro Mirim" class="logo-img">
             </div>
             <h1 class="app-title">Bombeiro Mirim</h1>
             <p class="app-subtitle">Entre para acessar sua conta</p>
         </div>
+        
+        <?php if ($login_status['blocked']): ?>
+            <div class="blocked-message">
+                <i class="fas fa-clock"></i>
+                Acesso temporariamente bloqueado por segurança. Tente novamente em <?php echo ceil($login_status['remaining_time'] / 60); ?> minuto(s).
+            </div>
+        <?php elseif ($location_blocked): ?>
+            <div class="location-blocked-message">
+                <i class="fas fa-map-marker-alt"></i>
+                Acesso restrito a usuários de Goiânia e região metropolitana. 
+                (Detectado: <?php echo htmlspecialchars($location_check['city']); ?>)
+            </div>
+        <?php elseif ($login_status['attempts'] > 0): ?>
+            <div class="attempts-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                Atenção: <?php echo $login_status['attempts']; ?> tentativa(s) de login detectada(s). 
+                Restam <?php echo (5 - $login_status['attempts']); ?> tentativa(s) antes do bloqueio.
+            </div>
+        <?php endif; ?>
         
         <?php if (!empty($erro_mensagem)): ?>
             <div class="error-message">
@@ -548,23 +1008,78 @@ if (isset($_SESSION['usuario_id'])) {
             </div>
         <?php endif; ?>
         
-        <form action="verificar_login.php" method="POST" class="login-form">
+        <form action="verificar_login.php" method="POST" class="login-form" id="loginForm">
+            <!-- Token CSRF para segurança -->
+            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+            
+            <!-- CAMPOS HONEYPOT INVISÍVEIS - DETECTAR BOTS -->
+            <input type="text" name="website" class="honeypot" tabindex="-1" autocomplete="off">
+            <input type="email" name="email_address" class="honeypot" tabindex="-1" autocomplete="off">
+            <input type="tel" name="phone" class="honeypot" tabindex="-1" autocomplete="off">
+            
             <div class="form-group">
-                <input type="email" name="email" class="form-control" placeholder="Digite seu email" required>
+                <input type="email" 
+                       name="email" 
+                       class="form-control" 
+                       placeholder="Digite seu email" 
+                       required 
+                       maxlength="255"
+                       autocomplete="email"
+                       id="email"
+                       <?php echo ($login_status['blocked'] || $location_blocked) ? 'disabled' : ''; ?>>
                 <div class="icon-wrapper">
                     <i class="fas fa-envelope"></i>
                 </div>
             </div>
             
             <div class="form-group">
-                <input type="password" name="senha" class="form-control" placeholder="Digite sua senha" required>
+                <input type="password" 
+                       name="senha" 
+                       class="form-control" 
+                       placeholder="Digite sua senha" 
+                       required 
+                       maxlength="255"
+                       autocomplete="current-password"
+                       id="senha"
+                       <?php echo ($login_status['blocked'] || $location_blocked) ? 'disabled' : ''; ?>>
                 <div class="icon-wrapper">
                     <i class="fas fa-lock"></i>
                 </div>
             </div>
             
-            <button type="submit" class="btn-login">
-                <span>Entrar</span>
+            <?php if (!$login_status['blocked'] && !$location_blocked): ?>
+            <div class="security-wrapper">
+                <div class="security-info">
+                    <i class="fas fa-shield-alt"></i>
+                   
+                </div>
+                <div class="turnstile-wrapper">
+                    <div class="cf-turnstile" 
+                         data-sitekey="<?php echo htmlspecialchars($turnstile_site_key); ?>"
+                         data-callback="onTurnstileSuccess"
+                         data-expired-callback="onTurnstileExpired"
+                         data-error-callback="onTurnstileError">
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+            
+            <button type="submit" 
+                    class="btn-login" 
+                    id="submitBtn" 
+                    <?php echo ($login_status['blocked'] || $location_blocked) ? 'disabled' : ''; ?>>
+                <span>
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <?php 
+                        if ($login_status['blocked']) {
+                            echo 'Bloqueado';
+                        } elseif ($location_blocked) {
+                            echo 'Localização Restrita';
+                        } else {
+                            echo 'Entrar';
+                        }
+                    ?>
+                </span>
             </button>
         </form>
         
@@ -572,5 +1087,194 @@ if (isset($_SESSION['usuario_id'])) {
             &copy; <?= date('Y') ?> Bombeiro Mirim - Todos os direitos reservados
         </div>
     </div>
+
+    <script>
+        /*
+        CONFIGURAÇÃO PARA DOMÍNIO: bombeiromirim.assego.com.br
+        
+        1. TURNSTILE (Cloudflare):
+           - Criar novo site com domínio: bombeiromirim.assego.com.br
+           - Gerar chaves específicas para este domínio
+           - Atualizar .env com as chaves reais
+        
+        2. SSL/HTTPS:
+           - Certificado SSL obrigatório
+           - Redirect HTTP → HTTPS
+           - HSTS habilitado
+        
+        3. CHAVES DE TESTE vs REAIS:
+           - Teste: 1x00000000000000000000AA (sempre passa)
+           - Real: 0x4AAAxxxxxxxxxxxxxxxxx (verificação real)
+           
+        4. COOKIES/SESSÃO:
+           - Configurado para .assego.com.br
+           - Secure cookies (HTTPS only)
+           - SameSite Strict
+        */
+        
+        let turnstileVerified = false;
+        let formSubmitting = false;
+        
+        const isBlocked = <?php echo ($login_status['blocked'] || $location_blocked) ? 'true' : 'false'; ?>;
+        
+        if (isBlocked) {
+            document.getElementById('submitBtn').disabled = true;
+        }
+        
+        function onTurnstileSuccess(token) {
+            if (!isBlocked) {
+                turnstileVerified = true;
+                updateSubmitButton();
+            }
+        }
+        
+        function onTurnstileExpired() {
+            turnstileVerified = false;
+            updateSubmitButton();
+        }
+        
+        function onTurnstileError() {
+            turnstileVerified = false;
+            updateSubmitButton();
+            if (!isBlocked) {
+                showError('Erro na verificação de segurança. Recarregue a página.');
+            }
+        }
+        
+        function updateSubmitButton() {
+            if (isBlocked) return;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const email = document.getElementById('email').value.trim();
+            const senha = document.getElementById('senha').value.trim();
+            
+            if (turnstileVerified && email && senha && isValidEmail(email) && senha.length >= 6) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+        
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email) && email.length <= 255;
+        }
+        
+        if (!isBlocked) {
+            document.getElementById('email').addEventListener('input', function() {
+                this.value = this.value.toLowerCase();
+                updateSubmitButton();
+            });
+            
+            document.getElementById('senha').addEventListener('input', updateSubmitButton);
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                if (formSubmitting || isBlocked) {
+                    e.preventDefault();
+                    return;
+                }
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const spinner = document.getElementById('loadingSpinner');
+                const email = document.getElementById('email').value.trim();
+                const senha = document.getElementById('senha').value.trim();
+                
+                if (!turnstileVerified) {
+                    e.preventDefault();
+                    showError('Complete a verificação de segurança.');
+                    return;
+                }
+                
+                if (!email || !senha) {
+                    e.preventDefault();
+                    showError('Preencha todos os campos.');
+                    return;
+                }
+                
+                if (!isValidEmail(email)) {
+                    e.preventDefault();
+                    showError('Email inválido.');
+                    return;
+                }
+                
+                if (senha.length < 6) {
+                    e.preventDefault();
+                    showError('Senha deve ter pelo menos 6 caracteres.');
+                    return;
+                }
+                
+                formSubmitting = true;
+                submitBtn.disabled = true;
+                spinner.style.display = 'inline-block';
+                submitBtn.querySelector('span').innerHTML = '<div class="loading-spinner" style="display: inline-block;"></div>Entrando...';
+            });
+        }
+        
+        function showError(message) {
+            const existingError = document.querySelector('.error-message');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+            
+            const form = document.getElementById('loginForm');
+            form.parentNode.insertBefore(errorDiv, form);
+            
+            setTimeout(() => {
+                if (errorDiv.parentNode) {
+                    errorDiv.remove();
+                }
+            }, 5000);
+        }
+        
+        // Proteção honeypot
+        document.querySelectorAll('.honeypot').forEach(field => {
+            field.addEventListener('input', function() {
+                console.log('Bot detectado tentando preencher honeypot');
+                this.form.style.display = 'none';
+            });
+        });
+        
+        // Proteção contra paste
+        document.querySelectorAll('input:not(.honeypot)').forEach(input => {
+            input.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    if (this.value.length > 255) {
+                        this.value = this.value.substring(0, 255);
+                        showError('Texto colado muito longo, foi truncado.');
+                    }
+                }, 10);
+            });
+        });
+        
+        // Contador regressivo
+        <?php if ($login_status['blocked']): ?>
+        let timeLeft = <?php echo $login_status['remaining_time']; ?>;
+        
+        function updateCountdown() {
+            if (timeLeft <= 0) {
+                location.reload();
+                return;
+            }
+            
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timeString = minutes + ':' + (seconds < 10 ? '0' + seconds : seconds);
+            
+            const blockedMsg = document.querySelector('.blocked-message');
+            if (blockedMsg) {
+                blockedMsg.innerHTML = `<i class="fas fa-clock"></i> Acesso bloqueado. Desbloqueio em: ${timeString}`;
+            }
+            
+            timeLeft--;
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+        <?php endif; ?>
+    </script>
 </body>
 </html>
