@@ -24,7 +24,7 @@ try {
         throw new Exception("JSON inválido: " . json_last_error_msg());
     }
     
-    // Extrair campos do JSON
+    // Extrair campos do JSON (incluindo as novas datas)
     $id = isset($data['id']) ? intval($data['id']) : 0;
     $nome_turma = isset($data['nome_turma']) ? $data['nome_turma'] : '';
     $id_unidade = isset($data['id_unidade']) ? intval($data['id_unidade']) : 0;
@@ -35,9 +35,29 @@ try {
     $horario_inicio = isset($data['horario_inicio']) ? $data['horario_inicio'] : '';
     $horario_fim = isset($data['horario_fim']) ? $data['horario_fim'] : '';
     
+    // NOVOS CAMPOS DE DATA
+    $data_inicio = isset($data['data_inicio']) ? $data['data_inicio'] : null;
+    $data_fim = isset($data['data_fim']) ? $data['data_fim'] : null;
+    
     // Validar campos obrigatórios
     if ($id <= 0 || empty($nome_turma)) {
         throw new Exception("Campos obrigatórios não fornecidos: ID e Nome da Turma");
+    }
+    
+    // Validar formato das datas (se fornecidas)
+    if (!empty($data_inicio) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_inicio)) {
+        throw new Exception("Formato de data de início inválido. Use YYYY-MM-DD.");
+    }
+    
+    if (!empty($data_fim) && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $data_fim)) {
+        throw new Exception("Formato de data de fim inválido. Use YYYY-MM-DD.");
+    }
+    
+    // Validar se data_fim não é anterior à data_inicio (se ambas fornecidas)
+    if (!empty($data_inicio) && !empty($data_fim)) {
+        if (strtotime($data_fim) < strtotime($data_inicio)) {
+            throw new Exception("A data de fim não pode ser anterior à data de início.");
+        }
     }
     
     // AUDITORIA: Buscar dados anteriores ANTES da edição
@@ -51,7 +71,13 @@ try {
         throw new Exception("Turma não encontrada com ID: $id");
     }
     
-    // Atualizar turma usando prepared statement (SEGURO)
+    // Preparar valores para NULL se vazios
+    $data_inicio_value = empty($data_inicio) ? null : $data_inicio;
+    $data_fim_value = empty($data_fim) ? null : $data_fim;
+    $id_unidade_value = $id_unidade == 0 ? null : $id_unidade;
+    $id_professor_value = $id_professor == 0 ? null : $id_professor;
+    
+    // Atualizar turma usando prepared statement (SEGURO) - INCLUINDO AS NOVAS DATAS
     $sql = "UPDATE turma SET 
             nome_turma = ?, 
             id_unidade = ?, 
@@ -60,7 +86,9 @@ try {
             status = ?, 
             dias_aula = ?, 
             horario_inicio = ?, 
-            horario_fim = ? 
+            horario_fim = ?,
+            data_inicio = ?,
+            data_fim = ?
             WHERE id = ?";
     
     $stmt = $conn->prepare($sql);
@@ -68,18 +96,20 @@ try {
         throw new Exception("Erro ao preparar consulta: " . $conn->error);
     }
     
-    // Bind dos parâmetros
+    // Bind dos parâmetros (incluindo as novas datas)
     $stmt->bind_param(
-        "siisssssi",
-        $nome_turma,      // s - string
-        $id_unidade,      // i - integer
-        $id_professor,    // i - integer
-        $capacidade,      // i - integer
-        $status,          // s - string
-        $dias_aula,       // s - string
-        $horario_inicio,  // s - string
-        $horario_fim,     // s - string
-        $id               // i - integer
+        "siisssssssi",
+        $nome_turma,         // s - string
+        $id_unidade_value,   // i - integer (pode ser NULL)
+        $id_professor_value, // i - integer (pode ser NULL)
+        $capacidade,         // i - integer
+        $status,             // s - string
+        $dias_aula,          // s - string
+        $horario_inicio,     // s - string
+        $horario_fim,        // s - string
+        $data_inicio_value,  // s - string (data formato YYYY-MM-DD ou NULL)
+        $data_fim_value,     // s - string (data formato YYYY-MM-DD ou NULL)
+        $id                  // i - integer
     );
     
     // Executar a query
@@ -95,13 +125,15 @@ try {
         $dados_novos = [
             'id' => $id,
             'nome_turma' => $nome_turma,
-            'id_unidade' => $id_unidade,
-            'id_professor' => $id_professor,
+            'id_unidade' => $id_unidade_value,
+            'id_professor' => $id_professor_value,
             'capacidade' => $capacidade,
             'status' => $status,
             'dias_aula' => $dias_aula,
             'horario_inicio' => $horario_inicio,
-            'horario_fim' => $horario_fim
+            'horario_fim' => $horario_fim,
+            'data_inicio' => $data_inicio_value,
+            'data_fim' => $data_fim_value
         ];
         
         // AUDITORIA: Registrar a edição

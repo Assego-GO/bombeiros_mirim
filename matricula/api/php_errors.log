@@ -1,0 +1,33 @@
+[04-Jul-2025 13:34:40 UTC] === INICIO EDITAR TURMA ===
+[04-Jul-2025 13:34:40 UTC] Dados recebidos: {"id":"38","nome_turma":"Data","id_unidade":14,"id_professor":13,"capacidade":25,"status":"Em Andamento","data_inicio":"05/07/2025","data_fim":"18/07/2025","dias_aula":"Não definido","horario_inicio":"08:00:00","horario_fim":"10:00:00"}
+[04-Jul-2025 13:34:40 UTC] Dados decodificados: Array
+(
+    [id] => 38
+    [nome_turma] => Data
+    [id_unidade] => 14
+    [id_professor] => 13
+    [capacidade] => 25
+    [status] => Em Andamento
+    [data_inicio] => 05/07/2025
+    [data_fim] => 18/07/2025
+    [dias_aula] => Não definido
+    [horario_inicio] => 08:00:00
+    [horario_fim] => 10:00:00
+)
+
+[04-Jul-2025 13:34:40 UTC] Dados validados com sucesso
+[04-Jul-2025 13:34:40 UTC] SQL preparado: UPDATE turma SET 
+            nome_turma = ?, 
+            id_unidade = ?, 
+            id_professor = ?, 
+            capacidade = ?, 
+            status = ?, 
+            dias_aula = ?, 
+            horario_inicio = ?, 
+            horario_fim = ?,
+            data_inicio = ?,
+            data_fim = ?
+            WHERE id = ?
+[04-Jul-2025 13:34:40 UTC] Parâmetros vinculados com sucesso
+[04-Jul-2025 13:34:40 UTC] Linhas afetadas: 1
+[04-Jul-2025 13:34:40 UTC] === FIM EDITAR TURMA - SUCESSO ===
