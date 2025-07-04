@@ -346,335 +346,6 @@ function agora() {
     overflow-y: auto;
 }
 
-/* ===== CORREÇÃO DAS FOTOS DOS ALUNOS ===== */
-
-/* Container da foto do aluno na tabela */
-.aluno-foto {
-    width: 40px !important;
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 auto !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-/* Foto miniatura real */
-.foto-miniatura {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-    border: 2px solid #ddd !important;
-    background: #f5f5f5 !important;
-    display: block !important;
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-/* Placeholder quando não há foto */
-.foto-placeholder {
-    width: 40px !important;
-    height: 40px !important;
-    border-radius: 50% !important;
-    background: #e9ecef !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border: 2px solid #ddd !important;
-    color: #6c757d !important;
-    font-size: 16px !important;
-    position: relative !important;
-    z-index: 1 !important;
-}
-
-/* Ícone dentro do placeholder */
-.foto-placeholder i {
-    font-size: 18px !important;
-    color: #6c757d !important;
-}
-
-/* Correção da tabela de alunos */
-.table-alunos {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    table-layout: fixed;
-}
-
-.table-alunos th,
-.table-alunos td {
-    padding: 12px 8px;
-    text-align: left;
-    border-bottom: 1px solid #dee2e6;
-    vertical-align: middle;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Coluna da foto - largura fixa */
-.table-alunos th:first-child,
-.table-alunos td:first-child {
-    width: 60px !important;
-    text-align: center !important;
-    padding: 8px !important;
-}
-
-/* Outras colunas com larguras específicas */
-.table-alunos th:nth-child(2),
-.table-alunos td:nth-child(2) { width: 200px; }
-
-.table-alunos th:nth-child(3),
-.table-alunos td:nth-child(3) { width: 120px; }
-
-.table-alunos th:nth-child(4),
-.table-alunos td:nth-child(4) { width: 80px; }
-
-.table-alunos th:nth-child(5),
-.table-alunos td:nth-child(5) { width: 150px; }
-
-.table-alunos th:nth-child(6),
-.table-alunos td:nth-child(6) { width: 80px; }
-
-.table-alunos th:nth-child(7),
-.table-alunos td:nth-child(7) { width: 180px; }
-
-.table-alunos th:nth-child(8),
-.table-alunos td:nth-child(8) { width: 100px; }
-
-/* Informações do aluno */
-.aluno-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.aluno-info strong {
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.aluno-info small {
-    color: #6c757d;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Badges de status */
-.matricula-badge {
-    background: #007bff;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.idade-badge {
-    background: #28a745;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 500;
-    text-transform: uppercase;
-    white-space: nowrap;
-    display: inline-block;
-}
-
-.status-badge.ativo {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.status-badge.pendente {
-    background: #fff3cd;
-    color: #856404;
-    border: 1px solid #ffeaa7;
-}
-
-.status-badge.inativo {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f1b2b7;
-}
-
-/* Informações da turma */
-.turma-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.turma-info strong {
-    color: #333;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.turma-info small {
-    color: #6c757d;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Informações dos responsáveis */
-.responsaveis-info {
-    font-size: 12px;
-    line-height: 1.4;
-    max-height: 60px;
-    overflow: hidden;
-}
-
-.responsaveis-info small {
-    color: #6c757d;
-    font-style: italic;
-}
-
-/* Ações do aluno */
-.acoes-aluno {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    align-items: center;
-}
-
-.acoes-aluno .btn {
-    padding: 6px 8px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
-
-.acoes-aluno .btn-primary {
-    background: #007bff;
-    color: white;
-}
-
-.acoes-aluno .btn-primary:hover {
-    background: #0056b3;
-}
-
-.acoes-aluno .btn-outline {
-    background: transparent;
-    color: #6c757d;
-    border: 1px solid #6c757d;
-}
-
-.acoes-aluno .btn-outline:hover {
-    background: #6c757d;
-    color: white;
-}
-
-/* Container da tabela responsivo */
-.alunos-tabela-container {
-    overflow-x: auto;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.table-responsive {
-    min-height: 400px;
-    background: white;
-}
-
-/* Foto de detalhes grande */
-.aluno-foto-grande {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-    overflow: hidden;
-}
-
-.aluno-foto-grande img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid #ddd;
-}
-
-.foto-placeholder-grande {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: #e9ecef;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 3px solid #ddd;
-    color: #6c757d;
-    font-size: 32px;
-}
-
-/* Responsivo */
-@media (max-width: 768px) {
-    .aluno-foto,
-    .foto-miniatura,
-    .foto-placeholder {
-        width: 30px !important;
-        height: 30px !important;
-    }
-    
-    .foto-placeholder i {
-        font-size: 14px !important;
-    }
-    
-    .table-alunos th:first-child,
-    .table-alunos td:first-child {
-        width: 45px !important;
-    }
-    
-    /* Esconder algumas colunas em mobile */
-    .table-alunos th:nth-child(4),
-    .table-alunos td:nth-child(4),
-    .table-alunos th:nth-child(7),
-    .table-alunos td:nth-child(7) {
-        display: none;
-    }
-    
-    /* Ajustar larguras restantes */
-    .table-alunos th:nth-child(2),
-    .table-alunos td:nth-child(2) { width: auto; }
-    
-    .table-alunos th:nth-child(3),
-    .table-alunos td:nth-child(3) { width: 100px; }
-    
-    .table-alunos th:nth-child(5),
-    .table-alunos td:nth-child(5) { width: 120px; }
-    
-    .table-alunos th:nth-child(6),
-    .table-alunos td:nth-child(6) { width: 70px; }
-    
-    .table-alunos th:nth-child(8),
-    .table-alunos td:nth-child(8) { width: 80px; }
-}
-
 /* Abas do Modal */
 .modal-tabs {
     display: flex;
@@ -2824,6 +2495,564 @@ function agora() {
         grid-template-columns: 1fr;
     }
 }
+
+/* ===== ESTILOS DO MODAL DE ALUNOS ===== */
+
+/* Modal Principal de Alunos */
+#modal-alunos .modal-large {
+    max-width: 1400px;
+    width: 95%;
+}
+
+/* Abas do Modal de Alunos */
+.tab-alunos {
+    background: none;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tab-alunos:hover {
+    color: var(--primary);
+    background: #f9f9f9;
+}
+
+.tab-alunos.ativo {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    background: white;
+}
+
+.tab-content-alunos {
+    padding: 20px 0;
+}
+
+/* Filtros do Modal de Alunos */
+.alunos-filtros {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.filtros-row-alunos {
+    display: flex;
+    gap: 15px;
+    align-items: end;
+    flex-wrap: wrap;
+}
+
+.filtro-item-alunos {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 200px;
+}
+
+.filtro-item-alunos label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.filtro-item-alunos input,
+.filtro-item-alunos select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filtro-actions-alunos {
+    display: flex;
+    gap: 10px;
+}
+
+/* Contador de Alunos */
+.alunos-contador {
+    background: #e9ecef;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Lista de Alunos */
+.alunos-lista {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.aluno-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.3s ease;
+}
+
+.aluno-item:hover {
+    background: #f8f9fa;
+}
+
+.aluno-item:last-child {
+    border-bottom: none;
+}
+
+/* Foto do Aluno */
+.aluno-foto {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    flex-shrink: 0;
+    border: 2px solid #e9ecef;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+/* Informações do Aluno */
+.aluno-info-item {
+    flex: 1;
+    margin-right: 15px;
+}
+
+.aluno-nome {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 16px;
+}
+
+.aluno-detalhes {
+    font-size: 14px;
+    color: #666;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.aluno-detalhes span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.aluno-detalhes i {
+    color: var(--primary);
+    width: 14px;
+}
+
+/* Status do Aluno */
+.aluno-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: 15px;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.status-badge.ativo {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-badge.inativo {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.pendente {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.aluno-matricula {
+    font-size: 11px;
+    color: #888;
+    text-align: center;
+}
+
+/* Ações do Aluno */
+.acoes-aluno {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-ver-detalhes {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-ver-detalhes:hover {
+    background: #0056b3;
+}
+
+.btn-editar-aluno {
+    background: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s ease;
+}
+
+.btn-editar-aluno:hover {
+    background: #218838;
+}
+
+/* Modal de Detalhes do Aluno */
+#modal-detalhes-aluno .modal-large {
+    max-width: 900px;
+}
+
+.aluno-detalhes-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff);
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.aluno-foto-grande {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--primary);
+    flex-shrink: 0;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+}
+
+.aluno-info-detalhes {
+    flex: 1;
+}
+
+.aluno-info-detalhes h2 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 28px;
+}
+
+.aluno-info-detalhes .info-basica {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.info-basica span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.info-basica i {
+    color: var(--primary);
+    width: 16px;
+}
+
+/* Seções de Detalhes */
+.detalhes-secoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.secao-detalhes {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.secao-detalhes h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.secao-detalhes h4 i {
+    color: var(--primary);
+}
+
+.info-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item strong {
+    color: #495057;
+    font-size: 14px;
+    flex: 1;
+}
+
+.info-item span {
+    color: #333;
+    font-weight: 500;
+    text-align: right;
+}
+
+/* Seção de Responsáveis */
+.responsaveis-lista {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.responsavel-item {
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.responsavel-item:last-child {
+    margin-bottom: 0;
+}
+
+.responsavel-item h5 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 16px;
+}
+
+.responsavel-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.responsavel-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 14px;
+}
+
+.responsavel-info i {
+    color: var(--primary);
+    width: 16px;
+}
+
+/* Documentos */
+.documentos-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.documento-item {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.documento-item.disponivel {
+    background: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.documento-item.indisponivel {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.documento-item i {
+    font-size: 20px;
+    color: var(--primary);
+}
+
+.documento-item.disponivel i {
+    color: #155724;
+}
+
+.documento-item.indisponivel i {
+    color: #721c24;
+}
+
+.documento-info {
+    flex: 1;
+}
+
+.documento-info strong {
+    display: block;
+    color: #333;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.documento-info span {
+    color: #666;
+    font-size: 12px;
+}
+
+/* Estados Vazios */
+.sem-alunos {
+    text-align: center;
+    padding: 60px 20px;
+    color: #888;
+}
+
+.sem-alunos i {
+    font-size: 64px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.sem-alunos h3 {
+    margin: 0 0 10px 0;
+    color: #666;
+}
+
+.sem-alunos p {
+    margin: 0;
+    color: #888;
+}
+
+/* Loading */
+.alunos-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #666;
+}
+
+.alunos-loading i {
+    margin-right: 10px;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #modal-alunos .modal-large {
+        width: 95%;
+        margin: 10px;
+    }
+    
+    .filtros-row-alunos {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filtro-item-alunos {
+        min-width: auto;
+    }
+    
+    .aluno-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .aluno-foto {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .aluno-detalhes {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .aluno-detalhes-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+    
+    .aluno-foto-grande {
+        width: 100px;
+        height: 100px;
+        font-size: 40px;
+    }
+    
+    .detalhes-secoes {
+        grid-template-columns: 1fr;
+    }
+    
+    .info-basica {
+        grid-template-columns: 1fr;
+    }
+    
+    .responsavel-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .documentos-lista {
+        grid-template-columns: 1fr;
+    }
+}
   </style>
 </head>
 <body>
@@ -3273,6 +3502,173 @@ function agora() {
     </div>
   </div>
 
+  <!-- Modal Principal de Alunos -->
+  <div id="modal-alunos" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-large">
+          <div class="modal-header">
+              <span><i class="fas fa-user-graduate"></i> Visualizar Alunos</span>
+              <button class="fechar-modal-alunos">×</button>
+          </div>
+          
+          <div class="modal-body">
+              <!-- Filtros -->
+              <div class="alunos-filtros">
+                  <div class="filtros-row-alunos">
+                      <div class="filtro-item-alunos">
+                          <label>Buscar por Nome</label>
+                          <input type="text" id="filtro-nome-aluno" placeholder="Nome do aluno">
+                      </div>
+                      
+                      <div class="filtro-item-alunos">
+                          <label>Turma</label>
+                          <select id="filtro-turma-alunos">
+                              <option value="">Todas as turmas</option>
+                          </select>
+                      </div>
+                      
+                      <div class="filtro-item-alunos">
+                          <label>Status</label>
+                          <select id="filtro-status-alunos">
+                              <option value="">Todos</option>
+                              <option value="ativo">Ativo</option>
+                              <option value="inativo">Inativo</option>
+                              <option value="pendente">Pendente</option>
+                          </select>
+                      </div>
+                      
+                      <div class="filtro-actions-alunos">
+                          <button class="btn btn-primary btn-sm" onclick="filtrarAlunos()">
+                              <i class="fas fa-search"></i> Filtrar
+                          </button>
+                          <button class="btn btn-outline btn-sm" onclick="limparFiltrosAlunos()">
+                              <i class="fas fa-eraser"></i> Limpar
+                          </button>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Contador de Resultados -->
+              <div class="alunos-contador">
+                  <span id="total-alunos">0</span> alunos encontrados
+              </div>
+
+              <!-- Lista de Alunos -->
+              <div id="lista-alunos" class="alunos-lista">
+                  <!-- Será preenchido dinamicamente -->
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-alunos">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+              <button class="btn btn-success" onclick="exportarAlunosExcel()">
+                  <i class="fas fa-file-excel"></i> Exportar Excel
+              </button>
+          </div>
+      </div>
+  </div>
+
+  <!-- Modal de Detalhes do Aluno -->
+  <div id="modal-detalhes-aluno" class="modal-backdrop" style="display: none;">
+      <div class="modal modal-large">
+          <div class="modal-header">
+              <span><i class="fas fa-info-circle"></i> Detalhes do Aluno</span>
+              <button class="fechar-modal-detalhes-aluno">×</button>
+          </div>
+          
+          <div class="modal-body">
+              <div class="aluno-detalhes-header">
+                  <div class="aluno-foto-grande">
+                      <i class="fas fa-user-circle"></i>
+                  </div>
+                  <div class="aluno-info-detalhes">
+                      <h2 id="detalhes-nome-aluno"></h2>
+                      <div class="info-basica">
+                          <span><i class="fas fa-id-card"></i> <strong>Matrícula:</strong> <span id="detalhes-matricula"></span></span>
+                          <span><i class="fas fa-birthday-cake"></i> <strong>Data de Nascimento:</strong> <span id="detalhes-nascimento"></span></span>
+                          <span><i class="fas fa-venus-mars"></i> <strong>Gênero:</strong> <span id="detalhes-genero"></span></span>
+                          <span><i class="fas fa-calendar-alt"></i> <strong>Data da Matrícula:</strong> <span id="detalhes-data-matricula"></span></span>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="detalhes-secoes">
+                  <!-- Seção Escolar -->
+                  <div class="secao-detalhes">
+                      <h4><i class="fas fa-school"></i> Informações Escolares</h4>
+                      <div class="info-lista">
+                          <div class="info-item">
+                              <strong>Escola:</strong>
+                              <span id="detalhes-escola"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Série:</strong>
+                              <span id="detalhes-serie"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Diretor:</strong>
+                              <span id="detalhes-diretor"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Telefone da Escola:</strong>
+                              <span id="detalhes-telefone-escola"></span>
+                          </div>
+                      </div>
+                  </div>
+
+                  <!-- Seção Médica -->
+                  <div class="secao-detalhes">
+                      <h4><i class="fas fa-medkit"></i> Informações Médicas</h4>
+                      <div class="info-lista">
+                          <div class="info-item">
+                              <strong>Tipo Sanguíneo:</strong>
+                              <span id="detalhes-tipo-sanguineo"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Criança Atípica:</strong>
+                              <span id="detalhes-crianca-atipica"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Alergias/Condições:</strong>
+                              <span id="detalhes-alergias"></span>
+                          </div>
+                          <div class="info-item">
+                              <strong>Medicação Contínua:</strong>
+                              <span id="detalhes-medicacao"></span>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Seção de Responsáveis -->
+              <div class="secao-detalhes">
+                  <h4><i class="fas fa-users"></i> Responsáveis</h4>
+                  <div id="detalhes-responsaveis" class="responsaveis-lista">
+                      <!-- Será preenchido dinamicamente -->
+                  </div>
+              </div>
+
+              <!-- Seção de Documentos -->
+              <div class="secao-detalhes">
+                  <h4><i class="fas fa-file-alt"></i> Documentos</h4>
+                  <div id="detalhes-documentos" class="documentos-lista">
+                      <!-- Será preenchido dinamicamente -->
+                  </div>
+              </div>
+          </div>
+          
+          <div class="modal-footer">
+              <button class="btn btn-outline fechar-modal-detalhes-aluno">
+                  <i class="fas fa-times"></i> Fechar
+              </button>
+              <button class="btn btn-primary" onclick="editarAluno()">
+                  <i class="fas fa-edit"></i> Editar Aluno
+              </button>
+          </div>
+      </div>
+  </div>
+
 <!-- Modal de Ranking dos Alunos -->
 <div id="modal-ranking" class="modal-backdrop" style="display: none;">
     <div class="modal modal-large">
@@ -3429,7 +3825,6 @@ function agora() {
     </div>
 </div>
 
-<!-- Modal de Detalhes do Aluno no Ranking -->
 <div id="modal-detalhes-aluno-ranking" class="modal-backdrop" style="display: none;">
     <div class="modal modal-medium">
         <div class="modal-header">
