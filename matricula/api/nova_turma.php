@@ -19,7 +19,7 @@ try {
     }
 
     // Campos obrigatórios de acordo com seu formulário HTML
-    $campos_obrigatorios = ['nome_turma', 'unidade', 'professor_responsavel', 'data_inicio'];
+    $campos_obrigatorios = ['nome_turma', 'unidade', 'professor_responsavel', 'data_inicio', 'data_fim'];
     foreach ($campos_obrigatorios as $campo) {
         if (!isset($data[$campo]) || empty($data[$campo])) {
             echo json_encode(["status" => "erro", "mensagem" => "Campo '$campo' está faltando ou vazio."]);
@@ -32,6 +32,8 @@ try {
     $matriculados = 0; // Começa com zero matriculados
     $status = isset($data['status']) && $data['status'] == 1 ? 'Em Andamento' : 'Planejada';
     $dias_aula = "Não definido"; // Valor padrão
+    $data_inicio = $data['data_inicio']; // Data de início do formulário
+    $data_fim = $data['data_fim']; // Data de fim do formulário
     $horario_inicio = "08:00:00"; // Valor padrão
     $horario_fim = "10:00:00"; // Valor padrão
 
@@ -45,8 +47,10 @@ try {
         status, 
         dias_aula, 
         horario_inicio, 
-        horario_fim
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        horario_fim, 
+        data_inicio, 
+        data_fim
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
     
@@ -57,7 +61,7 @@ try {
 
     // Vincula os parâmetros de acordo com os tipos corretos
     $stmt->bind_param(
-        "siiisssss",
+        "siiisssssss",
         $data['nome_turma'],            // string: nome da turma
         $data['unidade'],               // int: id da unidade 
         $data['professor_responsavel'], // int: id do professor
@@ -66,7 +70,9 @@ try {
         $status,                        // string: status (Planejada ou Em Andamento)
         $dias_aula,                     // string: dias de aula
         $horario_inicio,                // string: horário de início
-        $horario_fim                    // string: horário de fim
+        $horario_fim,                 // string: horário de fim
+        $data_inicio,
+        $data_fim                       // string: data de início e fim
     );
 
     $result = $stmt->execute();

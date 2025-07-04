@@ -2186,8 +2186,13 @@ function agora() {
           </div>
 
           <div class="form-group">
-            <label>Data de Início</label>
+            <label>Data Início</label>
             <input type="date" name="data_inicio" required />
+          </div>
+
+           <div class="form-group">
+            <label>Data Fim</label>
+            <input type="date" name="data_fim" required />
           </div>
 
           <div class="form-group">
