@@ -1803,13 +1803,13 @@ function adicionarEventosAosBotoes() {
   });
 }
 
-// Funções para editar e excluir (placeholders para implementação futura)
+
 function editarTurma(id) {
   removerModais();
   
   showLoading();
 
-  // Carregar unidades e professores para os selects
+  // Carregar unidades, professores e dados da turma
   Promise.all([
     fetch("api/listar_unidades.php").then(res => res.json()),
     fetch("api/listar_professores.php").then(res => res.json()),
@@ -1874,9 +1874,21 @@ function editarTurma(id) {
                               <label for="edit-status">Status</label>
                               <select id="edit-status" name="status">
                                   <option value="Em Andamento" ${turma.status === 'Em Andamento' ? 'selected' : ''}>Ativa</option>
-                                  
                                   <option value="Cancelada" ${turma.status === 'Cancelada' ? 'selected' : ''}>Cancelada</option>
                               </select>
+                          </div>
+                      </div>
+                      
+                      <!-- NOVOS CAMPOS DE DATA -->
+                      <div class="form-row">
+                          <div class="form-group col-md-6">
+                              <label for="edit-data-inicio">Data de Início</label>
+                              <input type="date" id="edit-data-inicio" name="data_inicio" value="${formatarDataParaInput(turma.data_inicio)}">
+                          </div>
+                          
+                          <div class="form-group col-md-6">
+                              <label for="edit-data-fim">Data de Fim</label>
+                              <input type="date" id="edit-data-fim" name="data_fim" value="${formatarDataParaInput(turma.data_fim)}">
                           </div>
                       </div>
                       
@@ -1933,6 +1945,40 @@ function editarTurma(id) {
     });
 }
 
+// Função auxiliar para formatar data para input date (yyyy-mm-dd)
+function formatarDataParaInput(dataString) {
+  if (!dataString || dataString === null || dataString === 'null' || dataString === '') {
+    return '';
+  }
+  
+  try {
+    // Se já está no formato yyyy-mm-dd, retorna direto
+    if (dataString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dataString;
+    }
+    
+    // Se está no formato dd/mm/yyyy, converte para yyyy-mm-dd
+    if (dataString.includes('/')) {
+      const partes = dataString.split('/');
+      if (partes.length === 3) {
+        return `${partes[2]}-${partes[1].padStart(2, '0')}-${partes[0].padStart(2, '0')}`;
+      }
+    }
+    
+    // Tentar converter usando Date
+    const data = new Date(dataString);
+    if (!isNaN(data.getTime())) {
+      return data.toISOString().split('T')[0];
+    }
+    
+    return '';
+  } catch (e) {
+    console.error('Erro ao formatar data para input:', e, dataString);
+    return '';
+  }
+}
+
+// Função salvarEdicaoTurma atualizada para incluir as novas datas
 function salvarEdicaoTurma(dados, modal) {
   if (!dados.id) {
     alert("ID da turma não fornecido!");
@@ -1986,7 +2032,6 @@ function salvarEdicaoTurma(dados, modal) {
           alert("Erro do servidor. Resposta não é JSON válido: " + xhr.responseText.substring(0, 100) + "...");
         }
       } else {
-      
         alert(`Erro do servidor: ${xhr.status} ${xhr.statusText}`);
       }
     }
