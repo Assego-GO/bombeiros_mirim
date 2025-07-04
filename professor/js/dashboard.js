@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // =============================================
-    // NOVA FUNÇÃO: Toggle dos campos de voluntário
+    // FUNÇÃO: Toggle dos campos de voluntário
     // =============================================
     function toggleVoluntarioFields() {
         const checkbox = document.getElementById('eh_voluntario');
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // =============================================
-    // NOVA FUNÇÃO: Validação dos campos de voluntário
+    // FUNÇÃO: Validação dos campos de voluntário
     // =============================================
     function validarCamposVoluntario() {
         const ehVoluntario = document.getElementById('eh_voluntario');
@@ -129,6 +129,109 @@ document.addEventListener('DOMContentLoaded', function() {
             showMessage('mensagem-atividade', 'Por favor, preencha o nome do voluntário.', 'danger');
             nomeVoluntario.focus();
             return false;
+        }
+        
+        return true;
+    }
+    
+    // =============================================
+    // NOVA FUNÇÃO: Obter mensagem do status
+    // =============================================
+    function getStatusMessage(status) {
+        const messages = {
+            'planejada': '<i class="fas fa-clock" style="color: #ffc107;"></i> Atividade ainda não realizada',
+            'em_andamento': '<i class="fas fa-play-circle" style="color: #17a2b8;"></i> Atividade em curso',
+            'concluida': '<i class="fas fa-check-circle" style="color: #28a745;"></i> Atividade realizada com sucesso',
+            'cancelada': '<i class="fas fa-times-circle" style="color: #dc3545;"></i> Atividade foi cancelada'
+        };
+        return messages[status] || '';
+    }
+    
+    // =============================================
+    // NOVA FUNÇÃO: Event listener para mudança de status
+    // =============================================
+    function setupStatusChangeListener() {
+        const statusSelect = document.getElementById('status_atividade');
+        if (!statusSelect) return;
+        
+        statusSelect.addEventListener('change', function() {
+            const status = this.value;
+            const statusRow = document.getElementById('status-row');
+            
+            // Remove classes anteriores
+            if (statusRow) {
+                statusRow.className = 'form-row';
+                statusRow.classList.add(`status-editing-${status}`);
+            }
+            
+            // Atualizar indicador visual
+            const statusIndicator = this.parentElement.querySelector('.status-indicator');
+            if (statusIndicator) {
+                statusIndicator.innerHTML = getStatusMessage(status);
+                statusIndicator.className = `status-indicator status-${status}`;
+            }
+            
+            // Mostrar confirmação para mudanças importantes
+            if (status === 'concluida') {
+                const confirmar = confirm('Tem certeza que deseja marcar esta atividade como CONCLUÍDA? Esta ação indica que a atividade foi ministrada com sucesso.');
+                if (!confirmar) {
+                    // Reverter para o valor anterior se cancelar
+                    const form = document.getElementById('form-atividade');
+                    const atividadeId = document.getElementById('atividade_id').value;
+                    if (atividadeId) {
+                        // Buscar valor atual do banco
+                        fetch(`./api/atividades.php?action=detalhes&id=${atividadeId}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    this.value = data.atividade.status;
+                                    // Atualizar indicador visual também
+                                    const indicator = this.parentElement.querySelector('.status-indicator');
+                                    if (indicator) {
+                                        indicator.innerHTML = getStatusMessage(data.atividade.status);
+                                        indicator.className = `status-indicator status-${data.atividade.status}`;
+                                    }
+                                }
+                            });
+                    }
+                }
+            } else if (status === 'cancelada') {
+                const motivo = prompt('Por favor, informe o motivo do cancelamento (opcional):');
+                // Aqui você pode salvar o motivo em um campo hidden ou enviar junto com o form
+                if (motivo) {
+                    let motivoInput = document.getElementById('motivo_cancelamento');
+                    if (!motivoInput) {
+                        motivoInput = document.createElement('input');
+                        motivoInput.type = 'hidden';
+                        motivoInput.id = 'motivo_cancelamento';
+                        motivoInput.name = 'motivo_cancelamento';
+                        this.form.appendChild(motivoInput);
+                    }
+                    motivoInput.value = motivo;
+                }
+            }
+        });
+    }
+    
+    // =============================================
+    // NOVA FUNÇÃO: Validar formulário incluindo status
+    // =============================================
+    function validarFormularioAtividade() {
+        const statusSelect = document.getElementById('status_atividade');
+        const isEdicao = document.getElementById('atividade_id').value !== '';
+        
+        // Validação básica de campos obrigatórios
+        if (!validarCamposVoluntario()) {
+            return false;
+        }
+        
+        // Se está editando e status é obrigatório
+        if (isEdicao && statusSelect && statusSelect.style.display !== 'none') {
+            if (!statusSelect.value) {
+                showMessage('mensagem-atividade', 'Por favor, selecione o status da atividade.', 'danger');
+                statusSelect.focus();
+                return false;
+            }
         }
         
         return true;
@@ -187,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.atividades && data.atividades.length > 0) {
                         let html = '';
                         data.atividades.forEach(atividade => {
-                            // NOVO: Mostrar informações de voluntário se existir
+                            // Mostrar informações de voluntário se existir
                             let instrutorInfo = atividade.instrutor_responsavel || 'N/A';
                             if (atividade.eh_voluntario == 1 && atividade.nome_voluntario) {
                                 instrutorInfo = `<span class="voluntario-badge"><i class="fas fa-hands-helping"></i> ${atividade.nome_voluntario}</span><br><small>Supervisionado por: ${atividade.instrutor_responsavel}</small>`;
@@ -315,6 +418,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return statusMap[status] || 'Status não definido';
     }
     
+    // =============================================
+    // FUNÇÃO ATUALIZADA: Mostrar formulário com controle de status
+    // =============================================
     function mostrarFormularioAtividade(atividade = null) {
         if (!cadastroAtividadeModal) {
             console.error('Modal de cadastro de atividade não encontrado');
@@ -324,6 +430,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const form = document.getElementById('form-atividade');
         const title = document.getElementById('modalTitleCadastroAtividade');
+        const statusRow = document.getElementById('status-row');
+        const statusSelect = document.getElementById('status_atividade');
         
         if (!form) {
             console.error('Formulário de atividade não encontrado');
@@ -334,6 +442,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (atividade) {
             // Editando atividade existente
             if (title) title.textContent = 'Editar Atividade';
+            
+            // NOVO: Mostrar campo de status apenas na edição
+            if (statusRow) {
+                statusRow.style.display = 'block';
+                
+                // Adicionar classe visual dependendo do status
+                const statusClass = `status-editing-${atividade.status || 'planejada'}`;
+                statusRow.classList.add(statusClass);
+            }
             
             const atividadeIdInput = document.getElementById('atividade_id');
             const actionInput = document.querySelector('input[name="action"]');
@@ -361,7 +478,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // NOVO: Preencher campos de voluntário se existir
+            // NOVO: Preencher status
+            if (statusSelect && atividade.status) {
+                statusSelect.value = atividade.status;
+                
+                // Adicionar indicador visual baseado no status
+                const statusIndicator = document.createElement('div');
+                statusIndicator.className = `status-indicator status-${atividade.status}`;
+                statusIndicator.innerHTML = getStatusMessage(atividade.status);
+                
+                // Remove indicador anterior se existir
+                const oldIndicator = statusSelect.parentElement.querySelector('.status-indicator');
+                if (oldIndicator) {
+                    oldIndicator.remove();
+                }
+                
+                statusSelect.parentElement.appendChild(statusIndicator);
+            }
+            
+            // Preencher campos de voluntário se existir
             const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
             const nomeVoluntarioInput = document.getElementById('nome_voluntario');
             const telefoneVoluntarioInput = document.getElementById('telefone_voluntario');
@@ -380,7 +515,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     especialidadeVoluntarioInput.value = atividade.especialidade_voluntario;
                 }
                 
-                // Ativar os campos de voluntário
                 toggleVoluntarioFields();
             } else if (ehVoluntarioCheckbox) {
                 ehVoluntarioCheckbox.checked = false;
@@ -390,6 +524,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Nova atividade
             if (title) title.textContent = 'Nova Atividade';
             form.reset();
+            
+            // NOVO: Esconder campo de status para nova atividade
+            if (statusRow) {
+                statusRow.style.display = 'none';
+                statusRow.className = 'form-row'; // Remove classes de status
+            }
             
             const atividadeIdInput = document.getElementById('atividade_id');
             const actionInput = document.querySelector('input[name="action"]');
@@ -403,12 +543,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 ehVoluntarioCheckbox.checked = false;
                 toggleVoluntarioFields();
             }
+            
+            // Remove indicador de status se existir
+            if (statusSelect) {
+                const oldIndicator = statusSelect.parentElement.querySelector('.status-indicator');
+                if (oldIndicator) {
+                    oldIndicator.remove();
+                }
+            }
         }
         
         // Carregar turmas e popular select de atividades
         loadTurmasSelect();
         const nomeAtividadeSelect = document.getElementById('nome_atividade');
         populateAtividadeSelect(nomeAtividadeSelect);
+        
+        // NOVO: Configurar listener para mudança de status
+        setupStatusChangeListener();
         
         cadastroAtividadeModal.style.display = 'block';
     }
@@ -432,7 +583,7 @@ document.addEventListener('DOMContentLoaded', function() {
             title.textContent = `Detalhes: ${atividade.nome_atividade || 'Atividade'}`;
         }
         
-        // NOVO: Informações de voluntário nos detalhes
+        // Informações de voluntário nos detalhes
         let instrutorSection = '';
         if (atividade.eh_voluntario == 1 && atividade.nome_voluntario) {
             instrutorSection = `
@@ -544,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return presencaMap[presenca] || presenca;
     }
     
-    // CORRIGIDO: Load turma students function (mantém a função original)
+    // Load turma students function
     function loadAlunosTurma(turmaId) {
         console.log("Loading students for turma ID:", turmaId);
         
@@ -572,7 +723,6 @@ document.addEventListener('DOMContentLoaded', function() {
             modalTitle.textContent = `Alunos da Turma: ${turmaNome}`;
         }
         
-        // CORREÇÃO: Usar caminhos relativos simples
         const fetchUrl = `./alunos_turma.php?turma_id=${turmaId}`;
         console.log("Fetching URL:", fetchUrl);
         
@@ -581,7 +731,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => {
                 console.log("Response status:", response.status);
                 if (!response.ok) {
-                    // Se não funcionar, tente com ./api/alunos_turma.php
                     console.log("Tentando URL alternativa...");
                     return fetch(`./api/alunos_turma.php?turma_id=${turmaId}`);
                 }
@@ -600,7 +749,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (data.alunos && data.alunos.length > 0) {
                         let html = '';
                         data.alunos.forEach(aluno => {
-                            // CORREÇÃO: Fix the photo path - usar caminhos relativos
                             let fotoPath = '';
                             
                             if (aluno.foto) {
@@ -682,8 +830,8 @@ document.addEventListener('DOMContentLoaded', function() {
         formAtividade.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // NOVA VALIDAÇÃO: Verificar campos de voluntário
-            if (!validarCamposVoluntario()) {
+            // VALIDAÇÕES: Verificar campos de voluntário e status
+            if (!validarFormularioAtividade()) {
                 return;
             }
             
@@ -728,27 +876,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // =============================================
-    // NOVO: Event listener para checkbox de voluntário
-    // =============================================
+    // Event listener para checkbox de voluntário
     const ehVoluntarioCheckbox = document.getElementById('eh_voluntario');
     if (ehVoluntarioCheckbox) {
         ehVoluntarioCheckbox.addEventListener('change', toggleVoluntarioFields);
         console.log('Event listener do voluntário adicionado');
     }
     
-    // =============================================
-    // NOVO: Aplicar máscara ao telefone do voluntário
-    // =============================================
+    // Aplicar máscara ao telefone do voluntário
     const telefoneVoluntario = document.getElementById('telefone_voluntario');
     if (telefoneVoluntario && typeof $ !== 'undefined') {
         $(telefoneVoluntario).mask('(00) 00000-0000');
         console.log('Máscara de telefone aplicada ao voluntário');
     }
     
-    // =============================================
-    // NOVO: Definir data mínima como hoje
-    // =============================================
+    // Definir data mínima como hoje
     const dataAtividade = document.getElementById('data_atividade');
     if (dataAtividade) {
         dataAtividade.min = new Date().toISOString().split('T')[0];
@@ -952,7 +1094,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // IMPORTANT: This is a special global event handler for all "Ver Alunos" buttons or links
+    // Event handler global para botões "Ver Alunos"
     document.addEventListener('click', function(e) {
         // Look for elements with btn-ver-alunos class or their children
         let target = e.target;
@@ -992,7 +1134,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Rest of the profile and other functionality... (keeping the existing code)
-    
-    console.log("Dashboard JS initialized successfully with volunteer functionality!");
+    console.log("Dashboard JS initialized successfully with volunteer functionality and status management!");
 });

@@ -1,5 +1,5 @@
 <?php
-// api/atividades.php - Versão corrigida com suporte a voluntário
+// api/atividades.php - Versão corrigida com suporte a voluntário e status
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -202,7 +202,7 @@ function listarAtividades($pdo, $professor_id) {
     try {
         logDebug("Executando listarAtividades", ['professor_id' => $professor_id]);
         
-        // ATUALIZADO: Incluir campos de voluntário na consulta
+        // Incluir campos de voluntário na consulta
         $sql = "SELECT a.*, t.nome_turma, u.nome as unidade_nome 
                 FROM atividades a 
                 LEFT JOIN turma t ON a.turma_id = t.id 
@@ -228,7 +228,7 @@ function listarAtividades($pdo, $professor_id) {
                 $atividade['total_participacoes'] = 0;
             }
             
-            // NOVO: Garantir que campos de voluntário sejam retornados corretamente
+            // Garantir que campos de voluntário sejam retornados corretamente
             $atividade['eh_voluntario'] = $atividade['eh_voluntario'] ?? 0;
             $atividade['nome_voluntario'] = $atividade['nome_voluntario'] ?? null;
             $atividade['telefone_voluntario'] = $atividade['telefone_voluntario'] ?? null;
@@ -280,7 +280,7 @@ function listarTurmasProfessor($pdo, $professor_id) {
 
 function detalhesAtividade($pdo, $atividade_id, $professor_id) {
     try {
-        // ATUALIZADO: Incluir todos os campos na consulta de detalhes
+        // Incluir todos os campos na consulta de detalhes
         $sql = "SELECT a.*, t.nome_turma, u.nome as unidade_nome 
                 FROM atividades a 
                 LEFT JOIN turma t ON a.turma_id = t.id 
@@ -296,7 +296,7 @@ function detalhesAtividade($pdo, $atividade_id, $professor_id) {
             return;
         }
         
-        // NOVO: Garantir que campos de voluntário sejam retornados
+        // Garantir que campos de voluntário sejam retornados
         $atividade['eh_voluntario'] = $atividade['eh_voluntario'] ?? 0;
         $atividade['nome_voluntario'] = $atividade['nome_voluntario'] ?? null;
         $atividade['telefone_voluntario'] = $atividade['telefone_voluntario'] ?? null;
@@ -317,7 +317,8 @@ function detalhesAtividade($pdo, $atividade_id, $professor_id) {
         logDebug("Detalhes da atividade carregados", [
             'atividade_id' => $atividade_id,
             'eh_voluntario' => $atividade['eh_voluntario'],
-            'nome_voluntario' => $atividade['nome_voluntario']
+            'nome_voluntario' => $atividade['nome_voluntario'],
+            'status' => $atividade['status']
         ]);
         
         echo json_encode(['success' => true, 'atividade' => $atividade]);
@@ -349,7 +350,7 @@ function cadastrarAtividade($pdo, $dados, $professor_id) {
             }
         }
         
-        // NOVA VALIDAÇÃO: Se é voluntário, nome do voluntário é obrigatório
+        // Validação: Se é voluntário, nome do voluntário é obrigatório
         $eh_voluntario = isset($dados['eh_voluntario']) && $dados['eh_voluntario'] == '1' ? 1 : 0;
         
         if ($eh_voluntario && empty($dados['nome_voluntario'])) {
@@ -357,7 +358,7 @@ function cadastrarAtividade($pdo, $dados, $professor_id) {
             return;
         }
         
-        // ATUALIZADO: SQL com campos de voluntário
+        // SQL com campos de voluntário - nova atividade sempre começa como 'planejada'
         $sql = "INSERT INTO atividades (
                     nome_atividade, turma_id, professor_id, data_atividade, 
                     hora_inicio, hora_termino, local_atividade, instrutor_responsavel, 
@@ -419,10 +420,11 @@ function editarAtividade($pdo, $dados, $professor_id) {
         logDebug("Iniciando edição de atividade", [
             'atividade_id' => $dados['atividade_id'],
             'professor_id' => $professor_id,
-            'eh_voluntario' => $dados['eh_voluntario'] ?? 0
+            'eh_voluntario' => $dados['eh_voluntario'] ?? 0,
+            'status' => $dados['status'] ?? 'planejada'
         ]);
         
-        // NOVA VALIDAÇÃO: Se é voluntário, nome do voluntário é obrigatório
+        // Validação: Se é voluntário, nome do voluntário é obrigatório
         $eh_voluntario = isset($dados['eh_voluntario']) && $dados['eh_voluntario'] == '1' ? 1 : 0;
         
         if ($eh_voluntario && empty($dados['nome_voluntario'])) {
@@ -430,12 +432,22 @@ function editarAtividade($pdo, $dados, $professor_id) {
             return;
         }
         
-        // ATUALIZADO: SQL com campos de voluntário
+        // Validar status
+        $status_validos = ['planejada', 'em_andamento', 'concluida', 'cancelada'];
+        $status = $dados['status'] ?? 'planejada';
+        
+        if (!in_array($status, $status_validos)) {
+            echo json_encode(['success' => false, 'message' => 'Status inválido']);
+            return;
+        }
+        
+        // ATUALIZADO: SQL com campos de voluntário E status
         $sql = "UPDATE atividades SET 
                     nome_atividade = ?, data_atividade = ?, hora_inicio = ?, 
                     hora_termino = ?, local_atividade = ?, instrutor_responsavel = ?, 
                     objetivo_atividade = ?, conteudo_abordado = ?, eh_voluntario = ?, 
-                    nome_voluntario = ?, telefone_voluntario = ?, especialidade_voluntario = ?
+                    nome_voluntario = ?, telefone_voluntario = ?, especialidade_voluntario = ?,
+                    status = ?
                 WHERE id = ? AND professor_id = ?";
         
         $stmt = $pdo->prepare($sql);
@@ -452,6 +464,7 @@ function editarAtividade($pdo, $dados, $professor_id) {
             $eh_voluntario ? ($dados['nome_voluntario'] ?? null) : null,
             $eh_voluntario ? ($dados['telefone_voluntario'] ?? null) : null,
             $eh_voluntario ? ($dados['especialidade_voluntario'] ?? null) : null,
+            $status,
             $dados['atividade_id'],
             $professor_id
         ]);
@@ -459,14 +472,23 @@ function editarAtividade($pdo, $dados, $professor_id) {
         if ($stmt->rowCount() > 0) {
             logDebug("Atividade editada com sucesso", [
                 'atividade_id' => $dados['atividade_id'],
-                'eh_voluntario' => $eh_voluntario
+                'eh_voluntario' => $eh_voluntario,
+                'status' => $status
             ]);
+            
+            $message = 'Atividade atualizada com sucesso!';
+            if ($eh_voluntario) {
+                $message = 'Atividade com voluntário atualizada com sucesso!';
+            }
+            if ($status === 'concluida') {
+                $message .= ' Status alterado para CONCLUÍDA.';
+            } elseif ($status === 'cancelada') {
+                $message .= ' Status alterado para CANCELADA.';
+            }
             
             echo json_encode([
                 'success' => true, 
-                'message' => $eh_voluntario ? 
-                    'Atividade com voluntário atualizada com sucesso!' : 
-                    'Atividade atualizada com sucesso!'
+                'message' => $message
             ]);
         } else {
             echo json_encode(['success' => false, 'message' => 'Atividade não encontrada ou sem alterações']);
@@ -486,7 +508,7 @@ function deletarAtividade($pdo, $atividade_id, $professor_id) {
         ]);
         
         // Verificar se a atividade existe e pertence ao professor
-        $stmt_check = $pdo->prepare("SELECT eh_voluntario, nome_voluntario FROM atividades WHERE id = ? AND professor_id = ?");
+        $stmt_check = $pdo->prepare("SELECT eh_voluntario, nome_voluntario, status FROM atividades WHERE id = ? AND professor_id = ?");
         $stmt_check->execute([$atividade_id, $professor_id]);
         $atividade = $stmt_check->fetch(PDO::FETCH_ASSOC);
         
@@ -510,12 +532,14 @@ function deletarAtividade($pdo, $atividade_id, $professor_id) {
         if ($stmt->rowCount() > 0) {
             logDebug("Atividade excluída com sucesso", [
                 'atividade_id' => $atividade_id,
-                'era_voluntario' => $atividade['eh_voluntario']
+                'era_voluntario' => $atividade['eh_voluntario'],
+                'status_anterior' => $atividade['status']
             ]);
             
-            $message = $atividade['eh_voluntario'] ? 
-                'Atividade com voluntário excluída com sucesso!' : 
-                'Atividade excluída com sucesso!';
+            $message = 'Atividade excluída com sucesso!';
+            if ($atividade['eh_voluntario']) {
+                $message = 'Atividade com voluntário excluída com sucesso!';
+            }
                 
             echo json_encode(['success' => true, 'message' => $message]);
         } else {

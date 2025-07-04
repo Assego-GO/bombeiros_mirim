@@ -32,12 +32,6 @@ try {
     die("Erro na conexão com o banco de dados: " . $e->getMessage());
 }
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ../matricula/index.php');
-    exit;
-}
-
 // Pegar informações do usuário
 $usuario_id = $_SESSION["usuario_id"] ?? '';
 $usuario_nome = $_SESSION["usuario_nome"] ?? '';
@@ -101,7 +95,7 @@ if (!empty($professor['foto'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel do Professor - Escolinha de Futebol</title>
+    <title>Painel do Professor - Bombeiro Mirim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="./css/style.css"/>
     <link rel="stylesheet" type="text/css" href="css/dashboard.css"/>
@@ -210,6 +204,156 @@ if (!empty($professor['foto'])) {
             color: #dc3545;
             margin-right: 5px;
         }
+
+        /* ============================================= */
+        /* CSS PARA SISTEMA DE STATUS DAS ATIVIDADES */
+        /* ============================================= */
+
+        /* Estilos para o campo de status no formulário */
+        #status-row {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        #status-row.status-editing-planejada {
+            border-color: #ffc107;
+            background-color: #fff8e1;
+        }
+
+        #status-row.status-editing-em_andamento {
+            border-color: #17a2b8;
+            background-color: #e1f7fa;
+        }
+
+        #status-row.status-editing-concluida {
+            border-color: #28a745;
+            background-color: #e8f5e8;
+        }
+
+        #status-row.status-editing-cancelada {
+            border-color: #dc3545;
+            background-color: #ffeaea;
+        }
+
+        /* Indicador visual de status */
+        .status-indicator {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: statusAppear 0.3s ease-out;
+        }
+
+        .status-indicator.status-planejada {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .status-indicator.status-em_andamento {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .status-indicator.status-concluida {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-indicator.status-cancelada {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Badges de status na listagem */
+        .status-planejada {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-em_andamento {
+            background-color: #17a2b8;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-concluida {
+            background-color: #28a745;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-cancelada {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Help text para o campo de status */
+        .form-help {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .form-help i {
+            color: #17a2b8;
+            margin-right: 5px;
+        }
+
+        /* Destacar select de status quando ativo */
+        #status_atividade:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        @keyframes statusAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -241,7 +385,7 @@ if (!empty($professor['foto'])) {
     <div class="container">
         <div class="welcome-card">
             <h1>Bem-vindo, <?php echo htmlspecialchars($usuario_nome); ?>!</h1>
-            <p>Área do Professor da Escolinha de Futebol. Aqui você pode gerenciar suas turmas, acompanhar o desenvolvimento dos alunos e acessar o calendário de treinos e competições.</p>
+            <p>Área do Professor do Bombeiro Mirim. Aqui você pode gerenciar suas turmas, acompanhar o desenvolvimento dos alunos e acessar o calendário de treinos e atividades.</p>
         </div>
         
         <div class="dashboard-grid">
@@ -381,7 +525,7 @@ if (!empty($professor['foto'])) {
             </div>
         </div>
 
-       <!-- Modal de Cadastro/Edição de Atividade -->
+       <!-- Modal de Cadastro/Edição de Atividade COM STATUS -->
 <div id="cadastroAtividadeModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeCadastroAtividadeModal">&times;</span>
@@ -456,8 +600,35 @@ if (!empty($professor['foto'])) {
                     </div>
                 </div>
             </div>
+
+            <!-- CAMPO DE STATUS (aparece apenas na edição) -->
+            <div class="form-row" id="status-row" style="display: none;">
+                <div class="form-col">
+                    <div class="form-group">
+                        <label for="status_atividade" class="form-label">
+                            <i class="fas fa-flag"></i> Status da Atividade <span style="color: red;">*</span>
+                        </label>
+                        <select id="status_atividade" name="status" class="form-control">
+                            <option value="planejada">🕒 Planejada</option>
+                            <option value="em_andamento">▶️ Em Andamento</option>
+                            <option value="concluida">✅ Concluída</option>
+                            <option value="cancelada">❌ Cancelada</option>
+                        </select>
+                        <small class="form-help">
+                            <i class="fas fa-info-circle"></i>
+                            <strong>Planejada:</strong> Atividade ainda não começou<br>
+                            <strong>Em Andamento:</strong> Atividade está acontecendo<br>
+                            <strong>Concluída:</strong> Atividade foi realizada com sucesso<br>
+                            <strong>Cancelada:</strong> Atividade foi cancelada
+                        </small>
+                    </div>
+                </div>
+                <div class="form-col">
+                    <!-- Campo vazio para manter o layout em duas colunas -->
+                </div>
+            </div>
             
-            <!-- NOVA SEÇÃO: Checkbox para Voluntário -->
+            <!-- SEÇÃO: Checkbox para Voluntário -->
             <div class="form-group">
                 <div class="checkbox-group">
                     <label class="checkbox-label">
@@ -508,7 +679,7 @@ if (!empty($professor['foto'])) {
                 </div>
             </div>
             
-            <!-- Campo Instrutor Responsável - modificado -->
+            <!-- Campo Instrutor Responsável -->
             <div class="form-group">
                 <label for="instrutor_responsavel" class="form-label">
                     <span id="label-instrutor">Instrutor Responsável</span> <span style="color: red;">*</span>
@@ -936,4 +1107,4 @@ if (!empty($professor['foto'])) {
         });
     </script>
 </body>
-</html
+</html>
